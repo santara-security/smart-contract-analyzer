@@ -44,10 +44,10 @@ export default function NavBar() {
           </div>
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="/analyze"
+              href="/audit"
               className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors font-geist font-normal"
             >
-              Analyze
+              Audit Smart Contract
             </Link>
           </div>
           <button className="md:hidden">

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { InputField } from "@/components/InputField";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -7,6 +8,8 @@ import { SelectField } from "@/components/SelectField";
 import { chains } from "@/lib/chains";
 
 export const InputToken = function InputToken() {
+  const router = useRouter();
+  
   const chainOptions = chains.map((chain) => ({
     value: chain.name,
     label:
@@ -21,8 +24,23 @@ export const InputToken = function InputToken() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validate inputs
+    if (!tokenAddress.trim()) {
+      alert("Please enter a token address");
+      return;
+    }
+    
+    if (!chain) {
+      alert("Please select a chain");
+      return;
+    }
+    
     // Handle form submission logic here
     console.log("Analyzing:", { tokenAddress, chain });
+    
+    // Redirect to the dynamic route
+    router.push(`/audit/${chain}/${tokenAddress}`);
   };
 
   return (
