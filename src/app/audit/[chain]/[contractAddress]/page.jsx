@@ -95,11 +95,11 @@ export default function AuditPage({ params }) {
             <ErrorDisplay error={error} onRetry={analyzeToken} />
 
             {/* Action Buttons */}
-            <ActionButtons 
+            {/* <ActionButtons 
               loading={loading}
               onReanalyze={analyzeToken}
               onNewAnalysis={handleNewAnalysis}
-            />
+            /> */}
           </div>
         </Card>
       </section>

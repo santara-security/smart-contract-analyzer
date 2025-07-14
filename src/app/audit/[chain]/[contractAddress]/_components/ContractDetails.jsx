@@ -106,12 +106,6 @@ export const ContractDetails = ({ chain, contractAddress }) => {
           </a>
         </div>
 
-        <div className="text-xs text-neutral-500 border-t border-neutral-700 pt-3">
-          <p>
-            This contract has been analyzed for security vulnerabilities using Slither static analysis.
-            The analysis covers common security issues and coding best practices.
-          </p>
-        </div>
       </div>
     </div>
   );

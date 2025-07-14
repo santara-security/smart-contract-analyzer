@@ -6,21 +6,25 @@ import remarkGfm from "remark-gfm";
 const ImpactBadge = ({ impact }) => {
   const getBadgeStyles = (impact) => {
     switch (impact.toLowerCase()) {
-      case 'high':
-        return 'bg-red-600/20 text-red-400 border-red-500/50';
-      case 'medium':
-        return 'bg-orange-600/20 text-orange-400 border-orange-500/50';
-      case 'low':
-        return 'bg-yellow-600/20 text-yellow-400 border-yellow-500/50';
-      case 'informational':
-        return 'bg-blue-600/20 text-blue-400 border-blue-500/50';
+      case "high":
+        return "bg-red-600/20 text-red-400 border-red-500/50";
+      case "medium":
+        return "bg-orange-600/20 text-orange-400 border-orange-500/50";
+      case "low":
+        return "bg-yellow-600/20 text-yellow-400 border-yellow-500/50";
+      case "informational":
+        return "bg-blue-600/20 text-blue-400 border-blue-500/50";
       default:
-        return 'bg-neutral-600/20 text-neutral-400 border-neutral-500/50';
+        return "bg-neutral-600/20 text-neutral-400 border-neutral-500/50";
     }
   };
 
   return (
-    <span className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(impact)}`}>
+    <span
+      className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(
+        impact
+      )}`}
+    >
       {impact}
     </span>
   );
@@ -29,19 +33,23 @@ const ImpactBadge = ({ impact }) => {
 const ConfidenceBadge = ({ confidence }) => {
   const getBadgeStyles = (confidence) => {
     switch (confidence.toLowerCase()) {
-      case 'high':
-        return 'bg-green-600/20 text-green-400 border-green-500/50';
-      case 'medium':
-        return 'bg-yellow-600/20 text-yellow-400 border-yellow-500/50';
-      case 'low':
-        return 'bg-red-600/20 text-red-400 border-red-500/50';
+      case "high":
+        return "bg-green-600/20 text-green-400 border-green-500/50";
+      case "medium":
+        return "bg-yellow-600/20 text-yellow-400 border-yellow-500/50";
+      case "low":
+        return "bg-red-600/20 text-red-400 border-red-500/50";
       default:
-        return 'bg-neutral-600/20 text-neutral-400 border-neutral-500/50';
+        return "bg-neutral-600/20 text-neutral-400 border-neutral-500/50";
     }
   };
 
   return (
-    <span className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(confidence)}`}>
+    <span
+      className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(
+        confidence
+      )}`}
+    >
       Confidence: {confidence}
     </span>
   );
@@ -62,25 +70,27 @@ const DetectorCard = ({ detector, index }) => {
           onClick={() => setIsExpanded(!isExpanded)}
           className="text-blue-400 hover:text-blue-300 text-sm font-medium"
         >
-          {isExpanded ? 'Hide Details' : 'Show Details'}
+          {isExpanded ? "Hide Details" : "Show Details"}
         </button>
       </div>
-      
+
       <div className="mb-3">
         <h4 className="text-neutral-200 font-medium mb-2">
-          Check: <span className="text-blue-400 font-mono text-sm">{detector.check}</span>
+          <span className="text-blue-400 font-mono text-sm">
+            {detector.check}
+          </span>
         </h4>
         <div className="text-neutral-300 text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
-          <ReactMarkdown 
+          <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               // Custom styling for markdown elements
               p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
               a: ({ href, children }) => (
-                <a 
-                  href={href} 
-                  className="text-blue-400 hover:text-blue-300 underline" 
-                  target="_blank" 
+                <a
+                  href={href}
+                  className="text-blue-400 hover:text-blue-300 underline"
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   {children}
@@ -91,7 +101,9 @@ const DetectorCard = ({ detector, index }) => {
                   {children}
                 </code>
               ),
-              ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
+              ul: ({ children }) => (
+                <ul className="list-disc pl-4 mb-2">{children}</ul>
+              ),
               li: ({ children }) => <li className="mb-1">{children}</li>,
             }}
           >
@@ -102,7 +114,9 @@ const DetectorCard = ({ detector, index }) => {
 
       {isExpanded && (
         <div className="border-t border-neutral-700 pt-3 mt-3">
-          <h5 className="text-neutral-200 font-medium mb-2">Affected Elements:</h5>
+          <h5 className="text-neutral-200 font-medium mb-2">
+            Affected Elements:
+          </h5>
           <div className="space-y-2">
             {detector.elements?.map((element, elementIndex) => (
               <div key={elementIndex} className="bg-neutral-700/30 rounded p-3">
@@ -117,12 +131,14 @@ const DetectorCard = ({ detector, index }) => {
                 {element.source_mapping && (
                   <div className="text-xs text-neutral-400 space-y-1">
                     <div>
-                      <span className="font-medium">File:</span> {element.source_mapping.filename_short}
+                      <span className="font-medium">File:</span>{" "}
+                      {element.source_mapping.filename_short}
                     </div>
                     {element.source_mapping.lines && (
                       <div>
-                        <span className="font-medium">Lines:</span> {element.source_mapping.lines.slice(0, 5).join(', ')}
-                        {element.source_mapping.lines.length > 5 && '...'}
+                        <span className="font-medium">Lines:</span>{" "}
+                        {element.source_mapping.lines.slice(0, 5).join(", ")}
+                        {element.source_mapping.lines.length > 5 && "..."}
                       </div>
                     )}
                   </div>
@@ -158,16 +174,24 @@ const AnalysisSummary = ({ detectors }) => {
           </div>
         ))}
       </div>
-      <div className="mt-4 text-sm text-neutral-400">
-        Total findings: <span className="font-medium text-neutral-200">{detectors.length}</span>
+      <div className="mt-4 text-sm text-neutral-400 pb-3">
+        Total findings:{" "}
+        <span className="font-medium text-neutral-200">{detectors.length}</span>
+      </div>
+      <div className="text-xs text-neutral-500 border-t border-neutral-700 pt-3">
+        <p>
+          This contract has been analyzed for security vulnerabilities using
+          Slither static analysis. The analysis covers common security issues
+          and coding best practices.
+        </p>
       </div>
     </div>
   );
 };
 
 export const AnalysisResults = ({ analysisData }) => {
-  const [filterImpact, setFilterImpact] = useState('all');
-  const [sortBy, setSortBy] = useState('impact');
+  const [filterImpact, setFilterImpact] = useState("all");
+  const [sortBy, setSortBy] = useState("impact");
 
   if (!analysisData?.result?.results?.detectors) {
     return (
@@ -185,15 +209,19 @@ export const AnalysisResults = ({ analysisData }) => {
   const detectors = analysisData.result.results.detectors;
 
   // Filter detectors by impact
-  const filteredDetectors = detectors.filter(detector => 
-    filterImpact === 'all' || detector.impact.toLowerCase() === filterImpact
+  const filteredDetectors = detectors.filter(
+    (detector) =>
+      filterImpact === "all" || detector.impact.toLowerCase() === filterImpact
   );
 
   // Sort detectors
   const sortedDetectors = [...filteredDetectors].sort((a, b) => {
-    if (sortBy === 'impact') {
+    if (sortBy === "impact") {
       const impactOrder = { high: 4, medium: 3, low: 2, informational: 1 };
-      return (impactOrder[b.impact.toLowerCase()] || 0) - (impactOrder[a.impact.toLowerCase()] || 0);
+      return (
+        (impactOrder[b.impact.toLowerCase()] || 0) -
+        (impactOrder[a.impact.toLowerCase()] || 0)
+      );
     }
     return 0;
   });
@@ -201,13 +229,13 @@ export const AnalysisResults = ({ analysisData }) => {
   return (
     <div className="space-y-6">
       <AnalysisSummary detectors={detectors} />
-      
+
       <div className="bg-neutral-800/30 rounded-lg p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h3 className="text-lg font-semibold text-neutral-200">
             Security Findings ({filteredDetectors.length})
           </h3>
-          
+
           <div className="flex gap-3">
             <select
               value={filterImpact}
@@ -220,7 +248,7 @@ export const AnalysisResults = ({ analysisData }) => {
               <option value="low">Low</option>
               <option value="informational">Informational</option>
             </select>
-            
+
             {/* <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -233,14 +261,16 @@ export const AnalysisResults = ({ analysisData }) => {
 
         {sortedDetectors.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-neutral-400">No findings match the current filter</p>
+            <p className="text-neutral-400">
+              No findings match the current filter
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {sortedDetectors.map((detector, index) => (
-              <DetectorCard 
-                key={detector.id || index} 
-                detector={detector} 
+              <DetectorCard
+                key={detector.id || index}
+                detector={detector}
                 index={index}
               />
             ))}
@@ -250,11 +280,12 @@ export const AnalysisResults = ({ analysisData }) => {
         <div className="mt-6 pt-4 border-t border-neutral-700">
           <div className="text-xs text-neutral-400 space-y-1">
             <p>
-              <span className="font-medium">Analysis File:</span>{' '}
+              <span className="font-medium">Analysis File:</span>{" "}
               <span className="font-mono">{analysisData.filePath}</span>
             </p>
             <p>
-              <span className="font-medium">Contract:</span> {analysisData.tokenAddress} ({analysisData.chain})
+              <span className="font-medium">Contract:</span>{" "}
+              {analysisData.tokenAddress} ({analysisData.chain})
             </p>
           </div>
         </div>

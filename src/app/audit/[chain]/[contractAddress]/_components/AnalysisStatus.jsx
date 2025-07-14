@@ -75,7 +75,7 @@ export const AnalysisStatus = ({ loading, error, analysisData }) => {
 
         {stats && (
           <div className="mt-4 p-3 bg-neutral-700/30 rounded-lg">
-            <h4 className="text-sm font-medium text-neutral-200 mb-2">Quick Summary:</h4>
+            <h4 className="text-sm font-medium text-neutral-200 mb-2">Security Analysis Summary:</h4>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {Object.entries(stats).map(([impact, count]) => (
                 <div key={impact} className="flex justify-between">

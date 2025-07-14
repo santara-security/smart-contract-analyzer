@@ -3,8 +3,58 @@ import chains from "@/lib/chains.json";
 import fetchContract from "@/lib/utils/downloadContract";
 import { promises as fs } from "fs";
 import path from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 const defaultChain = chains.chains.filter((chain) => chain.name === "base");
+
+// Helper function to run Slither analysis
+async function runSlitherAnalysis(chain, tokenAddress) {
+  const outputPath = `./results/${chain}/${tokenAddress}/analysis.json`;
+  const outputDir = path.dirname(path.join(process.cwd(), outputPath));
+  
+  // Create output directory if it doesn't exist
+  await fs.mkdir(outputDir, { recursive: true });
+  
+  const slitherCommand = `slither ${chain}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
+  
+  try {
+    console.log(`Running Slither analysis: ${slitherCommand}`);
+    const { stdout, stderr } = await execAsync(slitherCommand, {
+      cwd: process.cwd(),
+      timeout: 300000, // 5 minutes timeout
+      maxBuffer: 1024 * 1024 * 10, // 10MB buffer for large outputs
+    });
+    
+    if (stderr && !stderr.includes('INFO')) {
+      console.warn('Slither stderr:', stderr);
+    }
+    
+    if (stdout) {
+      console.log('Slither stdout:', stdout.substring(0, 200) + '...');
+    }
+    
+    // Verify the output file was created and has content
+    const outputExists = await checkFileExists(`results/${chain}/${tokenAddress}/analysis.json`);
+    if (!outputExists) {
+      throw new Error('Slither analysis completed but no output file was generated');
+    }
+    
+    console.log('Slither analysis completed successfully');
+    return true;
+  } catch (error) {
+    console.error('Slither analysis failed:', error);
+    
+    // If timeout, provide more specific error
+    if (error.killed && error.signal === 'SIGTERM') {
+      throw new Error('Slither analysis timed out after 5 minutes');
+    }
+    
+    throw new Error(`Slither analysis failed: ${error.message}`);
+  }
+}
 
 // Helper function to check if file exists
 async function checkFileExists(filePath) {
@@ -48,20 +98,33 @@ export async function GET(request) {
       { status: 400 }
     );
   }
-
   //check if the file exists on results\base\0xB600CE2781e5018B922CA471C19562799cb96EAD\analysis.json
   const filePath = `results/${chain}/${tokenAddress}/analysis.json`;
   const fileExists = await checkFileExists(filePath);
 
   if (!fileExists) {
-    return NextResponse.json(
-      { error: "Analysis file not found" },
-      { status: 404 }
-    );
+    try {
+      console.log(`Analysis file not found for ${chain}:${tokenAddress}. Running Slither analysis...`);
+      await runSlitherAnalysis(chain, tokenAddress);
+      console.log('Slither analysis completed, proceeding to read results...');
+    } catch (error) {
+      console.error('Failed to run Slither analysis:', error);
+      return NextResponse.json(
+        { error: `Failed to run security analysis: ${error.message}` },
+        { status: 500 }
+      );
+    }
   }
 
   try {
     const fileContents = await readFile(filePath);
+    
+    // Verify that the analysis contains valid results
+    if (!fileContents || !fileContents.results) {
+      throw new Error('Analysis file is empty or corrupted');
+    }
+    
+    console.log(`Successfully read analysis for ${chain}:${tokenAddress}`);
     return NextResponse.json({
       tokenAddress,
       chain,
@@ -69,6 +132,7 @@ export async function GET(request) {
       result: fileContents,
     });
   } catch (error) {
+    console.error('Failed to read analysis file:', error);
     return NextResponse.json(
       { error: `Failed to read analysis file: ${error.message}` },
       { status: 500 }
