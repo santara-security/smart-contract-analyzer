@@ -104,6 +104,15 @@ export const ContractDetails = ({ chain, contractAddress }) => {
             </svg>
             View on Explorer
           </a>
+
+          <a
+            href={`https://dexscreener.com/base/${contractAddress}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center px-4 py-2 bg-green-600/20 text-green-400 border border-green-500/30 rounded hover:bg-green-600/30 transition-colors text-sm font-medium"
+          >
+            View on DexScreener
+          </a>
         </div>
 
       </div>

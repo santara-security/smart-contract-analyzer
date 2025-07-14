@@ -4,3 +4,4 @@ export { AnalysisResults } from "./AnalysisResults";
 export { ErrorDisplay } from "./ErrorDisplay";
 export { ActionButtons } from "./ActionButtons";
 export { ContractInfoGrid } from "./ContractInfoGrid";
+export { default as TokenInfo } from "./TokenInfo";
