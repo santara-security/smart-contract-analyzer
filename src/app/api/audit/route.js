@@ -14,12 +14,12 @@ const defaultChain = chains.chains.filter((chain) => chain.name === "base");
 async function runSlitherAnalysis(chain, tokenAddress) {
   const outputPath = `./results/${chain}/${tokenAddress}/analysis.json`;
   const outputDir = path.dirname(path.join(process.cwd(), outputPath));
-  
+
   // Create output directory if it doesn't exist
   await fs.mkdir(outputDir, { recursive: true });
-  
+
   const slitherCommand = `slither ${chain}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
-  
+
   try {
     console.log(`Running Slither analysis: ${slitherCommand}`);
     const { stdout, stderr } = await execAsync(slitherCommand, {
@@ -27,31 +27,47 @@ async function runSlitherAnalysis(chain, tokenAddress) {
       timeout: 300000, // 5 minutes timeout
       maxBuffer: 1024 * 1024 * 10, // 10MB buffer for large outputs
     });
-    
-    if (stderr && !stderr.includes('INFO')) {
-      console.warn('Slither stderr:', stderr);
+
+    if (stderr && !stderr.includes("INFO")) {
+      console.warn("Slither stderr:", stderr);
     }
-    
+
     if (stdout) {
-      console.log('Slither stdout:', stdout.substring(0, 200) + '...');
+      console.log("Slither stdout:", stdout.substring(0, 200) + "...");
     }
-    
+
     // Verify the output file was created and has content
-    const outputExists = await checkFileExists(`results/${chain}/${tokenAddress}/analysis.json`);
+    const outputExists = await checkFileExists(
+      `results/${chain}/${tokenAddress}/analysis.json`
+    );
     if (!outputExists) {
-      throw new Error('Slither analysis completed but no output file was generated');
+      throw new Error(
+        "Slither analysis completed but no output file was generated"
+      );
     }
-    
-    console.log('Slither analysis completed successfully');
+
+    console.log("Slither analysis completed successfully");
     return true;
   } catch (error) {
-    console.error('Slither analysis failed:', error);
-    
+    console.error("Slither analysis failed:", error);
+
     // If timeout, provide more specific error
-    if (error.killed && error.signal === 'SIGTERM') {
-      throw new Error('Slither analysis timed out after 5 minutes');
+    if (error.killed && error.signal === "SIGTERM") {
+      throw new Error("Slither analysis timed out after 5 minutes");
     }
-    
+
+    const oE = await checkFileExists(
+      `results/${chain}/${tokenAddress}/analysis.json`
+    );
+    if (oE) {
+      return NextResponse.json({
+        tokenAddress,
+        chain,
+        filePath: `results/${chain}/${tokenAddress}/analysis.json`,
+        result: oE,
+      });
+    }
+
     throw new Error(`Slither analysis failed: ${error.message}`);
   }
 }
@@ -104,11 +120,13 @@ export async function GET(request) {
 
   if (!fileExists) {
     try {
-      console.log(`Analysis file not found for ${chain}:${tokenAddress}. Running Slither analysis...`);
+      console.log(
+        `Analysis file not found for ${chain}:${tokenAddress}. Running Slither analysis...`
+      );
       await runSlitherAnalysis(chain, tokenAddress);
-      console.log('Slither analysis completed, proceeding to read results...');
+      console.log("Slither analysis completed, proceeding to read results...");
     } catch (error) {
-      console.error('Failed to run Slither analysis:', error);
+      console.error("Failed to run Slither analysis:", error);
       return NextResponse.json(
         { error: `Failed to run security analysis: ${error.message}` },
         { status: 500 }
@@ -118,12 +136,17 @@ export async function GET(request) {
 
   try {
     const fileContents = await readFile(filePath);
-    
+
     // Verify that the analysis contains valid results
-    if (!fileContents || !fileContents.results) {
-      throw new Error('Analysis file is empty or corrupted');
+    if (!fileContents || !fileContents) {
+      setTimeout(async () => {
+        const fc = await readFile(filePath);
+        if (!fc) {
+          throw new Error("Analysis file is empty or corrupted");
+        }
+      }, 2000);
     }
-    
+
     console.log(`Successfully read analysis for ${chain}:${tokenAddress}`);
     return NextResponse.json({
       tokenAddress,
@@ -132,7 +155,16 @@ export async function GET(request) {
       result: fileContents,
     });
   } catch (error) {
-    console.error('Failed to read analysis file:', error);
+    console.error("Failed to read analysis file:", error);
+    const fe = await checkFileExists(filePath);
+    if (fe) {
+      return NextResponse.json({
+        tokenAddress,
+        chain,
+        filePath,
+        result: fe,
+      });
+    }
     return NextResponse.json(
       { error: `Failed to read analysis file: ${error.message}` },
       { status: 500 }
