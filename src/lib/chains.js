@@ -1,10 +1,9 @@
-import chainsData from './chains.json';
+import chainsData from "./chains.json";
 
-const allowList =  [
-    'base',
-    'ethereum',
-];
-const chains = chainsData.chains.filter(chain => allowList.includes(chain.name));
+const allowList = ["base"];
+const chains = chainsData.chains.filter((chain) =>
+  allowList.includes(chain.name)
+);
 
 export { chains };
 export default chains;

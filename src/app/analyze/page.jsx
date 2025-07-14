@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React from "react";
 import { InputField } from "@/components/InputField";
 import { Button } from "@/components/Button";
@@ -7,20 +7,23 @@ import { SelectField } from "@/components/SelectField";
 import { chains } from "@/lib/chains";
 
 export const InputToken = function InputToken() {
+  const chainOptions = chains.map((chain) => ({
+    value: chain.name,
+    label:
+      chain.displayName ||
+      chain.name.charAt(0).toUpperCase() + chain.name.slice(1),
+    logo: chain.iconUrl,
+  }));
+  console.log("Chain Options:", chains);
   // Add state management for form inputs here later
   const [tokenAddress, setTokenAddress] = React.useState("");
-  const [chain, setChain] = React.useState("");
+  const [chain, setChain] = React.useState(chainOptions[0]?.value || "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Analyzing:", { tokenAddress, chain });
   };
-
-  const chainOptions = chains.map((chain) => ({
-    value: chain.name,
-    label: chain.name.charAt(0).toUpperCase() + chain.name.slice(1),
-  }));
 
   return (
     <div className="bg-transparent z-10 flex flex-col md:flex-row px-8 py-12 gap-8 mt-16 max-w-7xl mx-auto">

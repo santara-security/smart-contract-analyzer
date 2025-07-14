@@ -1,0 +1,1 @@
+myth analyze -f ./uploads/51a9f29ae684e4b242bd0825f9e3a808.txt -t 4 -o jsonv2 > ./uploads/analysis_results.json
