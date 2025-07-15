@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { act, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -189,7 +189,10 @@ const AnalysisSummary = ({ detectors }) => {
   );
 };
 
-export const AnalysisResults = ({ analysisData }) => {
+export const AnalysisResults = ({ analysisData, activeTab }) => {
+  if(activeTab !== "audit") {
+    return null;
+  };
   const [filterImpact, setFilterImpact] = useState("all");
   const [sortBy, setSortBy] = useState("impact");
 

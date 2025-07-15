@@ -35,7 +35,8 @@ export async function GET(request) {
   try {
     // Use bash.exe compatible command
     const pyPath = path.join(process.cwd(), "python", "get_pairs_api.py");
-    const cmd = `python3 "${pyPath}" "${tokenAddress}" "${chain}"`;
+    const pythonCmd = process.env.PYTHON_COMMAND || "python3";
+    const cmd = `${pythonCmd} "${pyPath}" "${tokenAddress}" "${chain}"`;
     const output = execSync(cmd, { encoding: "utf8" });
     result = JSON.parse(output);
     setCache(cacheDir, cacheKey, result);

@@ -14,11 +14,8 @@ const formatSupply = (supply, decimals) => {
   return formatNumber(formatted);
 };
 
-const TokenInfo = ({ chain, contractAddress }) => {
-  const { tokenData, loading, error, retry } = useTokenInfo(
-    chain,
-    contractAddress
-  );
+const TokenInfo = (params) => {
+  const { tokenData, loading, error, retry } = params;
 
   if (loading) {
     return (

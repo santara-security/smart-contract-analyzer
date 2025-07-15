@@ -22,7 +22,12 @@ export async function GET(request) {
   const { execSync } = require("child_process");
 
   // Cache helpers
-  const cacheDir = path.join(process.cwd(), "results", "honeypot", "is_honey_pot");
+  const cacheDir = path.join(
+    process.cwd(),
+    "results",
+    "honeypot",
+    "is_honey_pot"
+  );
   const cacheKey = `${address}_${pair}_${chain}`;
   const cached = getCache(cacheDir, cacheKey);
 
@@ -34,7 +39,8 @@ export async function GET(request) {
   try {
     // Use bash.exe compatible command
     const pyPath = path.join(process.cwd(), "python", "is_honey_pot.py");
-    const cmd = `python3 "${pyPath}" "${address}" "${pair}" "${chain}"`;
+    const pythonCmd = process.env.PYTHON_COMMAND || "python3";
+    const cmd = `${pythonCmd} "${pyPath}" "${address}" "${pair}" "${chain}"`;
     const output = execSync(cmd, { encoding: "utf8" });
     result = JSON.parse(output);
     setCache(cacheDir, cacheKey, result);

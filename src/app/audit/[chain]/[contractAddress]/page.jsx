@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/Card";
-import { 
-  ContractInfoGrid, 
-  AnalysisResults, 
-  ErrorDisplay, 
-  TokenInfo 
+import {
+  ContractInfoGrid,
+  AnalysisResults,
+  ErrorDisplay,
+  TokenInfo,
 } from "./_components";
-import { useAuditAnalysis } from "./_hooks";
+import { useAuditAnalysis, useIsHoneyPot, useTokenInfo } from "./_hooks";
 import { TabButton } from "./_components/TabButton";
-
-
 
 export default function AuditPage({ params }) {
   const router = useRouter();
@@ -28,13 +26,27 @@ export default function AuditPage({ params }) {
   }, [params]);
 
   // Use audit analysis hook only when params are resolved
-  const { 
-    analysisData, 
-    loading: auditLoading, 
-    error: auditError, 
-    retry: retryAudit 
-  } = useAuditAnalysis(
-    resolvedParams?.chain, 
+  const {
+    analysisData,
+    loading: auditLoading,
+    error: auditError,
+    retry: retryAudit,
+  } = useAuditAnalysis(resolvedParams?.chain, resolvedParams?.contractAddress);
+
+  const {
+    tokenData: tokenInfoData,
+    loading: tokenInfoLoading,
+    error: tokenInfoError,
+    retry: retryTokenInfo,
+  } = useTokenInfo(resolvedParams?.chain, resolvedParams?.contractAddress);
+
+  const {
+    honeypotPairs,
+    loadingHoneypot,
+    errorHoneypot,
+    retryHoneypot,
+  } = useIsHoneyPot(
+    resolvedParams?.chain,
     resolvedParams?.contractAddress
   );
 
@@ -90,15 +102,20 @@ export default function AuditPage({ params }) {
             {/* Tab Content */}
             {activeTab === "audit" && (
               <>
-                <AnalysisResults analysisData={analysisData} />
+                <AnalysisResults
+                  analysisData={analysisData}
+                  activeTab={activeTab}
+                />
                 <ErrorDisplay error={auditError} onRetry={retryAudit} />
               </>
             )}
 
             {activeTab === "token" && (
               <TokenInfo
-                chain={resolvedParams.chain}
-                contractAddress={resolvedParams.contractAddress}
+                tokenData={tokenInfoData}
+                loading={tokenInfoLoading}
+                error={tokenInfoError}
+                retry={retryTokenInfo}
               />
             )}
           </div>
