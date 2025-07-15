@@ -192,9 +192,6 @@ export const Bubblemap = ({ contractAddress, chain, activeTab }) => {
     setShowInfo(!showInfo);
   };
 
-  if (activeTab !== "bubblemap") {
-    return null;
-  }
 
   return (
     <div className="space-y-6">

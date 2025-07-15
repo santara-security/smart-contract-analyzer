@@ -34,7 +34,7 @@ export async function GET(request) {
     // Use bash.exe compatible command
     const pyPath = path.join(process.cwd(), "python", "top_holders.py");
     const pythonCmd = process.env.PYTHON_COMMAND || "python3";
-    const cmd = `${pythonCmd} "${pyPath}" "${address}" "${chain}"`;
+    const cmd = `${pythonCmd} "${pyPath}" "${address}"`;
     const output = execSync(cmd, { encoding: "utf8" });
     result = JSON.parse(output);
     setCache(cacheDir, cacheKey, result);
