@@ -128,7 +128,7 @@ export async function GET(request) {
     } catch (error) {
       console.error("Failed to run Slither analysis:", error);
       return NextResponse.json(
-        { error: `Failed to run security analysis: ${error.message}` },
+        { error: `Failed to run security analysis` },
         { status: 500 }
       );
     }

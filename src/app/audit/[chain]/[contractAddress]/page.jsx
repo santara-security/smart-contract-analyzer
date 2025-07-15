@@ -8,6 +8,7 @@ import {
   ErrorDisplay,
   TokenInfo,
   Honeypot,
+  Bubblemap,
 } from "./_components";
 import { useAuditAnalysis, useIsHoneyPot, useTokenInfo } from "./_hooks";
 import { TabButton } from "./_components/TabButton";
@@ -117,6 +118,13 @@ export default function AuditPage({ params }) {
               </TabButton>
 
               <TabButton
+                active={activeTab === "bubblemap"}
+                onClick={() => setActiveTab("bubblemap")}
+              >
+                Bubblemap
+              </TabButton>
+
+              <TabButton
                 active={activeTab === "audit"}
                 onClick={() => setActiveTab("audit")}
               >
@@ -133,6 +141,14 @@ export default function AuditPage({ params }) {
                 />
                 <ErrorDisplay error={auditError} onRetry={retryAudit} />
               </>
+            )}
+
+            {activeTab === "bubblemap" && (
+              <Bubblemap 
+              contractAddress={resolvedParams.contractAddress}
+              chain={resolvedParams.chain}
+              activeTab={activeTab}
+              />
             )}
 
             {activeTab === "honeypot" && (

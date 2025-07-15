@@ -6,3 +6,4 @@ export { ActionButtons } from "./ActionButtons";
 export { ContractInfoGrid } from "./ContractInfoGrid";
 export { Honeypot } from "./Honeypot";
 export { default as TokenInfo } from "./TokenInfo";
+export { Bubblemap } from "./Bubblemap";
