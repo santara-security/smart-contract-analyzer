@@ -7,14 +7,24 @@ import {
   AnalysisResults,
   ErrorDisplay,
   TokenInfo,
+  Honeypot,
 } from "./_components";
 import { useAuditAnalysis, useIsHoneyPot, useTokenInfo } from "./_hooks";
 import { TabButton } from "./_components/TabButton";
 
+// Custom hook to update document title
+function useDocumentTitle(title) {
+  useEffect(() => {
+    if (title) {
+      document.title = title;
+    }
+  }, [title]);
+}
+
 export default function AuditPage({ params }) {
   const router = useRouter();
   const [resolvedParams, setResolvedParams] = useState(null);
-  const [activeTab, setActiveTab] = useState("token");
+  const [activeTab, setActiveTab] = useState("token"); // token, audit, honeypot
 
   // Resolve params
   useEffect(() => {
@@ -42,12 +52,19 @@ export default function AuditPage({ params }) {
 
   const {
     honeypotPairs,
+    honeypotTopHolders,
+    honeyPot,
     loadingHoneypot,
     errorHoneypot,
     retryHoneypot,
-  } = useIsHoneyPot(
-    resolvedParams?.chain,
-    resolvedParams?.contractAddress
+    checkHoneypotWithPair,
+  } = useIsHoneyPot(resolvedParams?.chain, resolvedParams?.contractAddress);
+
+  // Update document title when token data is available
+  useDocumentTitle(
+    tokenInfoData?.symbol
+      ? `${tokenInfoData?.symbol} - Smart Contract Analysis`
+      : "Smart Contract Analysis"
   );
 
   const handleNewAnalysis = () => {
@@ -91,6 +108,14 @@ export default function AuditPage({ params }) {
               >
                 Token Info
               </TabButton>
+
+              <TabButton
+                active={activeTab === "honeypot"}
+                onClick={() => setActiveTab("honeypot")}
+              >
+                Honeypot Check
+              </TabButton>
+
               <TabButton
                 active={activeTab === "audit"}
                 onClick={() => setActiveTab("audit")}
@@ -108,6 +133,19 @@ export default function AuditPage({ params }) {
                 />
                 <ErrorDisplay error={auditError} onRetry={retryAudit} />
               </>
+            )}
+
+            {activeTab === "honeypot" && (
+              <Honeypot
+                honeypotPairs={honeypotPairs}
+                honeypotTopHolders={honeypotTopHolders}
+                honeyPot={honeyPot}
+                loadingHoneypot={loadingHoneypot}
+                errorHoneypot={errorHoneypot}
+                retryHoneypot={retryHoneypot}
+                checkHoneypotWithPair={checkHoneypotWithPair}
+                activeTab={activeTab}
+              />
             )}
 
             {activeTab === "token" && (

@@ -4,7 +4,6 @@ import { setCache, getCache } from "@/lib/cache";
 
 const defaultChain = chains.chains.filter((chain) => chain.name === "base")[0];
 
-
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const tokenAddress = searchParams.get("tokenAddress");
@@ -36,7 +35,7 @@ export async function GET(request) {
     // Use bash.exe compatible command
     const pyPath = path.join(process.cwd(), "python", "get_pairs_api.py");
     const pythonCmd = process.env.PYTHON_COMMAND || "python3";
-    const cmd = `${pythonCmd} "${pyPath}" "${tokenAddress}" "${chain}"`;
+    const cmd = `${pythonCmd} "${pyPath}" "${tokenAddress}"`;
     const output = execSync(cmd, { encoding: "utf8" });
     result = JSON.parse(output);
     setCache(cacheDir, cacheKey, result);

@@ -32,7 +32,7 @@ const fetchOnchainData = async (contractAddress, pair) => {
 export const useIsHoneyPot = (chain, contractAddress) => {
   const [honeypotPairs, setHoneypotPairs] = useState(null);
   const [honeypotTopHolders, setHoneypotTopHolders] = useState(null);
-  const [honeyPot, setHoneypot] = useState(null);
+  const [honeyPot, setHoneypot] = useState([]);
   const [loadingHoneypot, setLoadingHoneypot] = useState(false);
   const [errorHoneypot, setErrorHoneypot] = useState(null);
 
@@ -64,9 +64,13 @@ export const useIsHoneyPot = (chain, contractAddress) => {
         address: firstPairAddress,
         chain: chain,
       });
-      setHoneypot(onchainData.honeyPot);
+      setHoneypot([
+        {
+          ...onchainData.honeyPot,
+          pairAddress: firstPairAddress,
+        },
+      ]);
       setHoneypotTopHolders(onchainData.topHolders);
-
     } catch (err) {
       setErrorHoneypot(err.message);
     } finally {
@@ -78,7 +82,56 @@ export const useIsHoneyPot = (chain, contractAddress) => {
     fetchTokenInfo();
   }, [fetchTokenInfo]);
 
+  const checkHoneypotWithPair = useCallback(
+    async (pairAddress) => {
+      if (!contractAddress || !pairAddress || !chain) {
+        throw new Error(
+          "Missing required parameters: contractAddress, pairAddress, or chain"
+        );
+      }
+
+      setErrorHoneypot(null);
+
+      try {
+        const onchainData = await fetchOnchainData(contractAddress, {
+          address: pairAddress,
+          chain: chain,
+        });
+
+        const newHoneypotData = {
+          ...onchainData.honeyPot,
+          pairAddress: pairAddress,
+        };
+
+        // Check if this pair already exists in the array
+        setHoneypot((prevHoneypot) => {
+          const existingIndex = prevHoneypot.findIndex(
+            (item) => item.pairAddress === pairAddress
+          );
+          if (existingIndex !== -1) {
+            // Update existing entry
+            const updated = [...prevHoneypot];
+            updated[existingIndex] = newHoneypotData;
+            return updated;
+          } else {
+            // Add new entry
+            return [...prevHoneypot, newHoneypotData];
+          }
+        });
+
+        return newHoneypotData;
+      } catch (err) {
+        setErrorHoneypot(err.message);
+        throw err;
+      } finally {
+        setLoadingHoneypot(false);
+      }
+    },
+    [contractAddress, chain]
+  );
+
   const retryHoneypot = useCallback(() => {
+    setLoadingHoneypot(true);
     fetchTokenInfo();
   }, [fetchTokenInfo]);
 
@@ -89,5 +142,6 @@ export const useIsHoneyPot = (chain, contractAddress) => {
     loadingHoneypot,
     errorHoneypot,
     retryHoneypot,
+    checkHoneypotWithPair,
   };
 };
