@@ -1,0 +1,3 @@
+http://localhost:3000/api/honeypot/getpairs?tokenAddress=0x8e3bFf1Abf376f7a5D036cC3D85766394744dd04
+
+http://localhost:3000/api/honeypot/is_honey_pot?tokenAddress=0x8e3bFf1Abf376f7a5D036cC3D85766394744dd04&pair=0xb036d38073ce3cacbd26ab9000d3653dbb296abe
