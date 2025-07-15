@@ -42,3 +42,5 @@ next-env.d.ts
 uploads
 crytic-export
 results
+
+db.sqlite
