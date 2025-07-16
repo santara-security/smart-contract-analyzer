@@ -43,6 +43,7 @@ export default function AuditPage({ params }) {
     error: auditError,
     retry: retryAudit,
     analysisSummary,
+    analysisScore
   } = useAuditAnalysis(resolvedParams?.chain, resolvedParams?.contractAddress);
 
   const {
@@ -97,10 +98,11 @@ export default function AuditPage({ params }) {
             <ContractInfoGrid
               chain={resolvedParams.chain}
               contractAddress={resolvedParams.contractAddress}
-              loading={auditLoading}
+              auditLoading={auditLoading}
               error={auditError}
               analysisData={analysisData}
               analysisSummary={analysisSummary}
+              analysisScore={analysisScore}
             />
 
             {/* Tab Navigation */}

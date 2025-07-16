@@ -6,19 +6,21 @@ import { AnalysisStatus } from "./AnalysisStatus";
 export const ContractInfoGrid = ({ 
   chain, 
   contractAddress, 
-  loading, 
+  auditLoading, 
   error, 
   analysisData,
-  analysisSummary
+  analysisSummary,
+  analysisScore,
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <ContractDetails chain={chain} contractAddress={contractAddress} />
       <AnalysisStatus 
-        loading={loading} 
         error={error} 
         analysisData={analysisData} 
         analysisSummary={analysisSummary}
+        analysisScore={analysisScore}
+        auditLoading={auditLoading}
       />
     </div>
   );
