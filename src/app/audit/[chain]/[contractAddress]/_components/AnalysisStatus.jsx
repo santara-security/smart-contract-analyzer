@@ -1,28 +1,58 @@
 "use client";
 import React from "react";
 import { RiskBadge } from "@/components/Badge";
+import { Loader2, X, Check } from "lucide-react";
 
-const StatusIndicator = ({ status, children }) => {
-  const getStatusStyles = (status) => {
+const ProgressBar = ({ status, progress = 0, children }) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "auditLoading":
-        return "text-blue-400 bg-blue-400/10 border-blue-400/20";
+        return "bg-blue-500";
       case "success":
-        return "text-green-400 bg-green-400/10 border-green-400/20";
+        return "bg-green-500";
       case "error":
-        return "text-red-400 bg-red-400/10 border-red-400/20";
+        return "bg-red-500";
       default:
-        return "text-neutral-400 bg-neutral-400/10 border-neutral-400/20";
+        return "bg-neutral-500";
+    }
+  };
+
+  const getTextColor = (status) => {
+    switch (status) {
+      case "auditLoading":
+        return "text-blue-400";
+      case "success":
+        return "text-green-400";
+      case "error":
+        return "text-red-400";
+      default:
+        return "text-neutral-400";
     }
   };
 
   return (
-    <div
-      className={`flex items-center space-x-2 p-3 rounded-lg border ${getStatusStyles(
-        status
-      )}`}
-    >
-      {children}
+    <div className="space-y-2">
+      <div className={`flex items-center space-x-2 ${getTextColor(status)}`}>
+        {children}
+      </div>
+      <div className="w-full bg-neutral-700/50 rounded-full h-1.5 overflow-hidden">
+        <div
+          className={`h-full transition-all duration-500 ease-out ${getStatusColor(
+            status
+          )} ${status === "auditLoading" ? "animate-pulse" : ""}`}
+          style={{
+            width: `${
+              status === "auditLoading"
+                ? progress
+                : status === "success"
+                ? 100
+                : status === "error"
+                ? 100
+                : 0
+            }%`,
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -32,8 +62,27 @@ export const AnalysisStatus = ({
   error,
   analysisData,
   analysisSummary,
+  analysisScore
 }) => {
   const stats = !analysisData?.result?.results?.detectors ? null : true;
+  const [progress, setProgress] = React.useState(0);
+
+  // Simulate progress for loading state
+  React.useEffect(() => {
+    if (auditLoading) {
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return 90; // Don't complete until actually done
+          return prev + Math.random() * 15;
+        });
+      }, 500);
+
+      return () => clearInterval(interval);
+    } else {
+      setProgress(0);
+    }
+  }, [auditLoading]);
+
 
   return (
     <div className="bg-neutral-800/30 rounded-lg p-4">
@@ -41,61 +90,69 @@ export const AnalysisStatus = ({
         Analysis Status
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {auditLoading && (
-          <StatusIndicator status="auditLoading">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-            <span>Analyzing contract security...</span>
-          </StatusIndicator>
+          <ProgressBar status="auditLoading" progress={progress}>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="text-sm">Analyzing contract security...</span>
+          </ProgressBar>
         )}
 
         {!auditLoading && error && (
-          <StatusIndicator status="error">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Error analyzing contract</span>
-          </StatusIndicator>
+          <ProgressBar status="error">
+            <X className="h-4 w-4" />
+            <span className="text-sm">Error analyzing contract</span>
+          </ProgressBar>
         )}
 
         {!auditLoading && !error && analysisData && (
-          <StatusIndicator status="success">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Analysis complete</span>
-          </StatusIndicator>
+          <ProgressBar status="success">
+            <Check className="h-4 w-4" />
+            <span className="text-sm">Contract Analysis Complete</span>
+          </ProgressBar>
         )}
 
-        {!auditLoading && !error && stats && analysisData && (
+        {!auditLoading && !error && stats && analysisData && analysisScore !== undefined && (
           <div className="mt-4 p-3 bg-neutral-700/30 rounded-lg">
-            <h4 className="text-sm font-medium text-neutral-200 mb-2">
-              Smart Contract Summary:
+            <h4 className="text-sm font-medium text-neutral-200 mb-3">
+              Security Score:
             </h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {Object.entries(analysisSummary).map(([impact, count]) => (
-                <div key={impact} className="flex justify-between">
-                  <span className="capitalize text-neutral-400">{impact}:</span>
-                  <span className="font-medium text-neutral-200">{count}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-2 pt-2 border-t border-neutral-600 text-xs text-neutral-400">
-              Total findings:{" "}
-              <span className="font-medium text-neutral-200">
-                {Object.values(analysisSummary).reduce(
-                  (sum, count) => sum + count,
-                  0
-                )}
-              </span>
+            <div className="space-y-3">
+              {/* Score Display */}
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold text-neutral-200">
+                  {analysisScore}/100
+                </span>
+                <span className={`text-sm font-medium ${
+                  analysisScore >= 80 ? 'text-green-400' :
+                  analysisScore >= 60 ? 'text-yellow-400' :
+                  analysisScore >= 40 ? 'text-orange-400' : 'text-red-400'
+                }`}>
+                  {analysisScore >= 80 ? 'Excellent' :
+                   analysisScore >= 60 ? 'Good' :
+                   analysisScore >= 40 ? 'Fair' : 'Poor'}
+                </span>
+              </div>
+              
+              {/* Score Progress Bar */}
+              <div className="w-full bg-neutral-600/50 rounded-full h-2 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-1000 ease-out ${
+                    analysisScore >= 80 ? 'bg-green-500' :
+                    analysisScore >= 60 ? 'bg-yellow-500' :
+                    analysisScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                  }`}
+                  style={{ width: `${analysisScore}%` }}
+                />
+              </div>
+              
+              {/* Score Description */}
+              <p className="text-xs text-neutral-400">
+                {analysisScore >= 80 ? 'This contract shows strong security practices with minimal risks.' :
+                 analysisScore >= 60 ? 'This contract has good security but may have some minor issues.' :
+                 analysisScore >= 40 ? 'This contract has moderate security concerns that should be reviewed.' :
+                 'This contract has significant security issues that require immediate attention.'}
+              </p>
             </div>
           </div>
         )}
