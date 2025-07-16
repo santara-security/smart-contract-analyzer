@@ -8,7 +8,8 @@ export const ContractInfoGrid = ({
   contractAddress, 
   loading, 
   error, 
-  analysisData 
+  analysisData,
+  analysisSummary
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -17,6 +18,7 @@ export const ContractInfoGrid = ({
         loading={loading} 
         error={error} 
         analysisData={analysisData} 
+        analysisSummary={analysisSummary}
       />
     </div>
   );

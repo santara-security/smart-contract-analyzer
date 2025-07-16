@@ -1,8 +1,16 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export const useAuditAnalysis = (chain, contractAddress) => {
   const [analysisData, setAnalysisData] = useState(null);
+  const [analysisSummary, setAnalysisSummary] = useState({
+    high: 0,
+    informational: 0,
+    low: 0,
+    medium: 0,
+  });
+  const [analysisScore, setAnalysisScore] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const hasFetchedRef = useRef(false);
@@ -23,20 +31,42 @@ export const useAuditAnalysis = (chain, contractAddress) => {
     setLoading(true);
     setError(null);
     hasFetchedRef.current = true;
-    
+
     try {
-      const response = await fetch(`/api/audit?tokenAddress=${contractAddress}&chain=${chain}`, {
-        signal: controller.signal
-      });
+      const response = await fetch(
+        `/api/audit?tokenAddress=${contractAddress}&chain=${chain}`,
+        {
+          signal: controller.signal,
+        }
+      );
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to analyze token");
       }
+      const summary = data?.result.results.detectors.reduce((acc, detector) => {
+        const impact = detector.impact.toLowerCase();
+        acc[impact] = (acc[impact] || 0) + 1;
+        return acc;
+      }, {});
+
+      setAnalysisSummary((prev) => ({
+        ...prev,
+        ...summary,
+      }));
+
+      const score = Object.values(summary).reduce((sum, count, index) => {
+        const weights = { high: 15, medium: 5, low: 2, informational: 1 };
+        const impact = Object.keys(weights)[index];
+        return sum + (count * (weights[impact] || 0));
+      }, 0);
+      const calculatedScore = (score > 100 ? 100 : score < 0 ? 0 : score) - 100;
+      setAnalysisScore(calculatedScore);
 
       setAnalysisData(data);
     } catch (err) {
-      if (err.name !== 'AbortError') {
+      console.error("Error fetching audit analysis:", err);
+      if (err.name !== "AbortError") {
         setError(err.message);
       }
     } finally {
@@ -47,7 +77,7 @@ export const useAuditAnalysis = (chain, contractAddress) => {
 
   useEffect(() => {
     analyzeToken();
-    
+
     // Cleanup function to abort request if component unmounts
     return () => {
       if (currentRequestRef.current) {
@@ -67,6 +97,8 @@ export const useAuditAnalysis = (chain, contractAddress) => {
     analysisData,
     loading,
     error,
-    retry
+    retry,
+    analysisSummary,
+    analysisScore,
   };
 };

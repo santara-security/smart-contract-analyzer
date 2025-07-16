@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { RiskBadge } from "@/components/Badge";
 
 const StatusIndicator = ({ status, children }) => {
   const getStatusStyles = (status) => {
@@ -26,7 +27,7 @@ const StatusIndicator = ({ status, children }) => {
   );
 };
 
-export const AnalysisStatus = ({ loading, error, analysisData }) => {
+export const AnalysisStatus = ({ loading, error, analysisData, analysisSummary }) => {
   const getAnalysisStats = () => {
     if (!analysisData?.result?.results?.detectors) return null;
 
@@ -95,7 +96,8 @@ export const AnalysisStatus = ({ loading, error, analysisData }) => {
               Smart Contract Summary:
             </h4>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              {Object.entries(stats).map(([impact, count]) => (
+
+              {Object.entries(analysisSummary).map(([impact, count]) => (
                 <div key={impact} className="flex justify-between">
                   <span className="capitalize text-neutral-400">{impact}:</span>
                   <span className="font-medium text-neutral-200">{count}</span>
@@ -105,11 +107,24 @@ export const AnalysisStatus = ({ loading, error, analysisData }) => {
             <div className="mt-2 pt-2 border-t border-neutral-600 text-xs text-neutral-400">
               Total findings:{" "}
               <span className="font-medium text-neutral-200">
-                {Object.values(stats).reduce((sum, count) => sum + count, 0)}
+                {Object.values(analysisSummary).reduce((sum, count) => sum + count, 0)}
               </span>
             </div>
           </div>
         )}
+
+        <div className="mt-4 p-3 bg-neutral-700/30 rounded-lg">
+          <h4 className="text-sm font-medium text-neutral-200 mb-2">
+            Honeypot Check Status 
+            <RiskBadge status={'very_low'} />
+            <RiskBadge status={'low'} />
+            <RiskBadge status={'honeypot'} />
+            <RiskBadge status={'honeypot'} />
+            <RiskBadge status={'unknown'} />
+            <RiskBadge status={'very_high'} />
+            <RiskBadge status={'high'} />
+          </h4>
+        </div>
       </div>
     </div>
   );

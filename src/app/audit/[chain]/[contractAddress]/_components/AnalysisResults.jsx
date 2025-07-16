@@ -2,58 +2,9 @@
 import React, { act, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ImpactBadge, ConfidenceBadge } from "@/components/Badge";
 
-const ImpactBadge = ({ impact }) => {
-  const getBadgeStyles = (impact) => {
-    switch (impact.toLowerCase()) {
-      case "high":
-        return "bg-red-600/20 text-red-400 border-red-500/50";
-      case "medium":
-        return "bg-orange-600/20 text-orange-400 border-orange-500/50";
-      case "low":
-        return "bg-yellow-600/20 text-yellow-400 border-yellow-500/50";
-      case "informational":
-        return "bg-blue-600/20 text-blue-400 border-blue-500/50";
-      default:
-        return "bg-neutral-600/20 text-neutral-400 border-neutral-500/50";
-    }
-  };
 
-  return (
-    <span
-      className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(
-        impact
-      )}`}
-    >
-      {impact}
-    </span>
-  );
-};
-
-const ConfidenceBadge = ({ confidence }) => {
-  const getBadgeStyles = (confidence) => {
-    switch (confidence.toLowerCase()) {
-      case "high":
-        return "bg-green-600/20 text-green-400 border-green-500/50";
-      case "medium":
-        return "bg-yellow-600/20 text-yellow-400 border-yellow-500/50";
-      case "low":
-        return "bg-red-600/20 text-red-400 border-red-500/50";
-      default:
-        return "bg-neutral-600/20 text-neutral-400 border-neutral-500/50";
-    }
-  };
-
-  return (
-    <span
-      className={`px-2 py-1 text-xs rounded-full border ${getBadgeStyles(
-        confidence
-      )}`}
-    >
-      Confidence: {confidence}
-    </span>
-  );
-};
 
 const DetectorCard = ({ detector, index }) => {
   const [isExpanded, setIsExpanded] = useState(false);

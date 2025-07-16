@@ -42,6 +42,7 @@ export default function AuditPage({ params }) {
     loading: auditLoading,
     error: auditError,
     retry: retryAudit,
+    analysisSummary,
   } = useAuditAnalysis(resolvedParams?.chain, resolvedParams?.contractAddress);
 
   const {
@@ -99,6 +100,7 @@ export default function AuditPage({ params }) {
               loading={auditLoading}
               error={auditError}
               analysisData={analysisData}
+              analysisSummary={analysisSummary}
             />
 
             {/* Tab Navigation */}
