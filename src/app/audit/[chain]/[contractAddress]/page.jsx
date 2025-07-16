@@ -132,28 +132,33 @@ export default function AuditPage({ params }) {
               </TabButton>
             </div>
 
-            {/* Tab Content */}
+            {/* Prevent Re-rendering */}
+            <>
+              <div className={activeTab === "chart" ? "block" : "hidden"}>
+                <Chart contractAddress={resolvedParams.contractAddress} />
+              </div>
 
-            {activeTab === "honeypot" && (
-              <Honeypot
-                honeypotPairs={honeypotPairs}
-                honeypotTopHolders={honeypotTopHolders}
-                honeyPot={honeyPot}
-                loadingHoneypot={loadingHoneypot}
-                errorHoneypot={errorHoneypot}
-                retryHoneypot={retryHoneypot}
-                checkHoneypotWithPair={checkHoneypotWithPair}
-                activeTab={activeTab}
-              />
-            )}
+              <div className={activeTab === "honeypot" ? "block" : "hidden"}>
+                <Honeypot
+                  honeypotPairs={honeypotPairs}
+                  honeypotTopHolders={honeypotTopHolders}
+                  honeyPot={honeyPot}
+                  loadingHoneypot={loadingHoneypot}
+                  errorHoneypot={errorHoneypot}
+                  retryHoneypot={retryHoneypot}
+                  checkHoneypotWithPair={checkHoneypotWithPair}
+                  activeTab={activeTab}
+                />
+              </div>
 
-            {activeTab === "bubblemap" && (
-              <Bubblemap
-                contractAddress={resolvedParams.contractAddress}
-                chain={resolvedParams.chain}
-                activeTab={activeTab}
-              />
-            )}
+              <div className={activeTab === "bubblemap" ? "block" : "hidden"}>
+                <Bubblemap
+                  contractAddress={resolvedParams.contractAddress}
+                  chain={resolvedParams.chain}
+                  activeTab={activeTab}
+                />
+              </div>
+            </>
 
             {activeTab === "audit" && (
               <>
@@ -164,8 +169,6 @@ export default function AuditPage({ params }) {
                 <ErrorDisplay error={auditError} onRetry={retryAudit} />
               </>
             )}
-
-            <Chart contractAddress={resolvedParams.contractAddress} />
           </div>
         </Card>
       </section>
