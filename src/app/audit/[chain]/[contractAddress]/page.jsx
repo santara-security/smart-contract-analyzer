@@ -118,13 +118,6 @@ export default function AuditPage({ params }) {
               </TabButton>
 
               <TabButton
-                active={activeTab === "bubblemap"}
-                onClick={() => setActiveTab("bubblemap")}
-              >
-                Bubblemap
-              </TabButton>
-
-              <TabButton
                 active={activeTab === "audit"}
                 onClick={() => setActiveTab("audit")}
               >
@@ -147,14 +140,6 @@ export default function AuditPage({ params }) {
                   errorHoneypot={errorHoneypot}
                   retryHoneypot={retryHoneypot}
                   checkHoneypotWithPair={checkHoneypotWithPair}
-                  activeTab={activeTab}
-                />
-              </div>
-
-              <div className={activeTab === "bubblemap" ? "block" : "hidden"}>
-                <Bubblemap
-                  contractAddress={resolvedParams.contractAddress}
-                  chain={resolvedParams.chain}
                   activeTab={activeTab}
                 />
               </div>

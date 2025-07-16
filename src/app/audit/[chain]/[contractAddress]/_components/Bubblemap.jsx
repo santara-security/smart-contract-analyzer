@@ -112,7 +112,9 @@ export const Bubblemap = ({ contractAddress, chain, activeTab }) => {
   const iframeRef = useRef(null);
   const containerRef = useRef(null);
 
-  const bubblemapUrl = `https://v2.bubblemaps.io/map?address=${contractAddress}&chain=${chain}&partnerId=regular`;
+  // const bubblemapUrl = `https://v2.bubblemaps.io/map?address=${contractAddress}&chain=${chain}&partnerId=regular`;
+  const bubblemapUrl = `https://v0-dynamic-iframe-page.vercel.app/base/${contractAddress}`;
+  const originalLink = `https://v2.bubblemaps.io/map?partnerId=regular&address=0x0b3e328455c4059eeb9e3f84b5543f74e24e7e1b&chain=base&limit=80`;
 
   useEffect(() => {
     if (activeTab === "bubblemap") {

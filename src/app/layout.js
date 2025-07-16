@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./_components/NavBar";
 import BackgroundAnimation from "./_components/BackgroundAnimation";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,9 @@ export default function RootLayout({ children }) {
         <div className="relative min-h-screen">
           <BackgroundAnimation />
           <main className="bg-transparent antialiased overflow-hidden font-geist relative z-10">
+            <Providers>
             {children}
+            </Providers>
           </main>
         </div>
       </body>
