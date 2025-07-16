@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
 export const useTokenInfo = (chain, contractAddress) => {
   const [tokenData, setTokenData] = useState(null);
@@ -11,17 +11,21 @@ export const useTokenInfo = (chain, contractAddress) => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`/api/token?tokenAddress=${contractAddress}&chain=${chain}`);
+      const response = await fetch(
+        `/api/token?tokenAddress=${contractAddress}&chain=${chain}`
+      );
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch token information");
       }
 
-      setTokenData(data.data);
+      // The API returns the token data directly, not wrapped in a data property
+      setTokenData(data);
     } catch (err) {
+      console.error("Fetch error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -35,11 +39,10 @@ export const useTokenInfo = (chain, contractAddress) => {
   const retry = useCallback(() => {
     fetchTokenInfo();
   }, [fetchTokenInfo]);
-
   return {
     tokenData,
     loading,
     error,
-    retry
+    retry,
   };
 };

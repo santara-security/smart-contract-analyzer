@@ -6,12 +6,12 @@ import {
   ContractInfoGrid,
   AnalysisResults,
   ErrorDisplay,
-  TokenInfo,
   Honeypot,
   Bubblemap,
 } from "./_components";
 import { useAuditAnalysis, useIsHoneyPot, useTokenInfo } from "./_hooks";
 import { TabButton } from "./_components/TabButton";
+import Chart from "./_components/Chart";
 
 // Custom hook to update document title
 function useDocumentTitle(title) {
@@ -25,7 +25,7 @@ function useDocumentTitle(title) {
 export default function AuditPage({ params }) {
   const router = useRouter();
   const [resolvedParams, setResolvedParams] = useState(null);
-  const [activeTab, setActiveTab] = useState("token"); // token, audit, honeypot
+  const [activeTab, setActiveTab] = useState("chart"); //chart, token, audit, honeypot
 
   // Resolve params
   useEffect(() => {
@@ -104,10 +104,10 @@ export default function AuditPage({ params }) {
             {/* Tab Navigation */}
             <div className="flex gap-2 mb-6">
               <TabButton
-                active={activeTab === "token"}
-                onClick={() => setActiveTab("token")}
+                active={activeTab === "chart"}
+                onClick={() => setActiveTab("chart")}
               >
-                Token Info
+                Chart
               </TabButton>
 
               <TabButton
@@ -133,23 +133,6 @@ export default function AuditPage({ params }) {
             </div>
 
             {/* Tab Content */}
-            {activeTab === "audit" && (
-              <>
-                <AnalysisResults
-                  analysisData={analysisData}
-                  activeTab={activeTab}
-                />
-                <ErrorDisplay error={auditError} onRetry={retryAudit} />
-              </>
-            )}
-
-            {activeTab === "bubblemap" && (
-              <Bubblemap 
-              contractAddress={resolvedParams.contractAddress}
-              chain={resolvedParams.chain}
-              activeTab={activeTab}
-              />
-            )}
 
             {activeTab === "honeypot" && (
               <Honeypot
@@ -164,14 +147,25 @@ export default function AuditPage({ params }) {
               />
             )}
 
-            {activeTab === "token" && (
-              <TokenInfo
-                tokenData={tokenInfoData}
-                loading={tokenInfoLoading}
-                error={tokenInfoError}
-                retry={retryTokenInfo}
+            {activeTab === "bubblemap" && (
+              <Bubblemap
+                contractAddress={resolvedParams.contractAddress}
+                chain={resolvedParams.chain}
+                activeTab={activeTab}
               />
             )}
+
+            {activeTab === "audit" && (
+              <>
+                <AnalysisResults
+                  analysisData={analysisData}
+                  activeTab={activeTab}
+                />
+                <ErrorDisplay error={auditError} onRetry={retryAudit} />
+              </>
+            )}
+
+            <Chart contractAddress={resolvedParams.contractAddress} />
           </div>
         </Card>
       </section>
