@@ -32,12 +32,12 @@ The Smart Contract Analyzer uses a modern, simple, sleek, dark-themed design sys
 ## Typography
 
 ### Font Hierarchy
-- **Page Title**: `text-2xl font-bold text-neutral-200`
-- **Section Headers**: `text-lg font-semibold text-neutral-200`
-- **Card Titles**: `text-base font-semibold text-neutral-200`
-- **Subsection Headers**: `text-sm font-medium text-neutral-200`
+- **Page Title**: `text-xl font-bold text-neutral-200`
+- **Section Headers**: `text-sm font-semibold text-neutral-200`
+- **Card Titles**: `text-sm font-semibold text-neutral-200`
+- **Subsection Headers**: `text-xs font-medium text-neutral-200`
 - **Labels**: `text-xs font-medium text-neutral-400`
-- **Body Text**: `text-sm text-neutral-200` or `text-xs text-neutral-200`
+- **Body Text**: `text-xs text-neutral-200`
 - **Monospace**: `font-mono` for addresses, code, and technical data
 
 ### Font Families
@@ -48,12 +48,12 @@ The Smart Contract Analyzer uses a modern, simple, sleek, dark-themed design sys
 
 ### Main Container
 ```jsx
-<div className="bg-transparent z-10 flex flex-col px-8 py-12 gap-8 mt-16 max-w-7xl mx-auto">
+<div className="bg-transparent z-10 flex flex-col px-6 py-8 gap-6 mt-12 max-w-7xl mx-auto">
 ```
 
 ### Grid Systems
-- **Two-column grid**: `grid grid-cols-1 md:grid-cols-2 gap-4`
-- **Responsive grid**: `grid grid-cols-1 lg:grid-cols-2 gap-4`
+- **Two-column grid**: `grid grid-cols-1 md:grid-cols-2 gap-3`
+- **Responsive grid**: `grid grid-cols-1 lg:grid-cols-2 gap-3`
 - **Stats grid**: `grid grid-cols-2 gap-2`
 
 ## Component Patterns
@@ -61,12 +61,17 @@ The Smart Contract Analyzer uses a modern, simple, sleek, dark-themed design sys
 ### Cards
 Main content containers with glass-morphism effect:
 ```jsx
-<div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-xl shadow-lg p-8 h-full">
+<div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow-lg p-4 h-full">
 ```
 
 Secondary cards for nested content:
 ```jsx
-<div className="bg-neutral-800/30 rounded-lg p-3">
+<div className="bg-neutral-800/30 rounded-lg p-3 space-y-3">
+```
+
+Compact cards for dense layouts:
+```jsx
+<div className="bg-neutral-800/30 rounded-lg p-4 space-y-4">
 ```
 
 ### Buttons
@@ -74,24 +79,24 @@ Secondary cards for nested content:
 #### Tab Buttons
 ```jsx
 // Active state
-className="px-4 py-2 font-medium text-sm rounded-lg bg-blue-600 text-white"
+className="px-3 py-1.5 font-medium text-xs rounded-lg bg-blue-600 text-white"
 
 // Inactive state  
-className="px-4 py-2 font-medium text-sm rounded-lg bg-neutral-700/50 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-200"
+className="px-3 py-1.5 font-medium text-xs rounded-lg bg-neutral-700/50 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-200"
 ```
 
 #### Action Buttons
 ```jsx
 // Primary button
-className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-medium transition-colors"
 
 // Secondary button
-className="flex items-center justify-center px-3 py-1.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded hover:bg-blue-600/30 transition-colors text-xs font-medium"
+className="flex items-center justify-center px-3 py-2 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded hover:bg-blue-600/30 transition-colors text-xs font-medium"
 ```
 
 #### Icon Buttons
 ```jsx
-className="p-2 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 rounded-lg transition-colors"
+className="p-1 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 rounded transition-colors"
 ```
 
 ### Badges/Status Indicators
@@ -99,13 +104,13 @@ className="p-2 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 r
 #### Risk Level Badges
 ```jsx
 // High Risk
-className="bg-red-600/20 text-red-400 border-red-500/50 px-2 py-1 text-xs rounded-full border"
+className="bg-red-600/20 text-red-400 border-red-500/50 px-1.5 py-0.5 text-xs rounded-full border"
 
 // Medium Risk
-className="bg-orange-600/20 text-orange-400 border-orange-500/50 px-2 py-1 text-xs rounded-full border"
+className="bg-orange-600/20 text-orange-400 border-orange-500/50 px-1.5 py-0.5 text-xs rounded-full border"
 
 // Low Risk/Safe
-className="bg-green-600/20 text-green-400 border-green-500/50 px-2 py-1 text-xs rounded-full border"
+className="bg-green-600/20 text-green-400 border-green-500/50 px-1.5 py-0.5 text-xs rounded-full border"
 ```
 
 #### Chain/Network Badges
@@ -115,7 +120,7 @@ className="bg-blue-600/20 text-blue-400 px-2 py-1 rounded-full text-xs border bo
 
 #### Token Symbol Badges
 ```jsx
-className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs border border-purple-500/30 font-mono"
+className="bg-purple-600/20 text-purple-400 px-1.5 py-0.5 rounded text-xs border border-purple-500/30 font-mono"
 ```
 
 ### Status Indicators
@@ -125,11 +130,23 @@ className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs border bor
 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
 ```
 
+#### Progress Bars (Modern Compact)
+```jsx
+<div className="space-y-2">
+  <div className="flex items-center space-x-2 text-blue-400">
+    <span className="text-xs">Status text</span>
+  </div>
+  <div className="w-full bg-neutral-700/50 rounded-full h-1.5 overflow-hidden">
+    <div className="h-full transition-all duration-500 ease-out bg-blue-500" style={{width: "75%"}} />
+  </div>
+</div>
+```
+
 #### Status Cards with Icons
 ```jsx
-<div className="flex items-center space-x-2 p-3 rounded-lg border bg-blue-400/10 border-blue-400/20 text-blue-400">
-  <svg className="w-4 h-4">...</svg>
-  <span>Status message</span>
+<div className="flex items-center space-x-2 p-2 rounded border bg-blue-400/10 border-blue-400/20 text-blue-400">
+  <svg className="w-3 h-3">...</svg>
+  <span className="text-xs">Status message</span>
 </div>
 ```
 
@@ -137,34 +154,55 @@ className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs border bor
 
 #### Address Input with Copy Button
 ```jsx
-<div className="flex items-center bg-neutral-700/30 rounded p-2">
+<div className="flex items-center bg-neutral-700/40 rounded p-2 border border-neutral-600/30">
   <span className="font-mono text-xs text-neutral-200 break-all flex-1">
     {contractAddress}
   </span>
-  <button className="ml-2 p-1 text-neutral-400 hover:text-neutral-200 transition-colors">
-    {/* Copy icon */}
+  <button className="ml-1.5 p-1 text-neutral-400 hover:text-neutral-200 transition-colors">
+    <Copy className="w-2.5 h-2.5" />
   </button>
 </div>
 ```
 
 ### Data Display
 
-#### Label-Value Pairs
+#### Label-Value Pairs (Compact)
 ```jsx
 <div>
-  <label className="block text-xs font-medium text-neutral-400 mb-1">
-    Label Name
-  </label>
+  <span className="text-xs text-neutral-400 block mb-1">Label Name</span>
   <p className="text-xs text-neutral-200">Value</p>
+</div>
+```
+
+#### Compact Grid Layout
+```jsx
+<div className="grid grid-cols-2 gap-3">
+  <div>
+    <span className="text-xs text-neutral-400 block mb-1">Label</span>
+    <p className="text-xs text-neutral-200 font-medium">Value</p>
+  </div>
 </div>
 ```
 
 #### Stats Summary
 ```jsx
-<div className="mt-4 p-3 bg-neutral-700/30 rounded-lg">
-  <h4 className="text-sm font-medium text-neutral-200 mb-2">Summary Title</h4>
+<div className="mt-3 p-3 bg-neutral-700/30 rounded-lg">
+  <h4 className="text-xs font-medium text-neutral-200 mb-2">Summary Title</h4>
   <div className="grid grid-cols-2 gap-2 text-xs">
     {/* Stats items */}
+  </div>
+</div>
+```
+
+#### Score Display (Modern)
+```jsx
+<div className="space-y-3">
+  <div className="flex items-center justify-between">
+    <span className="text-lg font-bold text-neutral-200">85/100</span>
+    <span className="text-xs font-medium text-green-400">Excellent</span>
+  </div>
+  <div className="w-full bg-neutral-600/50 rounded-full h-2 overflow-hidden">
+    <div className="h-full bg-green-500 transition-all duration-1000" style={{width: "85%"}} />
   </div>
 </div>
 ```
@@ -185,14 +223,19 @@ const [isExpanded, setIsExpanded] = useState(false);
 
 <button 
   onClick={() => setIsExpanded(!isExpanded)}
-  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+  className="text-blue-400 hover:text-blue-300 text-xs font-medium"
 >
   {isExpanded ? "Hide Details" : "Show Details"}
 </button>
 ```
 
 ### Copy to Clipboard
-Custom copy button component with feedback states and SVG icons for copy/success states.
+Compact copy button component with Lucide icons:
+```jsx
+<button className="ml-1.5 p-1 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-600/20 rounded transition-all duration-200">
+  {copied ? <Check className="w-2.5 h-2.5 text-green-400" /> : <Copy className="w-2.5 h-2.5" />}
+</button>
+```
 
 ## Animation & Transitions
 
@@ -215,7 +258,8 @@ Custom copy button component with feedback states and SVG icons for copy/success
 ### Responsive Patterns
 - Grid columns: `grid-cols-1 md:grid-cols-2`
 - Flex direction: `flex-col sm:flex-row`
-- Text sizes adapt but generally stay consistent
+- Compact spacing: `space-y-3` for main sections, `space-y-2` for sub-sections
+- Text sizes: Primarily `text-xs` with selective `text-sm` for important content
 
 ## Accessibility Features
 
@@ -233,12 +277,12 @@ Custom copy button component with feedback states and SVG icons for copy/success
 
 ### Error Display Pattern
 ```jsx
-<div className="text-center py-8">
-  <div className="text-red-400 mb-4">
-    <svg className="w-12 h-12 mx-auto mb-2">...</svg>
-    <p className="text-neutral-400 mb-4">Error message</p>
+<div className="text-center py-4">
+  <div className="text-red-400 mb-2">
+    <svg className="w-8 h-8 mx-auto mb-1">...</svg>
+    <p className="text-neutral-400 mb-2 text-xs">Error message</p>
   </div>
-  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+  <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-xs font-medium transition-colors">
     Retry
   </button>
 </div>
@@ -247,16 +291,17 @@ Custom copy button component with feedback states and SVG icons for copy/success
 ## Loading States
 
 ### Consistent Loading Patterns
-- Centered spinners with descriptive text
-- Skeleton states for content areas
+- Centered spinners with descriptive text: `h-4 w-4` size
+- Skeleton states for content areas with compact spacing
 - Loading indicators that match the color scheme
+- Progress bars for analysis states with thin `h-1.5` height
 
 ## Content Formatting
 
 ### Markdown Content
 Uses ReactMarkdown with custom styling:
 ```jsx
-<div className="text-neutral-300 text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+<div className="text-neutral-300 text-xs leading-relaxed prose prose-invert prose-xs max-w-none">
   <ReactMarkdown remarkPlugins={[remarkGfm]}>
     {content}
   </ReactMarkdown>
@@ -270,9 +315,10 @@ Uses ReactMarkdown with custom styling:
 </code>
 ```
 
-This design system emphasizes:
-1. **Consistency** - Reusable patterns and color schemes
-2. **Clarity** - High contrast and clear hierarchy
-3. **Professional appearance** - Modern glassmorphism and dark theme
-4. **User feedback** - Clear loading, error, and success states
-5. **Accessibility** - Proper hover states and semantic markup
+This compact design system emphasizes:
+1. **Density** - Maximum information in minimal space
+2. **Consistency** - Reusable compact patterns and color schemes
+3. **Clarity** - High contrast despite smaller elements
+4. **Modern appearance** - Clean lines and efficient use of space
+5. **User feedback** - Clear but compact loading, error, and success states
+6. **Multi-column friendly** - Optimized for side-by-side layouts

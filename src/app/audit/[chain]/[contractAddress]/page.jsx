@@ -92,7 +92,7 @@ export default function AuditPage({ params }) {
   return (
     <div className="bg-transparent z-10 flex flex-col px-8 py-12 gap-8 mt-16 max-w-7xl mx-auto">
       <section className="w-full">
-        <Card title="Smart Contract Analysis">
+        <div className="!bg-none !backdrop-blur-lg">
           <div className="space-y-6">
             {/* Contract Information Grid */}
             <ContractInfoGrid
@@ -159,7 +159,7 @@ export default function AuditPage({ params }) {
               </>
             )}
           </div>
-        </Card>
+        </div>
       </section>
     </div>
   );
