@@ -2,12 +2,11 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { InputField } from "@/components/InputField";
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { SelectField } from "@/components/SelectField";
 import { chains } from "@/lib/chains";
 import LatestCard from "./_components/LatestCard";
-import TrendingCard from "./_components/TrendingCard";
+// import TrendingCard from "./_components/TrendingCard";
 import { useQuery } from "@tanstack/react-query";
 
 export const InputToken = function InputToken() {
@@ -62,19 +61,18 @@ export const InputToken = function InputToken() {
   };
 
   return (
-    <div className="bg-transparent z-10 flex flex-col px-8 py-12 gap-8 mt-16 max-w-7xl mx-auto">
+    <div className="bg-transparent z-10 flex flex-col px-6 py-8 gap-6 mt-12 max-w-7xl mx-auto">
       {/* Hero Section with Form */}
       <section className="w-full">
-        <Card title="Smart Contract Analyzer">
-          <div className="mb-6">
-            <p className="text-neutral-300 mb-4">
-              Analyze smart contracts for security vulnerabilities, honeypot
-              detection, and detailed auditing.
-            </p>
-          </div>
+        <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow-lg p-4">
+          <h2 className="text-xl font-bold text-neutral-200 mb-4">Smart Contract Analyzer</h2>
+          
+          <p className="text-neutral-300 text-sm mb-4">
+            Analyze smart contracts for security vulnerabilities, honeypot detection, and detailed auditing.
+          </p>
 
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <InputField
                 label="Token Address"
                 id="tokenAddress"
@@ -94,13 +92,13 @@ export const InputToken = function InputToken() {
             </div>
 
             <div className="flex items-center justify-start">
-              <Button
+              <button
                 type="submit"
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                className="group relative px-8 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-slate-500/25 focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-2 focus:ring-offset-neutral-900 border border-slate-600/30 hover:border-slate-500/50"
               >
-                <span className="flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-2">
                   <svg
-                    className="w-4 h-4"
+                    className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-300 group-hover:text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -112,164 +110,29 @@ export const InputToken = function InputToken() {
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                   </svg>
-                  Analyze Token
+                  <span className="text-slate-200 group-hover:text-white transition-colors duration-300">
+                    Analyze Token
+                  </span>
                 </span>
-              </Button>
+                
+                {/* Sophisticated shine effect */}
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 transform -skew-x-12"></div>
+                
+                {/* Subtle inner glow */}
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-slate-400/0 via-slate-300/5 to-slate-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </button>
             </div>
           </form>
-        </Card>
+        </div>
       </section>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Security Audits Card */}
-        <section className="w-full">
-          <LatestCard
-            handleTokenClick={handleTokenClick}
-            data={latestTokens}
-            loading={loadingLatestTokens}
-          />
-        </section>
-
-        {/* Market Trending Tokens Card */}
-        <section className="w-full">
-          <TrendingCard handleTokenClick={handleTokenClick} />
-        </section>
-      </div>
-
-      {/* Analytics Dashboard Section */}
+      {/* Recent Security Audits Section */}
       <section className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card title="Total Analyzed">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-blue-400 mb-1">
-                  1,247
-                </div>
-                <div className="text-sm text-neutral-300 font-medium">
-                  Smart contracts analyzed
-                </div>
-                <div className="text-xs text-green-400 mt-1 flex items-center gap-1">
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 11l5-5m0 0l5 5m-5-5v12"
-                    />
-                  </svg>
-                  +23 today
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card title="Vulnerabilities">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-red-600/20 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-red-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-red-400 mb-1">89</div>
-                <div className="text-sm text-neutral-300 font-medium">
-                  Critical issues detected
-                </div>
-                <div className="text-xs text-orange-400 mt-1 flex items-center gap-1">
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  2 this week
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card title="Verified Safe">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-green-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-green-400 mb-1">
-                  1,158
-                </div>
-                <div className="text-sm text-neutral-300 font-medium">
-                  Contracts verified safe
-                </div>
-                <div className="text-xs text-blue-400 mt-1 flex items-center gap-1">
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  92.8% success
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <LatestCard
+          handleTokenClick={handleTokenClick}
+          data={latestTokens}
+          loading={loadingLatestTokens}
+        />
       </section>
     </div>
   );
