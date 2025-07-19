@@ -11,6 +11,8 @@ export const ContractInfoGrid = ({
   analysisData,
   analysisSummary,
   analysisScore,
+  honeyPot,
+  honeyPotLoading
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -21,6 +23,8 @@ export const ContractInfoGrid = ({
         analysisSummary={analysisSummary}
         analysisScore={analysisScore}
         auditLoading={auditLoading}
+        honeyPot={honeyPot}
+        honeyPotLoading={honeyPotLoading}
       />
     </div>
   );

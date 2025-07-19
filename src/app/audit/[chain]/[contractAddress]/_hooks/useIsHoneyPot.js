@@ -35,6 +35,7 @@ export const useIsHoneyPot = (chain, contractAddress) => {
   const [honeyPot, setHoneypot] = useState([]);
   const [loadingHoneypot, setLoadingHoneypot] = useState(false);
   const [errorHoneypot, setErrorHoneypot] = useState(null);
+  const [honeypotCard, setHoneypotCard] = useState(null);
 
   const fetchTokenInfo = useCallback(async () => {
     if (!chain || !contractAddress) return;
