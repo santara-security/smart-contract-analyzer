@@ -56,11 +56,13 @@ export const useAuditAnalysis = (chain, contractAddress) => {
       }));
 
       const score = Object.values(summary).reduce((sum, count, index) => {
-        const weights = { high: 15, medium: 5, low: 2, informational: 1 };
+        const weights = { high: 15, medium: 5, low: 2, informational: 0 };
         const impact = Object.keys(weights)[index];
         return sum + (count * (weights[impact] || 0));
       }, 0);
-      const calculatedScore = (score > 100 ? 100 : score < 0 ? 0 : score) - 100;
+      console.log(`score: ${score}`);
+      const calculatedScore = Math.min(Math.max(100 - score, 0), 100);
+      console.log(calculatedScore )
       setAnalysisScore(calculatedScore);
 
       setAnalysisData(data);

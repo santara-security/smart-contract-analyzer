@@ -20,10 +20,10 @@ const getOrCreateToken = async (contractAddress, chain) => {
       console.log(data);
       await prisma.token.create({
         data: {
-          address: data.data.address,
+          address: data.address,
           chain: chain,
-          name: data.data.name,
-          symbol: data.data.symbol,
+          name: data.name,
+          symbol: data.symbol,
         },
       });
     },

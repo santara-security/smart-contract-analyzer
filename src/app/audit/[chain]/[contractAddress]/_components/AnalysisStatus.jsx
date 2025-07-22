@@ -12,6 +12,7 @@ import {
   Users,
   Copy,
 } from "lucide-react";
+import { formatTax } from "@/lib/utils/helpers";
 
 const ProgressBar = ({ status, progress = 0, children }) => {
   const getStatusColor = (status) => {
@@ -228,13 +229,13 @@ const HoneyPotCard = ({ honeyPot }) => {
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Buy Tax</span>
             <p className="text-xs text-neutral-200 font-medium">
-              {simulationResult.buyTax}%
+              {formatTax(simulationResult.buyTax)}%
             </p>
           </div>
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Sell Tax</span>
             <p className="text-xs text-neutral-200 font-medium">
-              {simulationResult.sellTax}%
+              {formatTax(simulationResult.sellTax)}%
             </p>
           </div>
         </div>

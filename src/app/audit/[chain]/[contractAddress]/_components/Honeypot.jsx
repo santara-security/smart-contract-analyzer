@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { formatTax } from "@/lib/utils/helpers";
 
 const RiskBadge = ({ risk, riskLevel }) => {
   const getBadgeStyles = (risk, riskLevel) => {
@@ -82,16 +83,6 @@ const formatDate = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleDateString();
 };
 
-const formatTax = (tax) => {
-  if (!tax || tax === 0) return "0";
-  // Round up to nearest whole number if close to whole number
-  const numTax = parseFloat(tax);
-  if (numTax > 0.999 && numTax < 1.001) return "1";
-  if (numTax > 1.999 && numTax < 2.001) return "2";
-  if (numTax > 2.999 && numTax < 3.001) return "3";
-  // For other cases, round to 2 decimal places
-  return numTax.toFixed(2);
-};
 
 const PairCard = (props) => {
   const { pair, index, onAnalyze, honeypotResult, isLoading, isFirstItem } =

@@ -76,3 +76,14 @@ export const copyToClipboard = (data) => {
 export const cn = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
+
+export const formatTax = (tax) => {
+  if (!tax || tax === 0) return "0";
+  // Round up to nearest whole number if close to whole number
+  const numTax = parseFloat(tax);
+  if (numTax > 0.999 && numTax < 1.001) return "1";
+  if (numTax > 1.999 && numTax < 2.001) return "2";
+  if (numTax > 2.999 && numTax < 3.001) return "3";
+  // For other cases, round to 2 decimal places
+  return numTax.toFixed(2);
+};
