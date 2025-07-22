@@ -1,3 +1,4 @@
+'use client';;
 export default function BackgroundAnimation() {
   return (
     <div className="fixed w-full h-screen -z-1 overflow-hidden">

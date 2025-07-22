@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 
 export default function HeroSection() {
@@ -35,7 +36,7 @@ export default function HeroSection() {
             </Link>
             
             <Link 
-              href="/audit/base/0x1234567890abcdef1234567890abcdef12345678"
+              href="/audit/base/0x8e3bFf1Abf376f7a5D036cC3D85766394744dd04"
               className="inline-flex items-center gap-2 border border-neutral-600 hover:border-neutral-500 hover:bg-neutral-800/50 text-neutral-300 px-6 py-3 rounded-lg font-medium transition-all duration-300"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

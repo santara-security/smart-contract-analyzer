@@ -1,3 +1,4 @@
+'use client';
 export default function ArchitectureSection() {
   return (
     <section className="relative overflow-hidden py-20 md:py-32">
