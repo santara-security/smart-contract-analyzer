@@ -11,6 +11,7 @@ import {
 } from "./_components";
 import { useAuditAnalysis, useIsHoneyPot, useTokenInfo } from "./_hooks";
 import { TabButton } from "./_components/TabButton";
+import { ExternalLink } from "lucide-react";
 import Chart from "./_components/Chart";
 
 // Custom hook to update document title
@@ -128,6 +129,16 @@ export default function AuditPage({ params }) {
                 onClick={() => setActiveTab("audit")}
               >
                 Smart Contract Audit
+              </TabButton>
+
+              <TabButton
+                active={activeTab === "audit"}
+                onClick={() => {
+                  window.open(`/audit/${resolvedParams.chain}/${resolvedParams.contractAddress}/ide`, "_blank");
+                }}
+              >
+                View Source Code
+                <ExternalLink size={16} className="inline ml-1 align-text-bottom" />
               </TabButton>
             </div>
 
