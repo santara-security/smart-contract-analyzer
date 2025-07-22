@@ -25,15 +25,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-800 min-h-screen`}
       >
-        <NavBar />
-        <div className="relative min-h-screen">
-          <BackgroundAnimation />
-          <main className="bg-transparent antialiased overflow-hidden font-geist relative z-10">
-            <Providers>
-            {children}
-            </Providers>
-          </main>
-        </div>
+        <Providers>
+          <NavBar />
+          <div className="relative min-h-screen">
+            <BackgroundAnimation />
+            <main className="bg-transparent antialiased overflow-hidden font-geist relative z-10">
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );
