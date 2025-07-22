@@ -1,0 +1,13 @@
+{
+  "/api/audit/route": "app/api/audit/route.js",
+  "/api/honeypot/getpairs/route": "app/api/honeypot/getpairs/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/honeypot/is_honey_pot/route": "app/api/honeypot/is_honey_pot/route.js",
+  "/api/honeypot/top_holders/route": "app/api/honeypot/top_holders/route.js",
+  "/api/tokens/latest/route": "app/api/tokens/latest/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/token/route": "app/api/token/route.js",
+  "/page": "app/page.js",
+  "/audit/page": "app/audit/page.js",
+  "/audit/[chain]/[contractAddress]/page": "app/audit/[chain]/[contractAddress]/page.js"
+}

@@ -1,0 +1,101 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/_not-found/page-a8b16110f6205078.js"
+    ],
+    "/api/audit/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/audit/route-c9ff0ca0c1265e45.js"
+    ],
+    "/api/honeypot/getpairs/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/honeypot/getpairs/route-0adb89dbe73deb21.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/css/ca30c3395e11652c.css",
+      "static/chunks/406-f6486695f4694288.js",
+      "static/chunks/443-73c1402da5b81cdf.js",
+      "static/chunks/502-fba566bee32e5f25.js",
+      "static/chunks/185-762f410e8ae69b78.js",
+      "static/chunks/app/layout-543a54c2d4fc68f9.js"
+    ],
+    "/api/honeypot/is_honey_pot/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/honeypot/is_honey_pot/route-55490c39f4b8dfc4.js"
+    ],
+    "/api/honeypot/top_holders/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/honeypot/top_holders/route-9e60c3a7f43eb39a.js"
+    ],
+    "/api/tokens/latest/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/tokens/latest/route-bcd8a93bf414e452.js"
+    ],
+    "/api/token/route": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/api/token/route-2837335c1e690e2b.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/406-f6486695f4694288.js",
+      "static/chunks/443-73c1402da5b81cdf.js",
+      "static/chunks/934-0512e6a70ff1e0f0.js",
+      "static/chunks/185-762f410e8ae69b78.js",
+      "static/chunks/app/page-8f07c143b56501c2.js"
+    ],
+    "/audit/page": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/406-f6486695f4694288.js",
+      "static/chunks/51-0659c5a298e346e6.js",
+      "static/chunks/app/audit/page-79b26de5c156505f.js"
+    ],
+    "/audit/[chain]/[contractAddress]/layout": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/app/audit/[chain]/[contractAddress]/layout-67bd4e53e99c9e5c.js"
+    ],
+    "/audit/[chain]/[contractAddress]/page": [
+      "static/chunks/webpack-15bef6ab6aefcd66.js",
+      "static/chunks/4bd1b696-cc39261e73ffa68b.js",
+      "static/chunks/684-e7db312256b90d21.js",
+      "static/chunks/main-app-ae1556fefc32d16f.js",
+      "static/chunks/847-49ae8b02885122d7.js",
+      "static/chunks/51-0659c5a298e346e6.js",
+      "static/chunks/app/audit/[chain]/[contractAddress]/page-e97cef8a46c36f4e.js"
+    ]
+  }
+}
