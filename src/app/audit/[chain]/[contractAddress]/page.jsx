@@ -132,7 +132,7 @@ export default function AuditPage({ params }) {
               </TabButton>
 
               <TabButton
-                active={activeTab === "audit"}
+                active={activeTab === "other"}
                 onClick={() => {
                   window.open(`/audit/${resolvedParams.chain}/${resolvedParams.contractAddress}/ide`, "_blank");
                 }}
