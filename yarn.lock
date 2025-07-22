@@ -16,24 +16,24 @@
     "@jridgewell/trace-mapping" "^0.3.24"
 
 "@emnapi/core@^1.4.3":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@emnapi/core/-/core-1.4.4.tgz#76620673f3033626c6d79b1420d69f06a6bb153c"
-  integrity sha512-A9CnAbC6ARNMKcIcrQwq6HeHCjpcBZ5wSx4U01WXCqEKlrzB9F9315WDNHkrs2xbx7YjjSxbUYxuN6EQzpcY2g==
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@emnapi/core/-/core-1.4.5.tgz#bfbb0cbbbb9f96ec4e2c4fd917b7bbe5495ceccb"
+  integrity sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==
   dependencies:
-    "@emnapi/wasi-threads" "1.0.3"
+    "@emnapi/wasi-threads" "1.0.4"
     tslib "^2.4.0"
 
 "@emnapi/runtime@^1.4.3", "@emnapi/runtime@^1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@emnapi/runtime/-/runtime-1.4.4.tgz#19a8f00719c51124e2d0fbf4aaad3fa7b0c92524"
-  integrity sha512-hHyapA4A3gPaDCNfiqyZUStTMqIkKRshqPIuDOXv1hcBnD4U3l8cP0T1HMCfGRxQ6V64TGCcoswChANyOAwbQg==
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@emnapi/runtime/-/runtime-1.4.5.tgz#c67710d0661070f38418b6474584f159de38aba9"
+  integrity sha512-++LApOtY0pEEz1zrd9vy1/zXVaVJJ/EbAF3u0fXIzPJEDtnITsBGbbK0EkM72amhl/R5b+5xx0Y/QhcVOpuulg==
   dependencies:
     tslib "^2.4.0"
 
-"@emnapi/wasi-threads@1.0.3", "@emnapi/wasi-threads@^1.0.2":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@emnapi/wasi-threads/-/wasi-threads-1.0.3.tgz#83fa228bde0e71668aad6db1af4937473d1d3ab1"
-  integrity sha512-8K5IFFsQqF9wQNJptGbS6FNKgUTsSRYnTqNCG1vPP8jFdjSv18n2mQfJpkt2Oibo9iBEzcDnDxNwKTzC7svlJw==
+"@emnapi/wasi-threads@1.0.4", "@emnapi/wasi-threads@^1.0.2":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@emnapi/wasi-threads/-/wasi-threads-1.0.4.tgz#703fc094d969e273b1b71c292523b2f792862bf4"
+  integrity sha512-PJR+bOmMOPH8AtcTGAyYNiuJ3/Fcoj2XN/gBEWzDIKh254XO+mM9XoXHk5GNEhodxeMznbg7BlRojVbKN+gC6g==
   dependencies:
     tslib "^2.4.0"
 
@@ -374,7 +374,7 @@
 
 "@tailwindcss/postcss@^4.1.11":
   version "4.1.11"
-  resolved "https://registry.yarnpkg.com/@tailwindcss/postcss/-/postcss-4.1.11.tgz#4d844f7ff295c731ceab54934531bece7380ce0c"
+  resolved "https://registry.npmjs.org/@tailwindcss/postcss/-/postcss-4.1.11.tgz"
   integrity sha512-q/EAIIpF6WpLhKEuQSEVMZNMIY8KhWoAemZ9eylNAih9jxMGAYPPWBn3I9QL/2jZ+e7OEz/tZkX5HwbBR4HohA==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
@@ -385,12 +385,12 @@
 
 "@tanstack/query-core@5.83.0":
   version "5.83.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.83.0.tgz#ac3bf337007bb7ea97b1fd2e7c3ceb4240f36dbc"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.83.0.tgz"
   integrity sha512-0M8dA+amXUkyz5cVUm/B+zSk3xkQAcuXuz5/Q/LveT4ots2rBpPTZOzd7yJa2Utsf8D2Upl5KyjhHRY+9lB/XA==
 
 "@tanstack/react-query@^5.83.0":
   version "5.83.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.83.0.tgz#e72cacdb03d2e6a7e4f82f5b2fc228118941d499"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.83.0.tgz"
   integrity sha512-/XGYhZ3foc5H0VM2jLSD/NyBRIOK4q9kfeml4+0x2DlL6xVuAcVEW+hTlTapAmejObg0i3eNqhkr2dT+eciwoQ==
   dependencies:
     "@tanstack/query-core" "5.83.0"
@@ -538,7 +538,7 @@ client-only@0.0.1:
 
 clsx@^2.1.1:
   version "2.1.1"
-  resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz"
   integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
 color-convert@^2.0.1:
@@ -702,18 +702,9 @@ form-data@^4.0.0:
     hasown "^2.0.2"
     mime-types "^2.1.12"
 
-framer-motion@^12.23.3:
-  version "12.23.5"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-12.23.5.tgz"
-  integrity sha512-t+6/f2TUowkr1gVuGwVwxR3ZQupCdCZj0mivG8M8CW2kwHPqtSePomECvmto15qoFCwost77O/XuEsq59MLDKw==
-  dependencies:
-    motion-dom "^12.23.5"
-    motion-utils "^12.23.2"
-    tslib "^2.4.0"
-
-framer-motion@^12.23.6:
+framer-motion@^12.23.3, framer-motion@^12.23.6:
   version "12.23.6"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.23.6.tgz#29a78d0b05081fda3fdfd2f3eb4f570d7989d2e8"
+  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-12.23.6.tgz"
   integrity sha512-dsJ389QImVE3lQvM8Mnk99/j8tiZDM/7706PCqvkQ8sSCnpmWxsgX+g0lj7r5OBVL0U36pIecCTBoIWcM2RuKw==
   dependencies:
     motion-dom "^12.23.6"
@@ -805,6 +796,16 @@ hast-util-whitespace@^3.0.0:
   integrity sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==
   dependencies:
     "@types/hast" "^3.0.0"
+
+highlight.js@^10.7.3:
+  version "10.7.3"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
+  integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
+
+highlightjs-solidity@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/highlightjs-solidity/-/highlightjs-solidity-2.0.6.tgz#e7a702a2b05e0a97f185e6ba39fd4846ad23a990"
+  integrity sha512-DySXWfQghjm2l6a/flF+cteroJqD4gI8GSdL4PtvxZSsAHie8m3yVe2JFoRg03ROKT6hp2Lc/BxXkqerNmtQYg==
 
 html-url-attributes@^3.0.0:
   version "3.0.1"
@@ -961,7 +962,7 @@ longest-streak@^3.0.0:
 
 lucide-react@^0.525.0:
   version "0.525.0"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.525.0.tgz#5f7bcecd65e4f9b2b5b6b5d295e3376df032d5e3"
+  resolved "https://registry.npmjs.org/lucide-react/-/lucide-react-0.525.0.tgz"
   integrity sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==
 
 magic-string@^0.30.17:
@@ -1463,33 +1464,21 @@ mkdirp@^3.0.1:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-3.0.1.tgz"
   integrity sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==
 
-motion-dom@^12.23.5:
-  version "12.23.5"
-  resolved "https://registry.npmjs.org/motion-dom/-/motion-dom-12.23.5.tgz"
-  integrity sha512-RrUS4X11w7kIU1COoSVptuYTx1QQ/sViDEI1Yl1zL0nem8UXn3HRcsMrFTCkZSSRLXeVpN540bFP1iS87SicPQ==
-  dependencies:
-    motion-utils "^12.23.2"
-
 motion-dom@^12.23.6:
   version "12.23.6"
-  resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-12.23.6.tgz#03856178d92a3b460797b57fa3b20e06847f8dab"
+  resolved "https://registry.npmjs.org/motion-dom/-/motion-dom-12.23.6.tgz"
   integrity sha512-G2w6Nw7ZOVSzcQmsdLc0doMe64O/Sbuc2bVAbgMz6oP/6/pRStKRiVRV4bQfHp5AHYAKEGhEdVHTM+R3FDgi5w==
   dependencies:
     motion-utils "^12.23.6"
 
-motion-utils@^12.23.2:
-  version "12.23.2"
-  resolved "https://registry.npmjs.org/motion-utils/-/motion-utils-12.23.2.tgz"
-  integrity sha512-cIEXlBlXAOUyiAtR0S+QPQUM9L3Diz23Bo+zM420NvSd/oPQJwg6U+rT+WRTpp0rizMsBGQOsAwhWIfglUcZfA==
-
 motion-utils@^12.23.6:
   version "12.23.6"
-  resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-12.23.6.tgz#fafef80b4ea85122dd0d6c599a0c63d72881f312"
+  resolved "https://registry.npmjs.org/motion-utils/-/motion-utils-12.23.6.tgz"
   integrity sha512-eAWoPgr4eFEOFfg2WjIsMoqJTW6Z8MTUCgn/GZ3VRpClWBdnbjryiA3ZSNLyxCTmCQx4RmYX6jX1iWHbenUPNQ==
 
 motion@^12.23.6:
   version "12.23.6"
-  resolved "https://registry.yarnpkg.com/motion/-/motion-12.23.6.tgz#9f1b2b3848507fef4e433210e0824a2a2e138dfa"
+  resolved "https://registry.npmjs.org/motion/-/motion-12.23.6.tgz"
   integrity sha512-6U55IW5i6Vut2ryKEhrZKg55490k9d6qdGXZoNSf98oQgDj5D7bqTnVJotQ6UW3AS6QfbW6KSLa7/e1gy+a07g==
   dependencies:
     framer-motion "^12.23.6"
