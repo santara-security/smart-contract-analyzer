@@ -1,19 +1,8 @@
-// Use exampleData for recent audits
-const exampleData = [
-  {
-    id: 3,
-    address: "0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b",
-    chain: "base",
-    name: "Virtuals Protocol",
-    symbol: "VIRTUAL",
-    createdAt: "2025-07-15T12:48:00.711Z",
-    updatedAt: "2025-07-15T12:48:00.711Z",
-  },
-];
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BorderBeam } from "@/components/magicui/border-beam";
+import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
 
 export default function SearchModal({ open, onClose, data, loading }) {
   const [input, setInput] = useState("");
@@ -45,7 +34,7 @@ export default function SearchModal({ open, onClose, data, loading }) {
       role="dialog"
     >
       <div
-        className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow-lg p-6 w-full max-w-md mx-4 relative"
+        className="bg-black backdrop-blur-md rounded-lg shadow-lg p-6 w-full max-w-md mx-4 relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -151,60 +140,70 @@ export default function SearchModal({ open, onClose, data, loading }) {
             Recent Security Audits
           </h3>
           <div className="space-y-2">
-            {loading ? (
-              // Loading skeleton per design reference
-              [...Array(3)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-32"></div>
-                    <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-80"></div>
-                  </div>
-                  <div className="flex items-center gap-2 ml-3">
-                    <div className="h-5 w-14 bg-neutral-700/50 rounded-full animate-pulse"></div>
-                    <div className="w-3 h-3 bg-neutral-700/50 rounded animate-pulse"></div>
-                  </div>
-                </div>
-              ))
-            ) : (
-            (data || []).map((token) => (
-              <Link
-                key={token.id}
-                href={`/audit/${token.chain}/${token.address}`}
-                className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
-                prefetch={false}
-                onClick={onClose}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-neutral-200 mb-1">
-                    {token.name}
-                  </div>
-                  <div className="text-xs text-neutral-400 font-mono truncate">
-                    {token.address}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 ml-3">
-                  <svg
-                    className="w-3 h-3 text-neutral-500 group-hover:text-neutral-400 transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            {loading
+              ? // Loading skeleton per design reference
+                [...Array(3)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-              </Link>
-            ))
-            )}
+                    <div className="flex-1 min-w-0">
+                      <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-32"></div>
+                      <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-80"></div>
+                    </div>
+                    <div className="flex items-center gap-2 ml-3">
+                      <div className="h-5 w-14 bg-neutral-700/50 rounded-full animate-pulse"></div>
+                      <div className="w-3 h-3 bg-neutral-700/50 rounded animate-pulse"></div>
+                    </div>
+                  </div>
+                ))
+              : (data || []).map((token) => (
+                  <Link
+                    key={token.id}
+                    href={`/audit/${token.chain}/${token.address}`}
+                    className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
+                    prefetch={false}
+                    onClick={onClose}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-neutral-200 mb-1">
+                        {token.name}
+                      </div>
+                      <div className="text-xs text-neutral-400 font-mono truncate">
+                        {token.address}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 ml-3">
+                      <svg
+                        className="w-3 h-3 text-neutral-500 group-hover:text-neutral-400 transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </Link>
+                ))}
           </div>
         </div>
+        <BorderBeam
+          duration={6}
+          size={400}
+          className="from-transparent via-red-500 to-transparent"
+        />
+        <BorderBeam
+          duration={6}
+          delay={3}
+          size={400}
+          borderWidth={2}
+          className="from-transparent via-blue-500 to-transparent"
+        />
       </div>
     </div>
   );
