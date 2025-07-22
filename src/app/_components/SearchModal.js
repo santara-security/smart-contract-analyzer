@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
-import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
 
 export default function SearchModal({ open, onClose, data, loading }) {
   const [input, setInput] = useState("");

@@ -1,3 +1,4 @@
+'use client';
 const getRiskColor = (risk) => {
   switch (risk?.toLowerCase()) {
     case "low":
