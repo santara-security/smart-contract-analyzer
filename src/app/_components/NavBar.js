@@ -15,7 +15,7 @@ export default function NavBar() {
   } = useQuery({
     queryKey: ["latestTokens"],
     queryFn: async () => {
-      const response = await fetch("/api/tokens/latest");
+      const response = await fetch("/api/tokens/latest?limit=5");
       if (!response.ok) {
         throw new Error("Failed to fetch latest tokens");
       }
