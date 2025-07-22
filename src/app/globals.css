@@ -1,3 +1,25 @@
+/* Custom scrollbar styles for dark, compact, modern look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(38, 38, 38, 0.7);
+  border-radius: 8px;
+  border: 2px solid rgba(38, 38, 38, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2563eb rgba(38,38,38,0.2);
+}
 .animated-connector {
   background: linear-gradient(90deg, #3b82f6, #22d3ee, #a78bfa, #f59e42, #3b82f6);
   background-size: 400% 400%;

@@ -42,8 +42,9 @@ function buildTreeFromFiles(files) {
 const IDE = ({ params }) => {
   const [resolvedParams, setResolvedParams] = useState(null);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
-  const [selectedFile, setSelectedFile] = useState("contracts/Token.sol");
-  const [sidebarWidth, setSidebarWidth] = useState('15vw');
+  const [openTabs, setOpenTabs] = useState(["contracts/Token.sol"]);
+  const [activeTab, setActiveTab] = useState(0);
+  const [sidebarWidth, setSidebarWidth] = useState("15vw");
   const [fileContents, setFileContents] = useState({});
   const sidebarRef = useRef(null);
   const isDragging = useRef(false);
@@ -56,12 +57,16 @@ const IDE = ({ params }) => {
       // resolvedParams?.chain, resolvedParams?.contractAddress
       if (resolved?.contractAddress) {
         // Find the contract folder using the existing API
-        const folderRes = await fetch(`/api/find-contract-folders?contractAddress=${resolved.contractAddress}`);
+        const folderRes = await fetch(
+          `/api/find-contract-folders?contractAddress=${resolved.contractAddress}`
+        );
         const folderData = await folderRes.json();
         if (folderData.matches && folderData.matches.length > 0) {
           const contractFolder = folderData.matches[0];
           // Fetch file contents from the new API
-          const filesRes = await fetch(`/api/find-contract-files?contractFolder=${contractFolder}`);
+          const filesRes = await fetch(
+            `/api/find-contract-files?contractFolder=${contractFolder}`
+          );
           const filesData = await filesRes.json();
           setFileContents(filesData.fileContents || {});
         }
@@ -69,6 +74,19 @@ const IDE = ({ params }) => {
     };
     resolveParams();
   }, [params]);
+
+  // Auto-select first available file after fileContents loads
+  useEffect(() => {
+    const fileKeys = Object.keys(fileContents);
+    if (
+      fileKeys.length > 0 &&
+      openTabs.length === 1 &&
+      !fileContents[openTabs[0]]
+    ) {
+      setOpenTabs([fileKeys[0]]);
+      setActiveTab(0);
+    }
+  }, [fileContents]);
 
   const handleToggle = (folder) => {
     setExpandedFolders((prev) => {
@@ -79,7 +97,17 @@ const IDE = ({ params }) => {
     });
   };
 
-  const handleSelect = (file) => setSelectedFile(file);
+  // When a file is selected from the tree, add to tabs and switch to it
+  const handleSelect = (file) => {
+    setOpenTabs((prevTabs) => {
+      if (prevTabs.includes(file)) {
+        setActiveTab(prevTabs.indexOf(file));
+        return prevTabs;
+      }
+      setActiveTab(prevTabs.length);
+      return [...prevTabs, file];
+    });
+  };
 
   // Drag logic
   const onMouseDown = (e) => {
@@ -126,13 +154,30 @@ const IDE = ({ params }) => {
   const allFolderPaths = getAllFolderPaths(tree);
 
   // Open all folders
-  const allOpen = allFolderPaths.length > 0 && allFolderPaths.every(f => expandedFolders.has(f));
+  const allOpen =
+    allFolderPaths.length > 0 &&
+    allFolderPaths.every((f) => expandedFolders.has(f));
   const handleToggleAll = () => {
     if (allOpen) {
       setExpandedFolders(new Set());
     } else {
       setExpandedFolders(new Set(allFolderPaths));
     }
+  };
+
+  // Tab close handler
+  const handleTabClose = (idx) => {
+    setOpenTabs((prevTabs) => {
+      if (prevTabs.length === 1) return prevTabs; // Prevent closing last tab
+      const newTabs = prevTabs.filter((_, i) => i !== idx);
+      // Adjust activeTab
+      if (activeTab > idx) {
+        setActiveTab(activeTab - 1);
+      } else if (activeTab === idx) {
+        setActiveTab(Math.max(0, idx - 1));
+      }
+      return newTabs;
+    });
   };
 
   return (
@@ -143,10 +188,14 @@ const IDE = ({ params }) => {
             tree={tree}
             expandedFolders={expandedFolders}
             onToggle={handleToggle}
-            selectedFile={selectedFile}
+            selectedFile={openTabs[activeTab]}
             onSelect={handleSelect}
             width={sidebarWidth}
-            style={{ width: sidebarWidth, minWidth: sidebarWidth, maxWidth: sidebarWidth }}
+            style={{
+              width: sidebarWidth,
+              minWidth: sidebarWidth,
+              maxWidth: sidebarWidth,
+            }}
             allFolderPaths={allFolderPaths}
             onToggleAll={handleToggleAll}
             allOpen={allOpen}
@@ -166,14 +215,18 @@ const IDE = ({ params }) => {
           style={{ height: "100vh", overflowY: "auto" }}
         >
           <Editor
-            code={fileContents[selectedFile] || "// File not found"}
-            filename={selectedFile?.split("/").pop()}
+            code={fileContents[openTabs[activeTab]] || "// File not found"}
+            filename={openTabs[activeTab]?.split("/").pop()}
+            tabs={openTabs}
+            activeTab={activeTab}
+            onTabClick={setActiveTab}
+            onTabClose={handleTabClose}
           />
           <StatusBar />
         </div>
       </IDELayout>
     </div>
   );
-}
+};
 
 export default IDE;
