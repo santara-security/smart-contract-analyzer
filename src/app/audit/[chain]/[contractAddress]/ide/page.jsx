@@ -181,50 +181,56 @@ const IDE = ({ params }) => {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <IDELayout
-        sidebar={
-          <Sidebar
-            tree={tree}
-            expandedFolders={expandedFolders}
-            onToggle={handleToggle}
-            selectedFile={openTabs[activeTab]}
-            onSelect={handleSelect}
-            width={sidebarWidth}
-            style={{
-              width: sidebarWidth,
-              minWidth: sidebarWidth,
-              maxWidth: sidebarWidth,
-            }}
-            allFolderPaths={allFolderPaths}
-            onToggleAll={handleToggleAll}
-            allOpen={allOpen}
-          />
-        }
-        sidebarResizer={
-          <div
-            ref={sidebarRef}
-            onMouseDown={onMouseDown}
-            style={{ width: 6, cursor: "col-resize", zIndex: 20 }}
-            className="bg-neutral-700/30 hover:bg-blue-600/30 transition-colors h-full"
-          />
-        }
-      >
-        <div
-          className="flex flex-col flex-1 min-h-0"
-          style={{ height: "100vh", overflowY: "auto" }}
+    <div className="h-screen w-screen flex flex-col" style={{ minHeight: '100vh', minWidth: '100vw' }}>
+      {/* IDE Header */}
+      <header className="bg-neutral-900/20 backdrop-blur-md px-6 py-4 flex items-center border-b border-neutral-800/30">
+        <h1 className="text-xl font-bold text-neutral-200 tracking-tight">IDE Beta</h1>
+      </header>
+      {/* Main IDE Layout */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <IDELayout
+          sidebar={
+            <Sidebar
+              tree={tree}
+              expandedFolders={expandedFolders}
+              onToggle={handleToggle}
+              selectedFile={openTabs[activeTab]}
+              onSelect={handleSelect}
+              width={sidebarWidth}
+              style={{
+                width: sidebarWidth,
+                minWidth: sidebarWidth,
+                maxWidth: sidebarWidth,
+              }}
+              allFolderPaths={allFolderPaths}
+              onToggleAll={handleToggleAll}
+              allOpen={allOpen}
+            />
+          }
+          sidebarResizer={
+            <div
+              ref={sidebarRef}
+              onMouseDown={onMouseDown}
+              style={{ width: 6, cursor: "col-resize", zIndex: 20 }}
+              className="bg-neutral-700/30 hover:bg-blue-600/30 transition-colors h-full"
+            />
+          }
         >
-          <Editor
-            code={fileContents[openTabs[activeTab]] || "// File not found"}
-            filename={openTabs[activeTab]?.split("/").pop()}
-            tabs={openTabs}
-            activeTab={activeTab}
-            onTabClick={setActiveTab}
-            onTabClose={handleTabClose}
-          />
-          <StatusBar />
-        </div>
-      </IDELayout>
+          <div className="flex flex-col flex-1 min-h-0" style={{ height: "100%" }}>
+            <div className="flex-1 min-h-0" style={{ overflowY: "auto" }}>
+              <Editor
+                code={fileContents[openTabs[activeTab]] || "// File not found"}
+                filename={openTabs[activeTab]?.split("/").pop()}
+                tabs={openTabs}
+                activeTab={activeTab}
+                onTabClick={setActiveTab}
+                onTabClose={handleTabClose}
+              />
+            </div>
+            <StatusBar />
+          </div>
+        </IDELayout>
+      </div>
     </div>
   );
 };

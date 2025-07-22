@@ -4,7 +4,7 @@ import Header from "./Header";
 
 export default function Editor({ code, filename, tabs = ["Example.sol"], activeTab = 0, onTabClick, onTabClose }) {
   return (
-    <div className="flex-1 bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow border border-neutral-700/30 m-6 p-0 flex flex-col min-h-0">
+    <div className="flex-1 bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow border border-neutral-700/30 m-6 pb-8 flex flex-col min-h-0">
       <EditorTabs
         tabs={tabs.map(f => f.split("/").pop())}
         activeTab={activeTab}
