@@ -22,6 +22,15 @@
         "nxtPcontractAddress": "nxtPcontractAddress"
       },
       "namedRegex": "^/audit/(?<nxtPchain>[^/]+?)/(?<nxtPcontractAddress>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/audit/[chain]/[contractAddress]/ide",
+      "regex": "^/audit/([^/]+?)/([^/]+?)/ide(?:/)?$",
+      "routeKeys": {
+        "nxtPchain": "nxtPchain",
+        "nxtPcontractAddress": "nxtPcontractAddress"
+      },
+      "namedRegex": "^/audit/(?<nxtPchain>[^/]+?)/(?<nxtPcontractAddress>[^/]+?)/ide(?:/)?$"
     }
   ],
   "staticRoutes": [

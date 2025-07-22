@@ -1,13 +1,17 @@
 {
+  "/api/find-contract-folders/route": "/api/find-contract-folders",
+  "/api/find-contract-files/route": "/api/find-contract-files",
   "/api/audit/route": "/api/audit",
-  "/api/honeypot/getpairs/route": "/api/honeypot/getpairs",
   "/_not-found/page": "/_not-found",
   "/api/honeypot/is_honey_pot/route": "/api/honeypot/is_honey_pot",
+  "/api/get-contract-file/route": "/api/get-contract-file",
+  "/api/honeypot/getpairs/route": "/api/honeypot/getpairs",
   "/api/honeypot/top_holders/route": "/api/honeypot/top_holders",
-  "/api/tokens/latest/route": "/api/tokens/latest",
   "/favicon.ico/route": "/favicon.ico",
+  "/api/tokens/latest/route": "/api/tokens/latest",
   "/api/token/route": "/api/token",
   "/page": "/",
   "/audit/page": "/audit",
-  "/audit/[chain]/[contractAddress]/page": "/audit/[chain]/[contractAddress]"
+  "/audit/[chain]/[contractAddress]/page": "/audit/[chain]/[contractAddress]",
+  "/audit/[chain]/[contractAddress]/ide/page": "/audit/[chain]/[contractAddress]/ide"
 }
