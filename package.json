@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@okx-dex/okx-dex-sdk": "^1.0.16",
     "@prisma/client": "^6.11.1",
     "@tanstack/react-query": "^5.83.0",
     "axios": "^1.10.0",

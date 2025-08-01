@@ -6,7 +6,6 @@ import Sidebar from "./_components/Sidebar";
 import Editor from "./_components/Editor";
 import StatusBar from "./_components/StatusBar";
 import IDELayout from "./_components/IDELayout";
-import Link from "next/link";
 
 // Helper to build tree from fileContents keys
 // Helper to build tree from fileContents keys
@@ -184,11 +183,8 @@ const IDE = ({ params }) => {
   return (
     <div className="h-screen w-screen flex flex-col" style={{ minHeight: '100vh', minWidth: '100vw' }}>
       {/* IDE Header */}
-      <header className="bg-neutral-900/20 backdrop-blur-md px-6 py-4 flex items-center border-b border-neutral-800/30 justify-between">
-        <h1 className="text-xl font-bold text-neutral-200 tracking-tight">Smart Contract View</h1>
-        <span className="text-sm text-neutral-400 font-medium ml-4">supported by <Link
-        href={"https://web3.okx.com"} target="_blank" rel="noopener noreferrer"
-         className="font-bold text-white">OKX</Link></span>
+      <header className="bg-neutral-900/20 backdrop-blur-md px-6 py-4 flex items-center border-b border-neutral-800/30">
+        <h1 className="text-xl font-bold text-neutral-200 tracking-tight">IDE Beta</h1>
       </header>
       {/* Main IDE Layout */}
       <div className="flex-1 flex flex-col min-h-0">
