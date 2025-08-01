@@ -50,9 +50,9 @@ export default function Sidebar({ tree, expandedFolders, onToggle, selectedFile,
       style={{ width, display: 'flex', flexDirection: 'column', minHeight: '100%' }}
       className="bg-neutral-900/20 backdrop-blur-md border-r border-neutral-700/30"
     >
-      <div className="flex-1 overflow-auto">{renderTree(tree)}</div>
+      <div className="flex-1 overflow-auto pb-12">{renderTree(tree)}</div>
       <div
-        className="mt-2 flex justify-center sticky bottom-0 bg-neutral-900/20 py-3"
+        className="mt-2 flex justify-center sticky bottom-0 bg-black/80 py-3 px-4"
         style={{ zIndex: 10 }}
       >
         <button

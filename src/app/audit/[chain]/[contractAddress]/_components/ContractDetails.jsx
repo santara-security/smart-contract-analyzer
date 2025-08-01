@@ -38,7 +38,8 @@ const getChainData = (chainName = "base") => {
 };
 
 const getExplorerUrl = (selectedChain, address) => {
-  return `${selectedChain?.explorerUrl}/token/${address}`;
+  // return `${selectedChain?.explorerUrl}/token/${address}`;
+  return `https://web3.okx.com/explorer/${selectedChain?.name}/address/${address}`;
 };
 
 export const ContractDetails = ({ chain, contractAddress }) => {
@@ -48,6 +49,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
   );
 
   const selectedChain = getChainData(chain);
+  console.log("Selected Chain:", selectedChain);
 
   const explorerUrl = getExplorerUrl(selectedChain, contractAddress);
   const chainDisplayName = selectedChain?.name.toUpperCase() || "Unknown Chain";
@@ -149,7 +151,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
           </a>
 
           <a
-            href={`https://dexscreener.com/base/${contractAddress}`}
+            href={`https://web3.okx.com/token/${selectedChain.name}/${contractAddress}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-full px-3 py-2 bg-gradient-to-r from-green-600/20 to-green-700/20 text-green-400 border border-green-500/30 rounded hover:from-green-600/30 hover:to-green-700/30 transition-all duration-200 text-xs font-medium group"
@@ -161,7 +163,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
             >
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
-            DexScreener
+            Buy on OKX DEX
             <ExternalLink className="w-2.5 h-2.5 ml-1.5 opacity-60" />
           </a>
         </div>
