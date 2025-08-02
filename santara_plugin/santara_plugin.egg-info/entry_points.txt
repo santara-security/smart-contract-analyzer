@@ -1,0 +1,2 @@
+[slither_plugins]
+santara_plugin = santara_plugin:make_plugin
