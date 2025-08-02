@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import EditorTabs from "./EditorTabs";
 import Header from "./Header";
@@ -21,14 +22,7 @@ function detectLanguage(filename) {
   return "json";
 }
 
-export default function Editor({
-  code,
-  filename,
-  tabs = ["Example.sol"],
-  activeTab = 0,
-  onTabClick,
-  onTabClose,
-}) {
+export default function Editor({ code, filename, tabs = ["Example.sol"], activeTab = 0, onTabClick, onTabClose }) {
   const codeRef = useRef(null);
   const language = detectLanguage(filename);
 
@@ -41,7 +35,7 @@ export default function Editor({
   return (
     <div className="flex-1 bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow border border-neutral-700/30 m-6 pb-8 flex flex-col min-h-0">
       <EditorTabs
-        tabs={tabs.map((f) => f.split("/").pop())}
+        tabs={tabs.map(f => f.split("/").pop())}
         activeTab={activeTab}
         onTabClick={onTabClick}
         onTabClose={onTabClose}
@@ -51,34 +45,9 @@ export default function Editor({
       </div>
       <div className="flex-1 p-3 overflow-auto">
         <pre className="bg-neutral-700/50 px-3 py-2 rounded-lg text-xs font-mono text-neutral-200 whitespace-pre-wrap border border-neutral-600/30 shadow-inner">
-          <code
-            ref={codeRef}
-            className={`hljs language-${language} flex flex-col`}
-            style={{ counterReset: "line" }}
-          >
-            {code.split("\n").map((line, idx) => (
-              <div key={idx} className="flex">
-                <span
-                  className="editor-line-number select-none pr-4 text-right"
-                  style={{ minWidth: "2.5em", userSelect: "none" }}
-                >
-                  {idx + 1}
-                </span>
-                <span className="flex-1 whitespace-pre-wrap">
-                  {line || "\u200b"}
-                </span>
-              </div>
-            ))}
-          </code>
+          <code ref={codeRef} className={`hljs language-${language}`}>{code}</code>
         </pre>
       </div>
-      {/* Ensure line numbers are not affected by hljs theme */}
-      <style>{`
-        .editor-line-number, .editor-line-number * {
-          color: #a3a3a3 !important;
-          background: none !important;
-        }
-      `}</style>
     </div>
   );
 }
