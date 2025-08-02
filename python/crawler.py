@@ -16,7 +16,8 @@ from datetime import datetime
 import json
 
 # Constants - easily configurable
-OUTPUT_FOLDER = "../crawl_result"  # Change this to modify the output directory
+BASE_FOLDER = "../crawl_result"  # Base directory for all crawled content
+OUTPUT_FOLDER = "default"  # Default subfolder name within base folder
 MAX_DEPTH = 3  # Maximum crawling depth
 DELAY_BETWEEN_REQUESTS = 1  # Delay in seconds between requests
 MAX_PAGES = 100  # Maximum number of pages to crawl
@@ -30,15 +31,13 @@ class WebCrawler:
         Args:
             base_url (str): The starting URL to crawl from
             url_filter_pattern (str): Pattern to filter URLs (only URLs starting with this will be crawled)
-            output_folder (str): Directory to save markdown files
+            output_folder (str): Subfolder name within BASE_FOLDER
         """
         self.base_url = base_url
         self.url_filter_pattern = url_filter_pattern
         
-        # Create website-specific folder
-        parsed_url = urlparse(base_url)
-        website_name = parsed_url.netloc.replace('www.', '').replace('.', '_')
-        self.output_folder = os.path.join(output_folder, website_name)
+        # Create folder structure: BASE_FOLDER/output_folder (no website subfolder)
+        self.output_folder = os.path.join(BASE_FOLDER, output_folder)
         
         self.visited_urls = set()
         self.to_visit = []
@@ -423,7 +422,7 @@ Examples:
     parser.add_argument(
         '--output', '-o',
         default=OUTPUT_FOLDER,
-        help=f'Base output folder for markdown files (default: {OUTPUT_FOLDER}). Website-specific folders will be created inside this directory.'
+        help=f'Subfolder name within {BASE_FOLDER} (default: {OUTPUT_FOLDER}). Final structure: {BASE_FOLDER}/[output]/'
     )
     
     parser.add_argument(
@@ -458,16 +457,18 @@ def main():
     # Parse command line arguments
     args = parse_arguments()
     
-    # Create website-specific folder name
+    # Create folder structure: BASE_FOLDER/output_folder (no website subfolder)
     parsed_url = urlparse(args.base_url)
-    website_name = parsed_url.netloc.replace('www.', '').replace('.', '_')
-    final_output_folder = os.path.join(args.output, website_name)
+    website_name = parsed_url.netloc.replace('www.', '')
+    final_output_folder = os.path.join(BASE_FOLDER, args.output)
     
     print("Web Crawler Starting...")
     print(f"Base URL: {args.base_url}")
     print(f"Filter pattern: {args.filter_pattern}")
-    print(f"Website: {parsed_url.netloc.replace('www.', '')}")
-    print(f"Output folder: {final_output_folder}")
+    print(f"Website: {website_name}")
+    print(f"Base folder: {BASE_FOLDER}")
+    print(f"Output subfolder: {args.output}")
+    print(f"Final output folder: {final_output_folder}")
     print(f"Max pages: {args.max_pages}")
     print(f"Max depth: {args.max_depth}")
     print(f"Delay between requests: {args.delay}s")

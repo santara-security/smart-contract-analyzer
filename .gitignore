@@ -44,3 +44,4 @@ crytic-export
 results
 
 db.sqlite
+crawl_result/
