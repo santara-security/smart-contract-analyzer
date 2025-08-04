@@ -1,9 +1,5 @@
 import dotenv from "dotenv";
-import { streamText, generateText } from "ai";
-import { z } from "zod";
 import { ChutesClient } from "@/lib/chutes";
-import { analyzeContract } from "./tools/contractAnalyzer";
-import { vectorizeSearch } from "./tools/vectorSearch";
 import { vectorizeSearch as vectorizeSearchTool } from "@/lib/chutes-tools";
 
 dotenv.config();
