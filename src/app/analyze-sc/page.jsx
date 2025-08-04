@@ -93,7 +93,7 @@ export default function SmartContractAnalyzer() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: apiMessages,
-          stream: false,
+          stream: true,
           useTools: true,
           maxTokens: 2048,
           temperature: 0.7,
@@ -327,6 +327,18 @@ export default function SmartContractAnalyzer() {
                     className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
                   >
                     Explain contract
+                  </button>
+                  <button
+                    onClick={() => setInput("Search for best practices related to this contract pattern")}
+                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
+                  >
+                    Search best practices
+                  </button>
+                  <button
+                    onClick={() => setInput("Find similar contracts or patterns in the knowledge base")}
+                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
+                  >
+                    Find similar contracts
                   </button>
                 </div>
               </div>

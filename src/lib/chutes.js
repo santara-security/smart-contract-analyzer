@@ -31,6 +31,7 @@ class ChutesClient {
    * @param {number} options.temperature - Temperature for generation
    * @param {boolean} options.useTools - Whether to enable tool usage
    * @param {string} options.toolChoice - Tool choice strategy
+   * @param {Array} options.tools - Tools to pass to the AI (similar to ai or @ai-sdk/openai)
    * @returns {Promise<Object>} Response from the API
    */
   async chatCompletion(options = {}) {
@@ -41,11 +42,11 @@ class ChutesClient {
       maxTokens = 1024,
       temperature = 0.7,
       useTools = true,
-      toolChoice = 'auto'
+      toolChoice = 'auto',
+      tools = []
     } = options;
 
     console.log(`Using model: ${model}`);
-    console.log(useTools ? 'Tools enabled' : 'Tools disabled');
 
 
     // Prepare system message for tool usage
@@ -56,28 +57,60 @@ class ChutesClient {
         'When asked to analyze contracts or get blockchain data, indicate that you would use the appropriate tools.';
     }
 
-    console.log(`System message: ${systemMessage}`);
-    console.log(`toolChoice: ${toolChoice}`);
+      console.log(`System message: ${systemMessage}`);
+      console.log(`toolChoice: ${toolChoice}`);
 
     const apiMessages = systemMessage 
       ? [{ role: 'system', content: systemMessage }, ...messages]
       : messages;
 
     try {
+      // Format tools for the API - Use OpenAI compatible format
+      let apiBody = {
+        model,
+        messages: apiMessages,
+        stream,
+        max_tokens: maxTokens,
+        temperature
+      };
+
+      // Only add tools if they are provided and useTools is true
+      if (useTools && tools.length > 0) {
+        // Convert AI SDK tools to OpenAI format
+        const formattedTools = tools.map(tool => {
+          // Extract JSON schema from the AI SDK tool format
+          let parameters = {};
+          if (tool.inputSchema && tool.inputSchema.jsonSchema) {
+            parameters = tool.inputSchema.jsonSchema;
+          } else if (tool.parameters) {
+            parameters = tool.parameters;
+          }
+
+          return {
+            type: 'function',
+            function: {
+              name: tool.name || 'unnamed_tool',
+              description: tool.description || '',
+              parameters: parameters
+            }
+          };
+        });
+
+        console.log('Formatted tools for Chutes API:', JSON.stringify(formattedTools, null, 2));
+
+        apiBody.tools = formattedTools;
+        if (toolChoice && toolChoice !== 'auto') {
+          apiBody.tool_choice = toolChoice;
+        }
+      }
+
       const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.config.apiKey}`
         },
-        body: JSON.stringify({
-          model,
-          messages: apiMessages,
-          stream,
-          max_tokens: maxTokens,
-          temperature,
-          ...(useTools && { tool_choice: toolChoice })
-        })
+        body: JSON.stringify(apiBody)
       });
 
       if (!response.ok) {
@@ -85,21 +118,83 @@ class ChutesClient {
         throw new Error(`API error: ${response.statusText} - ${errorBody}`);
       }
 
-      const data = await response.json();
-      
-      // Handle content from different possible fields
-      const content = 
-        data.choices?.[0]?.message?.content || 
-        data.choices?.[0]?.message?.reasoning_content || 
-        '';
-
-      return {
-        content,
-        usage: data.usage,
-        model,
-        finishReason: data.choices?.[0]?.finish_reason,
-        rawResponse: data
-      };
+      if (stream) {
+        // Streaming response: parse NDJSON or SSE
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let content = '';
+        let usage = {};
+        let finishReason = '';
+        let rawChunks = [];
+        let done = false;
+        let buffer = '';
+        
+        while (!done) {
+          const { value, done: streamDone } = await reader.read();
+          done = streamDone;
+          if (value) {
+            buffer += decoder.decode(value, { stream: true });
+            let lines = buffer.split('\n');
+            // Keep last line in buffer if incomplete
+            buffer = lines.pop();
+            
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed === 'data: [DONE]') continue;
+              
+              // Handle SSE format
+              let jsonStr = trimmed;
+              if (trimmed.startsWith('data: ')) {
+                jsonStr = trimmed.substring(6);
+              }
+              
+              try {
+                const data = JSON.parse(jsonStr);
+                rawChunks.push(data);
+                
+                // Extract content from delta or message
+                if (data.choices?.[0]?.delta?.content) {
+                  content += data.choices[0].delta.content;
+                } else if (data.choices?.[0]?.message?.content) {
+                  content += data.choices[0].message.content;
+                }
+                
+                if (data.usage) usage = data.usage;
+                if (data.choices?.[0]?.finish_reason) finishReason = data.choices[0].finish_reason;
+              } catch (e) {
+                console.warn('Failed to parse streaming chunk:', jsonStr, e);
+                continue;
+              }
+            }
+          }
+        }
+        
+        return {
+          content,
+          usage,
+          model,
+          finishReason,
+          rawResponse: rawChunks
+        };
+      } else {
+        const data = await response.json();
+        
+        // Handle content from different possible fields
+        const content = 
+          data.choices?.[0]?.message?.content || 
+          data.choices?.[0]?.message?.reasoning_content ||
+          data.choices?.[0]?.text ||
+          data.content ||
+          '';
+        
+        return {
+          content,
+          usage: data.usage || {},
+          model,
+          finishReason: data.choices?.[0]?.finish_reason || '',
+          rawResponse: data
+        };
+      }
     } catch (error) {
       console.error('Chutes AI API error:', error);
       throw new Error(`Chutes AI API error: ${error.message}`);

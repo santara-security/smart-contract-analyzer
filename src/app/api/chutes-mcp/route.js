@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ChutesClient } from "@/lib/chutes";
 import { analyzeContract } from "./tools/contractAnalyzer";
 import { vectorizeSearch } from "./tools/vectorSearch";
+import { vectorizeSearch as vectorizeSearchTool } from "@/lib/chutes-tools";
 
 dotenv.config();
 
@@ -14,10 +15,10 @@ export async function POST(req) {
   try {
     const {
       messages,
-      stream = false,
+      stream = true,
       maxTokens = 1024,
       temperature = 0.7,
-      useTools = false,
+      useTools = true,
       toolChoice = "auto",
     } = await req.json();
 
@@ -32,119 +33,130 @@ export async function POST(req) {
         "You are a smart contract analysis assistant. You can analyze smart contracts and fetch blockchain data. When asked to analyze contracts or get blockchain data, indicate that you would use the appropriate tools.";
     }
 
-    const apiMessages = systemMessage
-      ? [{ role: "system", content: systemMessage }, ...messages]
-      : messages;
+    const apiMessages = [...messages];
+
+    // Define tools that can be passed to the AI
+    const tools = useTools ? [vectorizeSearchTool] : [];
+
+    const model = "zai-org/GLM-4.5-FP8";
 
     // Use the ChutesClient library for the API call
     const result = await chutesClient.chatCompletion({
       messages: apiMessages,
-      model: "zai-org/GLM-4.5-Air",
-      stream: false,
+      model,
+      stream: stream,
       maxTokens,
       temperature,
       useTools,
       toolChoice,
+      tools,
     });
+
+    console.log('ChutesClient result with tools:', JSON.stringify(result, null, 2));
 
     let content = result.content;
     let toolCalls = [];
     let toolResults = [];
 
-    // Simulate tool usage based on content analysis
-    if (useTools) {
-      // Check for contract analysis requests
-      if (content.toLowerCase().includes("analyz") || content.toLowerCase().includes("contract")) {
-        toolCalls.push({
-          id: "call_1",
-          type: "function",
-          function: {
-            name: "analyzeContract",
-            arguments: JSON.stringify({
-              contractCode: "simulated",
-              analysisType: "security",
-            }),
-          },
-        });
-
-        const toolResult = await analyzeContract({
-          contractCode: "simulated",
-          analysisType: "security",
-        });
-
-        toolResults.push({
-          toolCallId: "call_1",
-          result: toolResult,
-        });
-
-        content += `\n\n**Tool Analysis Results:**\n${JSON.stringify(
-          toolResult,
-          null,
-          2
-        )}`;
-      }
-
-      // Check for vector search requests
-      if (content.toLowerCase().includes("search") || content.toLowerCase().includes("find") || content.toLowerCase().includes("backdoor") || content.toLowerCase().includes("vulnerability")) {
-        // Extract search query from content (simplified approach)
-        const searchMatch = content.match(/(?:search for|find|looking for|check for)\s+(.+?)(?:\?|\.|$)/i);
-        const query = searchMatch ? searchMatch[1] : content;
-        
-        toolCalls.push({
-          id: "call_2",
-          type: "function",
-          function: {
-            name: "vectorize_search",
-            arguments: JSON.stringify({
-              query: query,
-              top_k: 3
-            }),
-          },
-        });
-
-        // Execute vector search tool by calling Python script
-        try {
-          const vectorToolResult = await vectorizeSearch({
-            query: query,
-            top_k: 3
-          });
-
-          toolResults.push({
-            toolCallId: "call_2",
-            result: vectorToolResult,
-          });
-
-          content += `\n\n**Vector Search Results:**\n${JSON.stringify(
-            vectorToolResult,
-            null,
-            2
-          )}`;
-        } catch (error) {
-          console.error("Vector search error:", error);
-          // Fallback to simulated result if Python execution fails
-          const vectorToolResult = {
-            results: []
-          };
-
-          toolResults.push({
-            toolCallId: "call_2",
-            result: vectorToolResult,
-          });
-
-          content += `\n\n**Vector Search Results (Simulated due to error):**\n${JSON.stringify(
-            vectorToolResult,
-            null,
-            2
-          )}`;
+    // Check for tool calls in the response and execute them
+    // First, check in streaming chunks for tool calls
+    if (Array.isArray(result.rawResponse)) {
+      for (const chunk of result.rawResponse) {
+        if (chunk.choices?.[0]?.delta?.tool_calls) {
+          toolCalls = chunk.choices[0].delta.tool_calls;
+          console.log('Tool calls detected in streaming chunk:', toolCalls);
+          break;
         }
       }
     }
+    // Also check in the non-streaming format
+    if (result.rawResponse?.choices?.[0]?.message?.tool_calls) {
+      toolCalls = result.rawResponse.choices[0].message.tool_calls;
+      console.log('Tool calls detected in message:', toolCalls);
+    }
+
+    // Execute each tool call if we found any
+    if (toolCalls.length > 0) {
+      for (const toolCall of toolCalls) {
+        try {
+          if (toolCall.function.name === 'vectorizeSearch') {
+            const args = JSON.parse(toolCall.function.arguments);
+            console.log('Executing vectorizeSearch with args:', args);
+            
+            // Execute the tool
+            const toolResult = await vectorizeSearchTool.execute(args);
+            console.log('Tool result:', toolResult);
+            
+            toolResults.push({
+              toolCallId: toolCall.id,
+              result: toolResult
+            });
+
+            // Add tool result to messages and make another API call
+            const updatedMessages = [
+              ...apiMessages,
+              {
+                role: 'assistant',
+                content: null,
+                tool_calls: toolCalls
+              },
+              {
+                role: 'tool',
+                tool_call_id: toolCall.id,
+                name: toolCall.function.name,
+                content: JSON.stringify(toolResult)
+              }
+            ];
+
+            // Make another API call with the tool results
+            const followUpResult = await chutesClient.chatCompletion({
+              messages: updatedMessages,
+              model,
+              stream: false, // Use non-streaming for tool follow-up
+              maxTokens,
+              temperature,
+              useTools: false, // Disable tools for follow-up to avoid recursion
+              toolChoice: 'none',
+              tools: [],
+            });
+
+            console.log('Follow-up result:', followUpResult);
+            
+            // Use the follow-up content as the final response
+            if (followUpResult.content) {
+              content = followUpResult.content;
+            }
+          }
+        } catch (toolError) {
+          console.error('Tool execution error:', toolError);
+          toolResults.push({
+            toolCallId: toolCall.id,
+            error: toolError.message
+          });
+        }
+      }
+    }
+
+    // If content is empty, try to extract it from rawResponse
+    if (!content && result.rawResponse) {
+      if (result.rawResponse.choices?.[0]?.message?.content) {
+        content = result.rawResponse.choices[0].message.content;
+      } else if (Array.isArray(result.rawResponse) && result.rawResponse.length > 0) {
+        // Handle streaming chunks that might contain content
+        content = result.rawResponse
+          .map(chunk => chunk.choices?.[0]?.delta?.content || chunk.choices?.[0]?.message?.content || '')
+          .filter(Boolean)
+          .join('');
+      }
+    }
+
+    console.log('Final content to return:', content);
 
     return new Response(
       JSON.stringify({
         content,
         usage: result.usage,
-        model: "zai-org/GLM-4.5-Air",
+        model: model,
         finishReason: result.finishReason,
         toolCalls,
         toolResults,
@@ -173,13 +185,10 @@ export async function POST(req) {
 export async function GET() {
   try {
     const healthStatus = await chutesClient.healthCheck();
-    return new Response(
-      JSON.stringify(healthStatus),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify(healthStatus), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,

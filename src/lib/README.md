@@ -10,6 +10,7 @@ A flexible library for interacting with Chutes AI and other AI providers with MC
 - Easy configuration and customization
 - Health check functionality
 - TypeScript support
+- Tools that can be passed to AI similar to "ai" or "@ai-sdk/openai"
 
 ## Installation
 
@@ -67,6 +68,27 @@ const toolResult = await chutes.simulateToolExecution('analyzeContract', {
 });
 
 console.log(toolResult);
+```
+
+### Using Tools (Similar to "ai" or "@ai-sdk/openai")
+
+```javascript
+import { ChutesClient } from './chutes';
+import { vectorizeSearch } from './chutes-tools';
+
+const chutes = new ChutesClient();
+
+// Chat completion with tools passed directly to the AI
+const response = await chutes.chatCompletion({
+  messages: [
+    { role: 'user', content: 'Search for information about smart contract vulnerabilities' }
+  ],
+  useTools: true,
+  tools: [vectorizeSearch],  // Tools passed similar to "ai" or "@ai-sdk/openai"
+  toolChoice: 'auto'
+});
+
+console.log(response.content);
 ```
 
 ### Multi-Provider Usage
@@ -208,6 +230,26 @@ Execute a health check on a provider.
 ## Examples
 
 See `chutes.example.js` for more detailed examples of how to use the library.
+
+## Available Tools
+
+### vectorizeSearch
+
+Search for relevant information using vector similarity search.
+
+**Usage:**
+```javascript
+import { vectorizeSearch } from './chutes-tools';
+
+const result = await vectorizeSearch({
+  query: 'smart contract security best practices',
+  top_k: 3
+});
+```
+
+**Parameters:**
+- `query` (string): The search query
+- `top_k` (number, optional): Number of top results to return (default: 3)
 
 ## Testing
 
