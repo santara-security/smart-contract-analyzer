@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { FiUpload, FiFile, FiCopy, FiCheck, FiSend, FiLoader } from 'react-icons/fi';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
@@ -12,6 +12,7 @@ export default function SmartContractAnalyzer() {
   
   // State for chat
   const [messages, setMessages] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -20,13 +21,46 @@ export default function SmartContractAnalyzer() {
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
 
+  // Generate a random conversation ID
+  const generateConversationId = () => {
+    return 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  };
+
+  // Save contract to server
+  const saveContractToServer = async (code, convId) => {
+    try {
+      const response = await fetch('/api/save-contract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contractCode: code, conversationId: convId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save contract');
+      }
+
+      const result = await response.json();
+      console.log('Contract saved:', result.filename);
+    } catch (error) {
+      console.error('Error saving contract:', error);
+    }
+  };
+
   // Handle file upload
   const handleFileUpload = (file) => {
     if (file && file.name.endsWith('.sol')) {
       setFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
-        setContractCode(e.target.result);
+        const code = e.target.result;
+        setContractCode(code);
+        // Generate new conversation ID when new contract is uploaded
+        const newConversationId = generateConversationId();
+        setConversationId(newConversationId);
+        // Clear previous messages
+        setMessages([]);
+        // Save contract to server
+        saveContractToServer(code, newConversationId);
       };
       reader.readAsText(file);
     } else {
@@ -58,6 +92,18 @@ export default function SmartContractAnalyzer() {
       handleFileUpload(e.target.files[0]);
     }
   };
+
+  // Generate conversation ID when contract code changes
+  useEffect(() => {
+    if (contractCode && !conversationId) {
+      const newConversationId = generateConversationId();
+      setConversationId(newConversationId);
+      // Clear previous messages when new contract is added
+      setMessages([]);
+      // Save contract to server
+      saveContractToServer(contractCode, newConversationId);
+    }
+  }, [contractCode, conversationId]);
 
   // Copy contract code to clipboard
   const copyToClipboard = () => {
@@ -93,6 +139,7 @@ export default function SmartContractAnalyzer() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: apiMessages,
+          conversationId: conversationId,
           stream: true,
           useTools: true,
           maxTokens: 2048,

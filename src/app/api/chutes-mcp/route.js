@@ -7,10 +7,15 @@ dotenv.config();
 // Initialize Chutes client
 const chutesClient = new ChutesClient();
 
+// In-memory store for conversation histories
+// In a production environment, this should be stored in a database
+const conversationHistories = new Map();
+
 export async function POST(req) {
   try {
     const {
       messages,
+      conversationId,
       stream = true,
       maxTokens = 1024,
       temperature = 0.7,
@@ -22,6 +27,12 @@ export async function POST(req) {
       throw new Error("CHUTES_API_TOKEN is not configured");
     }
 
+    // Get or initialize conversation history
+    let conversationHistory = [];
+    if (conversationId) {
+      conversationHistory = conversationHistories.get(conversationId) || [];
+    }
+
     // Prepare the request to Chutes AI
     let systemMessage = "";
     if (useTools) {
@@ -29,7 +40,8 @@ export async function POST(req) {
         "You are a smart contract analysis assistant. You can analyze smart contracts and fetch blockchain data. When asked to analyze contracts or get blockchain data, indicate that you would use the appropriate tools.";
     }
 
-    const apiMessages = [...messages];
+    // Combine conversation history with new messages
+    const apiMessages = [...conversationHistory, ...messages];
 
     // Define tools that can be passed to the AI
     const tools = useTools ? [vectorizeSearchTool] : [];
@@ -147,6 +159,22 @@ export async function POST(req) {
     }
 
     console.log('Final content to return:', content);
+
+    // Update conversation history with new messages
+    if (conversationId) {
+      // Add user messages and assistant response to history
+      const newHistory = [...messages];
+      if (content) {
+        newHistory.push({
+          role: 'assistant',
+          content: content,
+          tool_calls: toolCalls.length > 0 ? toolCalls : undefined
+        });
+      }
+      
+      // Store updated history
+      conversationHistories.set(conversationId, [...conversationHistory, ...newHistory]);
+    }
 
     return new Response(
       JSON.stringify({
