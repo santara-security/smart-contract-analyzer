@@ -9,6 +9,7 @@ import sqlite3
 import json
 import argparse
 import sys
+import warnings
 from pathlib import Path
 from datetime import datetime
 import hashlib
@@ -21,6 +22,9 @@ import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 
+# Suppress FutureWarning messages when --json is used
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 # Constants
 VECTOR_DB_NAME = "crawl_vectors.db"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # Lightweight but effective sentence transformer
@@ -29,22 +33,26 @@ CHUNK_OVERLAP = 50  # Character overlap between chunks
 MIN_CHUNK_SIZE = 100  # Minimum characters to create a chunk
 
 class VectorIndexer:
-    def __init__(self, crawl_folder, vector_db_path=None):
+    def __init__(self, crawl_folder, vector_db_path=None, quiet=False):
         """
         Initialize the vector indexer.
         
         Args:
             crawl_folder (str): Path to the crawled content folder
             vector_db_path (str): Path to SQLite database file
+            quiet (bool): Suppress verbose output
         """
         self.crawl_folder = Path(crawl_folder) 
         self.vector_db_path = vector_db_path or os.path.join(os.path.dirname(crawl_folder), VECTOR_DB_NAME)
+        self.quiet = quiet
         
         # Initialize embedding model
-        print("Loading embedding model...")
+        if not self.quiet:
+            print("Loading embedding model...")
         self.model = SentenceTransformer(EMBEDDING_MODEL)
         self.embedding_dim = self.model.get_sentence_embedding_dimension()
-        print(f"- Model loaded. Embedding dimension: {self.embedding_dim}")
+        if not self.quiet:
+            print(f"- Model loaded. Embedding dimension: {self.embedding_dim}")
         
         # Download required NLTK data
         self._setup_nltk()
@@ -65,7 +73,8 @@ class VectorIndexer:
     
     def _init_database(self):
         """Initialize SQLite database with vector storage."""
-        print(f"Initializing vector database: {self.vector_db_path}")
+        if not self.quiet:
+            print(f"Initializing vector database: {self.vector_db_path}")
         
         conn = sqlite3.connect(self.vector_db_path)
         cursor = conn.cursor()
@@ -117,7 +126,8 @@ class VectorIndexer:
         
         conn.commit()
         conn.close()
-        print("- Database initialized")
+        if not self.quiet:
+            print("- Database initialized")
     
     def _extract_metadata_from_markdown(self, content):
         """Extract metadata from markdown content."""
@@ -434,31 +444,47 @@ Examples:
         default=5,
         help='Number of top results to return for search (default: 5)'
     )
+
+    parser.add_argument(
+        '--json',
+        action='store_true',
+        default=False,
+        help='Output results in JSON format (default: plain text)'
+    )
     
     args = parser.parse_args()
     
     try:
-        # Initialize vectorizer
-        vectorizer = VectorIndexer(args.crawl_folder, args.db)
+        # Initialize vectorizer with quiet mode if --json is specified
+        vectorizer = VectorIndexer(args.crawl_folder, args.db, quiet=args.json)
         
         if args.search:
             # Perform search
-            print(f"Searching for: '{args.search}'")
-            print("-" * 60)
+            if not args.json:
+                print(f"Searching for: '{args.search}'")
+                print("-" * 60)
             
             results = vectorizer.search_similar(args.search, args.top_k)
             
             if not results:
-                print("No results found. Make sure to process files first.")
+                if args.json:
+                    print(json.dumps({"results": []}))
+                else:
+                    print("No results found. Make sure to process files first.")
             else:
-                for i, result in enumerate(results, 1):
-                    print(f"\n{i}. Similarity: {result['similarity']:.4f}")
-                    print(f"   Title: {result['title'] or 'No title'}")
-                    print(f"   File: {Path(result['file_path']).name}")
-                    print(f"   Content preview: {result['content'][:200]}...")
-                    if result['url']:
-                        print(f"   URL: {result['url']}")
-                    print(f"   File Path: {result['file_path']}")
+                if args.json:
+                    # Output results as JSON
+                    print(json.dumps({"results": results}, indent=2))
+                else:
+                    # Output results in plain text format
+                    for i, result in enumerate(results, 1):
+                        print(f"\n{i}. Similarity: {result['similarity']:.4f}")
+                        print(f"   Title: {result['title'] or 'No title'}")
+                        print(f"   File: {Path(result['file_path']).name}")
+                        print(f"   Content preview: {result['content'][:200]}...")
+                        if result['url']:
+                            print(f"   URL: {result['url']}")
+                        print(f"   File Path: {result['file_path']}")
         else:
             # Process files
             vectorizer.process_folder()

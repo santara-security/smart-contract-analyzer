@@ -40,9 +40,13 @@ class ChutesClient {
       stream = false,
       maxTokens = 1024,
       temperature = 0.7,
-      useTools = false,
+      useTools = true,
       toolChoice = 'auto'
     } = options;
+
+    console.log(`Using model: ${model}`);
+    console.log(useTools ? 'Tools enabled' : 'Tools disabled');
+
 
     // Prepare system message for tool usage
     let systemMessage = '';
@@ -51,6 +55,9 @@ class ChutesClient {
         'You are a smart contract analysis assistant. You can analyze smart contracts and fetch blockchain data. ' +
         'When asked to analyze contracts or get blockchain data, indicate that you would use the appropriate tools.';
     }
+
+    console.log(`System message: ${systemMessage}`);
+    console.log(`toolChoice: ${toolChoice}`);
 
     const apiMessages = systemMessage 
       ? [{ role: 'system', content: systemMessage }, ...messages]
@@ -96,62 +103,6 @@ class ChutesClient {
     } catch (error) {
       console.error('Chutes AI API error:', error);
       throw new Error(`Chutes AI API error: ${error.message}`);
-    }
-  }
-
-  /**
-   * Simulate tool execution (MCP-style)
-   * @param {string} toolName - Name of the tool to execute
-   * @param {Object} parameters - Tool parameters
-   * @returns {Promise<Object>} Tool execution result
-   */
-  async simulateToolExecution(toolName, parameters) {
-    switch (toolName) {
-      case 'analyzeContract':
-        return {
-          analysis: `Performed ${parameters.analysisType} analysis on contract`,
-          vulnerabilities: ['No immediate security issues found'],
-          gasOptimizations: ['Consider using ++i instead of i++'],
-          recommendations: [
-            'Add input validation',
-            'Use latest Solidity version'
-          ]
-        };
-      case 'getBlockchainData':
-        return {
-          address: parameters.address,
-          network: parameters.network,
-          balance: '0.0 ETH',
-          transactions: [],
-          contracts: []
-        };
-      default:
-        return { error: 'Unknown tool' };
-    }
-  }
-
-  /**
-   * Execute a tool call (MCP-style)
-   * @param {Object} toolCall - Tool call object
-   * @returns {Promise<Object>} Tool result
-   */
-  async executeToolCall(toolCall) {
-    try {
-      const toolName = toolCall.function?.name;
-      const parameters = JSON.parse(toolCall.function?.arguments || '{}');
-      
-      const result = await this.simulateToolExecution(toolName, parameters);
-      
-      return {
-        toolCallId: toolCall.id,
-        result
-      };
-    } catch (error) {
-      console.error('Tool execution error:', error);
-      return {
-        toolCallId: toolCall.id,
-        result: { error: error.message }
-      };
     }
   }
 

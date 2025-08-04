@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import { streamText, generateText } from "ai";
 import { z } from "zod";
 import { ChutesClient } from "@/lib/chutes";
+import { analyzeContract } from "./tools/contractAnalyzer";
+import { vectorizeSearch } from "./tools/vectorSearch";
 
 dotenv.config();
 
@@ -50,38 +52,92 @@ export async function POST(req) {
     let toolResults = [];
 
     // Simulate tool usage based on content analysis
-    if (
-      useTools &&
-      (content.toLowerCase().includes("analyz") ||
-        content.toLowerCase().includes("contract"))
-    ) {
-      toolCalls.push({
-        id: "call_1",
-        type: "function",
-        function: {
-          name: "analyzeContract",
-          arguments: JSON.stringify({
-            contractCode: "simulated",
-            analysisType: "security",
-          }),
-        },
-      });
+    if (useTools) {
+      // Check for contract analysis requests
+      if (content.toLowerCase().includes("analyz") || content.toLowerCase().includes("contract")) {
+        toolCalls.push({
+          id: "call_1",
+          type: "function",
+          function: {
+            name: "analyzeContract",
+            arguments: JSON.stringify({
+              contractCode: "simulated",
+              analysisType: "security",
+            }),
+          },
+        });
 
-      const toolResult = await chutesClient.simulateToolExecution("analyzeContract", {
-        contractCode: "simulated",
-        analysisType: "security",
-      });
+        const toolResult = await analyzeContract({
+          contractCode: "simulated",
+          analysisType: "security",
+        });
 
-      toolResults.push({
-        toolCallId: "call_1",
-        result: toolResult,
-      });
+        toolResults.push({
+          toolCallId: "call_1",
+          result: toolResult,
+        });
 
-      content += `\n\n**Tool Analysis Results:**\n${JSON.stringify(
-        toolResult,
-        null,
-        2
-      )}`;
+        content += `\n\n**Tool Analysis Results:**\n${JSON.stringify(
+          toolResult,
+          null,
+          2
+        )}`;
+      }
+
+      // Check for vector search requests
+      if (content.toLowerCase().includes("search") || content.toLowerCase().includes("find") || content.toLowerCase().includes("backdoor") || content.toLowerCase().includes("vulnerability")) {
+        // Extract search query from content (simplified approach)
+        const searchMatch = content.match(/(?:search for|find|looking for|check for)\s+(.+?)(?:\?|\.|$)/i);
+        const query = searchMatch ? searchMatch[1] : content;
+        
+        toolCalls.push({
+          id: "call_2",
+          type: "function",
+          function: {
+            name: "vectorize_search",
+            arguments: JSON.stringify({
+              query: query,
+              top_k: 3
+            }),
+          },
+        });
+
+        // Execute vector search tool by calling Python script
+        try {
+          const vectorToolResult = await vectorizeSearch({
+            query: query,
+            top_k: 3
+          });
+
+          toolResults.push({
+            toolCallId: "call_2",
+            result: vectorToolResult,
+          });
+
+          content += `\n\n**Vector Search Results:**\n${JSON.stringify(
+            vectorToolResult,
+            null,
+            2
+          )}`;
+        } catch (error) {
+          console.error("Vector search error:", error);
+          // Fallback to simulated result if Python execution fails
+          const vectorToolResult = {
+            results: []
+          };
+
+          toolResults.push({
+            toolCallId: "call_2",
+            result: vectorToolResult,
+          });
+
+          content += `\n\n**Vector Search Results (Simulated due to error):**\n${JSON.stringify(
+            vectorToolResult,
+            null,
+            2
+          )}`;
+        }
+      }
     }
 
     return new Response(
