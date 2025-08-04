@@ -85,9 +85,9 @@ class WebCrawler:
         try:
             with open(info_file, 'w', encoding='utf-8') as f:
                 json.dump(website_info, f, indent=2, ensure_ascii=False)
-            print(f"✓ Website info saved: _website_info.json")
+            print(f"- Website info saved: _website_info.json")
         except Exception as e:
-            print(f"✗ Error saving website info: {e}")
+            print(f"- Error saving website info: {e}")
     
     def is_valid_url(self, url):
         """
@@ -258,25 +258,17 @@ class WebCrawler:
         if not filename.endswith('.md'):
             filename += '.md'
         
-        # Ensure unique filename
-        counter = 1
-        original_filename = filename
+        # Use the filename directly (will replace if exists)
         filepath = os.path.join(self.output_folder, filename)
         
-        while os.path.exists(filepath):
-            name, ext = os.path.splitext(original_filename)
-            filename = f"{name}_{counter}{ext}"
-            filepath = os.path.join(self.output_folder, filename)
-            counter += 1
-        
-        # Save file
+        # Save file (will overwrite if exists)
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
-            print(f"✓ Saved: {filename}")
+            print(f" Saved: {filename}")
             return filepath
         except Exception as e:
-            print(f"✗ Error saving {filename}: {e}")
+            print(f" Error saving {filename}: {e}")
             return None
     
     def crawl_page(self, url):
@@ -391,9 +383,9 @@ class WebCrawler:
         try:
             with open(summary_file, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=2, ensure_ascii=False)
-            print(f"✓ Crawl summary saved: _crawl_summary.json")
+            print(f"- Crawl summary saved: _crawl_summary.json")
         except Exception as e:
-            print(f"✗ Error saving crawl summary: {e}")
+            print(f"- Error saving crawl summary: {e}")
 
 
 def parse_arguments():
@@ -450,14 +442,9 @@ Examples:
 
 
 def main():
-    """
-    Main function to run the crawler with command line arguments.
-    """
-    
-    # Parse command line arguments
+    """Main function to run the crawler."""
     args = parse_arguments()
     
-    # Create folder structure: BASE_FOLDER/output_folder (no website subfolder)
     parsed_url = urlparse(args.base_url)
     website_name = parsed_url.netloc.replace('www.', '')
     final_output_folder = os.path.join(BASE_FOLDER, args.output)

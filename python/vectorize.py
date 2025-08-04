@@ -37,14 +37,14 @@ class VectorIndexer:
             crawl_folder (str): Path to the crawled content folder
             vector_db_path (str): Path to SQLite database file
         """
-        self.crawl_folder = Path(crawl_folder)
+        self.crawl_folder = Path(crawl_folder) 
         self.vector_db_path = vector_db_path or os.path.join(os.path.dirname(crawl_folder), VECTOR_DB_NAME)
         
         # Initialize embedding model
         print("Loading embedding model...")
         self.model = SentenceTransformer(EMBEDDING_MODEL)
         self.embedding_dim = self.model.get_sentence_embedding_dimension()
-        print(f"✓ Model loaded. Embedding dimension: {self.embedding_dim}")
+        print(f"- Model loaded. Embedding dimension: {self.embedding_dim}")
         
         # Download required NLTK data
         self._setup_nltk()
@@ -61,7 +61,7 @@ class VectorIndexer:
             print("Downloading required NLTK data...")
             nltk.download('punkt', quiet=True)
             nltk.download('stopwords', quiet=True)
-            print("✓ NLTK data downloaded")
+            print("- NLTK data downloaded")
     
     def _init_database(self):
         """Initialize SQLite database with vector storage."""
@@ -117,7 +117,7 @@ class VectorIndexer:
         
         conn.commit()
         conn.close()
-        print("✓ Database initialized")
+        print("- Database initialized")
     
     def _extract_metadata_from_markdown(self, content):
         """Extract metadata from markdown content."""
@@ -295,11 +295,11 @@ class VectorIndexer:
             
             conn.commit()
             conn.close()
-            print(f"✓ Processed: {file_path.name}")
+            print(f"- Processed: {file_path.name}")
             return True
             
         except Exception as e:
-            print(f"✗ Error processing {file_path}: {e}")
+            print(f"- Error processing {file_path}: {e}")
             return False
     
     def process_folder(self):
