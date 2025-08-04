@@ -2,8 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { FiUpload, FiFile, FiCopy, FiCheck, FiSend, FiLoader } from 'react-icons/fi';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 export default function SmartContractAnalyzer() {
   // State for file upload
@@ -267,11 +266,7 @@ export default function SmartContractAnalyzer() {
                         </span>
                       )}
                     </div>
-                    <div className="text-neutral-200 text-xs leading-relaxed prose prose-invert prose-xs max-w-none">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {message.content}
-                      </ReactMarkdown>
-                    </div>
+                    <MarkdownRenderer content={message.content} />
                   </div>
                 ))
               )}
