@@ -1,34 +1,12 @@
 import dotenv from "dotenv";
 import { streamText, generateText } from "ai";
 import { z } from "zod";
+import { ChutesClient } from "@/lib/chutes";
 
 dotenv.config();
 
-// MCP-style tools simulation (since we're using direct API calls)
-const simulateToolExecution = async (toolName, parameters) => {
-  switch (toolName) {
-    case "analyzeContract":
-      return {
-        analysis: `Performed ${parameters.analysisType} analysis on contract`,
-        vulnerabilities: ["No immediate security issues found"],
-        gasOptimizations: ["Consider using ++i instead of i++"],
-        recommendations: [
-          "Add input validation",
-          "Use latest Solidity version",
-        ],
-      };
-    case "getBlockchainData":
-      return {
-        address: parameters.address,
-        network: parameters.network,
-        balance: "0.0 ETH",
-        transactions: [],
-        contracts: [],
-      };
-    default:
-      return { error: "Unknown tool" };
-  }
-};
+// Initialize Chutes client
+const chutesClient = new ChutesClient();
 
 export async function POST(req) {
   try {
@@ -56,34 +34,18 @@ export async function POST(req) {
       ? [{ role: "system", content: systemMessage }, ...messages]
       : messages;
 
-    const response = await fetch("https://llm.chutes.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.CHUTES_API_TOKEN}`,
-      },
-      body: JSON.stringify({
-        model: "zai-org/GLM-4.5-Air",
-        messages: apiMessages,
-        stream: false,
-        max_tokens: maxTokens,
-        temperature,
-      }),
+    // Use the ChutesClient library for the API call
+    const result = await chutesClient.chatCompletion({
+      messages: apiMessages,
+      model: "zai-org/GLM-4.5-Air",
+      stream: false,
+      maxTokens,
+      temperature,
+      useTools,
+      toolChoice,
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(
-        `Chutes AI API error: ${response.statusText} - ${errorBody}`
-      );
-    }
-
-    const data = await response.json();
-
-    let content =
-      data.choices[0].message.content ||
-      data.choices[0].message.reasoning_content ||
-      "";
+    let content = result.content;
     let toolCalls = [];
     let toolResults = [];
 
@@ -105,7 +67,7 @@ export async function POST(req) {
         },
       });
 
-      const toolResult = await simulateToolExecution("analyzeContract", {
+      const toolResult = await chutesClient.simulateToolExecution("analyzeContract", {
         contractCode: "simulated",
         analysisType: "security",
       });
@@ -125,9 +87,9 @@ export async function POST(req) {
     return new Response(
       JSON.stringify({
         content,
-        usage: data.usage,
+        usage: result.usage,
         model: "zai-org/GLM-4.5-Air",
-        finishReason: data.choices[0].finish_reason,
+        finishReason: result.finishReason,
         toolCalls,
         toolResults,
       }),
@@ -154,15 +116,9 @@ export async function POST(req) {
 // Health check endpoint
 export async function GET() {
   try {
-    const hasToken = !!process.env.CHUTES_API_TOKEN;
+    const healthStatus = await chutesClient.healthCheck();
     return new Response(
-      JSON.stringify({
-        status: "ok",
-        provider: "Chutes AI",
-        model: "zai-org/GLM-4.5-Air",
-        tokenConfigured: hasToken,
-        features: ["streaming", "tools", "mcp-compatible"],
-      }),
+      JSON.stringify(healthStatus),
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
