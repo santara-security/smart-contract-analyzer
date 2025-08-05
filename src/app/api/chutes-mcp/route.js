@@ -4,24 +4,17 @@ import { generateObject, generateText } from "ai";
 // import { vectorizeSearch } from "@/lib/chutes-tools";
 import { z } from "zod";
 import { createOpenAI, openai } from "@ai-sdk/openai";
-import { getKak, vectorSearch } from "@/lib/chutes-tools";
+import { getKak, vectorReadFile, vectorSearch } from "@/lib/chutes-tools";
 
-// const provider = createOpenAICompatible({
-//   name: "chutes",
-//   apiKey: process.env.CHUTES_API_TOKEN,
-//   baseURL: "https://llm.chutes.ai/v1",
-//   includeUsage: true, // Include usage information in streaming responses
-// });
 
-// const model = provider("moonshotai/Kimi-K2-Instruct");
-// const openaiModel = openai("gpt-4.1-mini");
 const chutesProvider = createOpenAI({
   name: "chutes",
   apiKey: process.env.CHUTES_API_TOKEN,
   baseURL: "https://llm.chutes.ai/v1",
 });
 
-const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
+// const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
+const model = chutesProvider("zai-org/GLM-4.5-FP8");
 
 dotenv.config();
 
@@ -82,12 +75,14 @@ export async function POST(req) {
       messages: apiMessages,
       tools: {
         vectorSearch: vectorSearch,
+        vectorReadFile: vectorReadFile
       },
       toolChoice: "auto", // Automatically choose the best tool
       schema: z.object({
         text: z.string().describe("The AI's response text"),
       }),
-      mode: 'json'
+      mode: 'json',
+      maxSteps: 3,
     });
 
     console.log("AI result:", aiResult);
