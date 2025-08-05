@@ -31,8 +31,20 @@ export async function POST(req) {
       conversationHistory = conversationHistories.get(conversationId) || [];
     }
 
-    const systemPrompt = `You are a smart contract analysis assistant. Use the tools provided to answer questions about vulnerabilities and smart contract functions.
-    Be honest and concise in your responses. If you don't know the answer, say "I don't know".`;
+    const systemPrompt = `You are a smart contract analysis assistant named "Santara AI".
+    You are designed to help users understand vulnerabilities in smart contracts and provide insights on how to mitigate them.
+
+    Rules:
+    1. Always Analyze Smart Contract based on the provided messages.
+    2. Use the tools provided to answer questions about vulnerabilities and smart contract functions.
+    3. Be honest and concise in your responses. If you don't know the answer, say "I don't know".
+    4. If you need to use a tool, provide a clear explanation of why it's necessary.
+    
+    Tools Usage:
+    - Use the \`vectorSearch\` tool to search for vulnerabilities or smart contract functions, do not search for general information.
+    - Use the \`vectorReadFile\` tool to read specific files from the vector database when necessary.
+    - Always return the relevant information to the user after using a tool.
+    `;
 
     // Build the messages array properly
     let apiMessages = [
@@ -40,26 +52,39 @@ export async function POST(req) {
       ...conversationHistory,
     ];
 
-    // Add the new user message
-    let userMessage = "";
+    // Track user messages for conversation history
+    const newUserMessages = [];
+
+    // Add the new user message(s)
     if (messages) {
       if (typeof messages === "string") {
-        userMessage = messages;
+        const userMsg = { role: "user", content: messages };
+        apiMessages.push(userMsg);
+        newUserMessages.push(userMsg);
       } else if (Array.isArray(messages) && messages.length > 0) {
-        // If messages is an array, use the last user message
-        const lastUserMessage = messages.filter((m) => m.role === "user").pop();
-        userMessage = lastUserMessage
-          ? lastUserMessage.content
-          : messages[messages.length - 1].content;
+        // If messages is an array, add all messages to maintain context
+        messages.forEach(message => {
+          if (message.role && message.content) {
+            const msg = { role: message.role, content: message.content };
+            apiMessages.push(msg);
+            // Track user messages for conversation history
+            if (message.role === "user") {
+              newUserMessages.push(msg);
+            }
+          }
+        });
       } else if (typeof messages === "object" && messages.content) {
-        userMessage = messages.content;
+        const role = messages.role || "user";
+        const userMsg = { role: role, content: messages.content };
+        apiMessages.push(userMsg);
+        if (role === "user") {
+          newUserMessages.push(userMsg);
+        }
       }
     } else if (prompt) {
-      userMessage = prompt;
-    }
-
-    if (userMessage) {
-      apiMessages.push({ role: "user", content: userMessage });
+      const userMsg = { role: "user", content: prompt };
+      apiMessages.push(userMsg);
+      newUserMessages.push(userMsg);
     }
 
     console.log(
@@ -80,15 +105,17 @@ export async function POST(req) {
         text: z.string().describe("The AI's response text"),
       }),
       mode: 'json',
-      maxSteps: 3,
+      maxSteps: 15,
     });
 
     console.log("AI result:", aiResult);
     const { text, toolCalls, toolResults } = aiResult;
 
     // Update conversation history
-    if (conversationId && userMessage) {
-      conversationHistory.push({ role: "user", content: userMessage });
+    if (conversationId && newUserMessages.length > 0) {
+      newUserMessages.forEach(msg => {
+        conversationHistory.push(msg);
+      });
       conversationHistory.push({ role: "assistant", content: text });
       conversationHistories.set(conversationId, conversationHistory);
     }

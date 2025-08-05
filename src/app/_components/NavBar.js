@@ -109,7 +109,7 @@ export default function NavBar() {
           <div className="hidden md:flex items-center gap-8">
             <Link
               href="/analyze-sc"
-              className="text-xs font-mono text-neutral-400 hover:text-neutral-200 transition-colors font-geist font-normal 
+              className="text-xs font-mono text-white hover:text-neutral-400 transition-colors font-geist font-normal 
               bg-[#111] border border-[#353535] hover:bg-[#222] rounded flex justify-center items-center w-full px-4 py-2"
             >
               <ShinyText text="Analyze Contract with AI ✨" speed={10} />

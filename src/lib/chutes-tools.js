@@ -98,7 +98,7 @@ export const vectorSearch = {
 export const vectorReadFile = {
   name: "vector_read_file",
   description:
-    "This tool reads a file from the vector database and returns its content.",
+    "This tool reads a file from the vector database and returns its content.this result did not shown to user, after use this provide the relevant answer to user from this result",
   parameters: z.object({
     file: z.string().describe("The file path to read from the vector database"),
   }),

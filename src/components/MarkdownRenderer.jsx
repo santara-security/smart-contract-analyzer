@@ -8,25 +8,25 @@ const MarkdownRenderer = ({ content, className = "" }) => {
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({node, ...props}) => <h1 className="text-sm font-bold text-neutral-200 mt-2 mb-1" {...props} />,
-          h2: ({node, ...props}) => <h2 className="text-xs font-semibold text-neutral-200 mt-2 mb-1" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-[0.8125rem] font-semibold text-neutral-200 mt-2 mb-1" {...props} />,
           h3: ({node, ...props}) => <h3 className="text-xs font-medium text-neutral-200 mt-2 mb-1" {...props} />,
           p: ({node, ...props}) => <p className="text-xs text-neutral-300 mb-2" {...props} />,
-          ul: ({node, ...props}) => <ul className="list-disc list-inside text-xs text-neutral-300 mb-2 pl-2" {...props} />,
-          ol: ({node, ...props}) => <ol className="list-decimal list-inside text-xs text-neutral-300 mb-2 pl-2" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc list-outside text-xs text-neutral-300 mb-2 pl-4" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal list-outside text-xs text-neutral-300 mb-2 pl-4" {...props} />,
           li: ({node, children, ...props}) => {
             // Custom handling for list items to prevent unwanted line breaks
             // Check if children is an array with a single paragraph element
             if (Array.isArray(children) && children.length === 1 && children[0].type === 'p') {
               // Render the paragraph content directly without the paragraph wrapper
               return (
-                <li className="text-xs text-neutral-300 mb-1" {...props}>
+                <li className="text-xs text-neutral-300 mb-1 pl-1" {...props}>
                   {children[0].props.children}
                 </li>
               );
             }
             // For other cases, render normally
             return (
-              <li className="text-xs text-neutral-300 mb-1" {...props}>
+              <li className="text-xs text-neutral-300 mb-1 pl-1" {...props}>
                 {children}
               </li>
             );

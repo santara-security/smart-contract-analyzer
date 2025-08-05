@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { FiUpload, FiFile, FiCopy, FiCheck, FiSend, FiLoader } from 'react-icons/fi';
+import { FiUpload, FiFile, FiCopy, FiCheck, FiSend, FiLoader, FiZap, FiShield, FiCode, FiSearch } from 'react-icons/fi';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 export default function SmartContractAnalyzer() {
@@ -20,6 +20,7 @@ export default function SmartContractAnalyzer() {
   // Refs
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   // Generate a random conversation ID
   const generateConversationId = () => {
@@ -92,6 +93,13 @@ export default function SmartContractAnalyzer() {
       handleFileUpload(e.target.files[0]);
     }
   };
+
+  // Scroll to bottom of chat when messages change
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   // Generate conversation ID when contract code changes
   useEffect(() => {
@@ -174,25 +182,62 @@ export default function SmartContractAnalyzer() {
     }
   };
 
+  // Quick action prompts
+  const quickPrompts = [
+    { text: "Find vulnerabilities", icon: <FiShield className="w-3 h-3" /> },
+    { text: "Gas optimization", icon: <FiZap className="w-3 h-3" /> },
+    { text: "Explain contract", icon: <FiCode className="w-3 h-3" /> },
+    { text: "Best practices", icon: <FiSearch className="w-3 h-3" /> }
+  ];
+
   return (
     <div className="bg-transparent z-10 flex flex-col px-4 py-6 gap-6 mt-16 max-w-7xl mx-auto">
       <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg mt-4 shadow-lg p-4 md:p-6">
-        <h1 className="text-xl font-bold text-neutral-200 mb-2">Smart Contract Analyzer</h1>
-        <p className="text-xs text-neutral-300 mb-6">
-          Upload a Solidity (.sol) file or paste your smart contract code below to analyze it for security vulnerabilities and best practices.
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-xl font-bold text-neutral-200">Smart Contract Analyzer</h1>
+            <p className="text-xs text-neutral-300 mt-1">
+              Analyze smart contracts for security vulnerabilities and best practices
+            </p>
+          </div>
+          <div className="bg-blue-600/20 text-blue-400 px-2 py-1 rounded-full text-xs border border-blue-500/30 flex items-center">
+            <FiShield className="w-3 h-3 mr-1" />
+            AI-Powered
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Contract Input Section */}
           <div className="bg-neutral-800/30 rounded-lg p-4 space-y-4">
-            <h2 className="text-sm font-semibold text-neutral-200">Contract Input</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-neutral-200 flex items-center">
+                <FiCode className="w-4 h-4 mr-2 text-blue-400" />
+                Contract Input
+              </h2>
+              {contractCode && (
+                <button 
+                  onClick={copyToClipboard}
+                  className="text-xs text-blue-400 hover:text-blue-300 flex items-center bg-blue-600/20 hover:bg-blue-600/30 px-2 py-1 rounded border border-blue-500/30 transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <FiCheck className="mr-1 w-3 h-3" /> Copied
+                    </>
+                  ) : (
+                    <>
+                      <FiCopy className="mr-1 w-3 h-3" /> Copy
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             
             {/* File Upload Area */}
             <div 
-              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200 ${
                 isDragging 
                   ? 'border-blue-500 bg-blue-900/20' 
-                  : 'border-neutral-600 hover:border-neutral-500'
+                  : 'border-neutral-600 hover:border-neutral-500 hover:bg-neutral-700/20'
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -215,17 +260,17 @@ export default function SmartContractAnalyzer() {
 
             {/* File Info */}
             {file && (
-              <div className="bg-neutral-700/40 rounded p-3 flex items-center justify-between">
+              <div className="bg-neutral-700/40 rounded p-3 flex items-center justify-between border border-neutral-600/30">
                 <div className="flex items-center space-x-2">
-                  <FiFile className="text-neutral-400" />
+                  <FiFile className="text-neutral-400 w-4 h-4" />
                   <div>
-                    <p className="text-xs text-neutral-200 font-medium">{file.name}</p>
+                    <p className="text-xs text-neutral-200 font-medium truncate max-w-[180px]">{file.name}</p>
                     <p className="text-xs text-neutral-400">{(file.size / 1024).toFixed(2)} KB</p>
                   </div>
                 </div>
                 <button 
                   onClick={clearContract}
-                  className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20"
+                  className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
                 >
                   Remove
                 </button>
@@ -233,73 +278,89 @@ export default function SmartContractAnalyzer() {
             )}
 
             {/* Divider */}
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center py-2">
               <div className="flex-grow border-t border-neutral-700"></div>
-              <span className="flex-shrink mx-4 text-xs text-neutral-500">OR</span>
+              <span className="flex-shrink mx-4 text-xs text-neutral-500 bg-neutral-800/30 px-2 rounded">OR</span>
               <div className="flex-grow border-t border-neutral-700"></div>
             </div>
 
             {/* Text Area for Pasting Code */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-medium text-neutral-400">Paste Contract Code</label>
-                {contractCode && (
-                  <button 
-                    onClick={copyToClipboard}
-                    className="text-xs text-blue-400 hover:text-blue-300 flex items-center"
-                  >
-                    {copied ? (
-                      <>
-                        <FiCheck className="mr-1" /> Copied
-                      </>
-                    ) : (
-                      <>
-                        <FiCopy className="mr-1" /> Copy
-                      </>
-                    )}
-                  </button>
-                )}
+                <label className="text-xs font-medium text-neutral-400 flex items-center">
+                  <FiCode className="w-3 h-3 mr-1" />
+                  Paste Contract Code
+                </label>
               </div>
               <textarea
                 ref={textareaRef}
                 value={contractCode}
                 onChange={(e) => setContractCode(e.target.value)}
                 placeholder="// Paste your Solidity smart contract code here..."
-                className="w-full h-48 font-mono text-xs bg-neutral-700/50 text-neutral-200 rounded-lg p-3 border border-neutral-600/30 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 outline-none transition-all"
+                className="w-full h-40 font-mono text-xs bg-neutral-700/50 text-neutral-200 rounded-lg p-3 border border-neutral-600/30 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 outline-none transition-all resize-none"
               />
             </div>
           </div>
 
           {/* Chat Interface */}
           <div className="bg-neutral-800/30 rounded-lg p-4 space-y-4 flex flex-col h-full">
-            <h2 className="text-sm font-semibold text-neutral-200">Contract Analysis Chat</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-neutral-200 flex items-center">
+                <FiSend className="w-4 h-4 mr-2 text-green-400" />
+                Analysis Chat
+              </h2>
+              {messages.length > 0 && (
+                <div className="bg-green-600/20 text-green-400 px-2 py-1 rounded-full text-xs border border-green-500/30">
+                  {messages.length} messages
+                </div>
+              )}
+            </div>
             
             {/* Chat Messages */}
-            <div className="flex-grow overflow-y-auto max-h-96 space-y-4 pr-2">
+            <div ref={chatContainerRef} className="flex-grow overflow-y-auto max-h-96 space-y-3 pr-2 scrollbar-thin scrollbar-thumb-neutral-600 scrollbar-track-transparent scrollbar-thumb-rounded">
               {messages.length === 0 ? (
                 <div className="text-center py-8">
-                  <div className="text-neutral-400 mb-2">
-                    <FiLoader className="mx-auto h-6 w-6 animate-spin" />
+                  <div className="bg-neutral-700/40 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3 border border-neutral-600/30">
+                    <FiLoader className="w-5 h-5 text-neutral-400 animate-spin" />
                   </div>
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-neutral-400 mb-4">
                     {contractCode 
                       ? "Ask a question about your smart contract or click 'Analyze Contract' to get started" 
                       : "Upload a contract or paste code to begin analysis"}
                   </p>
+                  
+                  {/* Quick Actions */}
+                  {contractCode && (
+                    <div className="mt-4">
+                      <p className="text-xs text-neutral-400 mb-2">Try these example prompts:</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {quickPrompts.map((prompt, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setInput(prompt.text)}
+                            className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-2 rounded border border-neutral-600/30 hover:border-neutral-500 transition-all flex items-center justify-center"
+                          >
+                            <span className="mr-1">{prompt.icon}</span>
+                            {prompt.text}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
-                messages.map((message) => (
+                messages.map((message, index) => (
                   <div
-                    key={message.id}
-                    className={`p-3 rounded-lg ${
+                    key={index}
+                    className={`p-3 rounded-lg border ${
                       message.role === 'user'
-                        ? 'bg-blue-600/20 border border-blue-500/30 ml-4'
-                        : 'bg-neutral-700/40 border border-neutral-600/30 mr-4'
+                        ? 'bg-blue-600/20 border-blue-500/30 ml-4'
+                        : 'bg-neutral-700/40 border-neutral-600/30 mr-4'
                     }`}
                   >
                     <div className="text-xs font-medium mb-1 flex items-center">
                       <span className={message.role === 'user' ? 'text-blue-400' : 'text-green-400'}>
-                        {message.role === 'user' ? 'You' : 'Contract Analyzer'}
+                        {message.role === 'user' ? 'You' : 'Santara AI'}
                       </span>
                       {message.toolInvocations && (
                         <span className="ml-2 bg-purple-600/20 text-purple-400 px-1.5 py-0.5 rounded text-xs border border-purple-500/30">
@@ -307,13 +368,13 @@ export default function SmartContractAnalyzer() {
                         </span>
                       )}
                     </div>
-                    <MarkdownRenderer content={message.content} />
+                    <MarkdownRenderer content={message.content} className="text-xs" />
                   </div>
                 ))
               )}
               {isLoading && (
-                <div className="p-3 rounded-lg bg-neutral-700/40 border border-neutral-600/30 mr-4">
-                  <div className="text-xs font-medium mb-1 text-green-400">Contract Analyzer</div>
+                <div className="p-3 rounded-lg bg-neutral-700/40 border border-neutral-600/30 mr-4 animate-pulse">
+                  <div className="text-xs font-medium mb-1 text-green-400">Santara AI</div>
                   <div className="flex items-center text-neutral-400">
                     <FiLoader className="mr-2 animate-spin" />
                     <span className="text-xs">Analyzing contract...</span>
@@ -335,49 +396,16 @@ export default function SmartContractAnalyzer() {
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim() || !contractCode}
-                  className="flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-medium transition-colors"
+                  className="flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-medium transition-colors border border-blue-500/30"
                 >
                   {isLoading ? (
-                    <FiLoader className="animate-spin" />
+                    <FiLoader className="animate-spin w-3 h-3" />
                   ) : (
-                    <FiSend />
+                    <FiSend className="w-3 h-3" />
                   )}
                 </button>
               </div>
             </form>
-
-            {/* Quick Actions */}
-            {contractCode && messages.length === 0 && (
-              <div className="mt-2">
-                <p className="text-xs text-neutral-400 mb-2">Try these example prompts:</p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => setInput("Analyze this contract for security vulnerabilities")}
-                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
-                  >
-                    Find vulnerabilities
-                  </button>
-                  <button
-                    onClick={() => setInput("Check for gas optimization opportunities")}
-                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
-                  >
-                    Gas optimization
-                  </button>
-                  <button
-                    onClick={() => setInput("Explain what this contract does")}
-                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
-                  >
-                    Explain contract
-                  </button>
-                  <button
-                    onClick={() => setInput("Search for best practices related to this contract pattern")}
-                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
-                  >
-                    Search best practices
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -393,9 +421,9 @@ export default function SmartContractAnalyzer() {
                   handleSubmit(event);
                 }, 100);
               }}
-              className="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg text-sm font-medium transition-all shadow-lg hover:shadow-green-500/20 border border-green-500/30"
             >
-              <FiLoader className="mr-2" />
+              <FiZap className="mr-2 w-4 h-4" />
               Analyze Contract
             </button>
           </div>
