@@ -175,8 +175,8 @@ export default function SmartContractAnalyzer() {
   };
 
   return (
-    <div className="bg-transparent z-10 flex flex-col px-4 py-6 gap-6 mt-8 max-w-7xl mx-auto">
-      <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg shadow-lg p-4 md:p-6">
+    <div className="bg-transparent z-10 flex flex-col px-4 py-6 gap-6 mt-16 max-w-7xl mx-auto">
+      <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-lg mt-4 shadow-lg p-4 md:p-6">
         <h1 className="text-xl font-bold text-neutral-200 mb-2">Smart Contract Analyzer</h1>
         <p className="text-xs text-neutral-300 mb-6">
           Upload a Solidity (.sol) file or paste your smart contract code below to analyze it for security vulnerabilities and best practices.
@@ -374,12 +374,6 @@ export default function SmartContractAnalyzer() {
                     className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
                   >
                     Search best practices
-                  </button>
-                  <button
-                    onClick={() => setInput("Find similar contracts or patterns in the knowledge base")}
-                    className="text-xs bg-neutral-700/50 hover:bg-neutral-700 text-neutral-300 px-2 py-1 rounded"
-                  >
-                    Find similar contracts
                   </button>
                 </div>
               </div>

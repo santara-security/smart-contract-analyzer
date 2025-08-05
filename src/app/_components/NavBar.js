@@ -57,7 +57,7 @@ export default function NavBar() {
           {/* Center: Search Button */}
           <div className="flex-1 flex justify-center">
             <button
-              className="hidden md:flex items-center justify-between w-full max-w-xs bg-neutral-700/40 rounded p-2 border border-neutral-600/30 ml-2 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-600/20 transition-colors cursor-pointer"
+              className="hidden md:flex items-center justify-between w-full max-w-xs bg-neutral-700/40 rounded p-2 border border-neutral-600/30 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-600/20 transition-colors cursor-pointer"
               title="Open Search (Ctrl+K)"
               onClick={() => {
                 refetch();
@@ -104,12 +104,12 @@ export default function NavBar() {
           </div>
           {/* Right: Links */}
           <div className="hidden md:flex items-center gap-8">
-            {/* <Link
-              href="/audit"
+            <Link
+              href="/analyze-sc"
               className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors font-geist font-normal"
             >
-              Audit Smart Contract
-            </Link> */}
+              Analyze Contract with AI
+            </Link>
           </div>
           {/* Mobile Menu Button */}
           <button className="md:hidden">

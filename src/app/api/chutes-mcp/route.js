@@ -1,10 +1,8 @@
 import dotenv from "dotenv";
-import { generateObject, generateText } from "ai";
-// import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-// import { vectorizeSearch } from "@/lib/chutes-tools";
+import { generateText } from "ai";
 import { z } from "zod";
-import { createOpenAI, openai } from "@ai-sdk/openai";
-import { getKak, vectorReadFile, vectorSearch } from "@/lib/chutes-tools";
+import { createOpenAI } from "@ai-sdk/openai";
+import { vectorReadFile, vectorSearch } from "@/lib/chutes-tools";
 
 
 const chutesProvider = createOpenAI({
