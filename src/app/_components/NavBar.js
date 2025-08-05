@@ -5,6 +5,7 @@ import { useState } from "react";
 import SearchModal from "./SearchModal";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import ShinyText from "./ShinyText";
 
 export default function NavBar() {
   // Modal state
@@ -54,6 +55,7 @@ export default function NavBar() {
               <span className="text-lg tracking-tight font-geist font-normal">Santara Security</span>
             </Link>
           </div>
+
           {/* Center: Search Button */}
           <div className="flex-1 flex justify-center">
             <button
@@ -102,15 +104,18 @@ export default function NavBar() {
               </span>
             </button>
           </div>
+
           {/* Right: Links */}
           <div className="hidden md:flex items-center gap-8">
             <Link
               href="/analyze-sc"
-              className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors font-geist font-normal"
+              className="text-xs font-mono text-neutral-400 hover:text-neutral-200 transition-colors font-geist font-normal 
+              bg-[#111] border border-[#353535] hover:bg-[#222] rounded flex justify-center items-center w-full px-4 py-2"
             >
-              Analyze Contract with AI
+              <ShinyText text="Analyze Contract with AI ✨" speed={10} />
             </Link>
           </div>
+
           {/* Mobile Menu Button */}
           <button className="md:hidden">
             <svg
