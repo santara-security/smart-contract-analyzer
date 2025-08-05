@@ -10,11 +10,22 @@ import CtaSection from "./_components/CtaSection";
 export default function Home() {
   return (
     <>
+      {/* Hero: clear message + two primary CTAs */}
       <HeroSection />
-      <SecurityStats />
+
+      {/* Core features: two primary ways to analyze */}
       <SecurityFeatures />
+
+      {/* Compact workflow snapshot */}
       <AnalysisWorkflow />
+
+      {/* Trust indicators / social proof */}
       <SecurityTrust />
+
+      {/* Optional stats could be placed here if needed */}
+      {/* <SecurityStats /> */}
+
+      {/* Final CTA */}
       <CtaSection />
     </>
   );
