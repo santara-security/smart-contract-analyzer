@@ -1,31 +1,38 @@
 import dotenv from "dotenv";
-import { ChutesClient } from "@/lib/chutes";
-import { vectorizeSearch as vectorizeSearchTool } from "@/lib/chutes-tools";
+import { generateObject, generateText } from "ai";
+// import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+// import { vectorizeSearch } from "@/lib/chutes-tools";
+import { z } from "zod";
+import { createOpenAI, openai } from "@ai-sdk/openai";
+import { getKak, vectorSearch } from "@/lib/chutes-tools";
+
+// const provider = createOpenAICompatible({
+//   name: "chutes",
+//   apiKey: process.env.CHUTES_API_TOKEN,
+//   baseURL: "https://llm.chutes.ai/v1",
+//   includeUsage: true, // Include usage information in streaming responses
+// });
+
+// const model = provider("moonshotai/Kimi-K2-Instruct");
+// const openaiModel = openai("gpt-4.1-mini");
+const chutesProvider = createOpenAI({
+  name: "chutes",
+  apiKey: process.env.CHUTES_API_TOKEN,
+  baseURL: "https://llm.chutes.ai/v1",
+});
+
+const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
 
 dotenv.config();
 
 // Initialize Chutes client
-const chutesClient = new ChutesClient();
-
-// In-memory store for conversation histories
-// In a production environment, this should be stored in a database
 const conversationHistories = new Map();
 
 export async function POST(req) {
-  try {
-    const {
-      messages,
-      conversationId,
-      stream = true,
-      maxTokens = 1024,
-      temperature = 0.7,
-      useTools = true,
-      toolChoice = "auto",
-    } = await req.json();
+  console.log(model);
 
-    if (!process.env.CHUTES_API_TOKEN) {
-      throw new Error("CHUTES_API_TOKEN is not configured");
-    }
+  try {
+    const { conversationId, prompt, messages } = await req.json();
 
     // Get or initialize conversation history
     let conversationHistory = [];
@@ -33,157 +40,72 @@ export async function POST(req) {
       conversationHistory = conversationHistories.get(conversationId) || [];
     }
 
-    // Prepare the request to Chutes AI
-    let systemMessage = "";
-    if (useTools) {
-      systemMessage =
-        "You are a smart contract analysis assistant. You can analyze smart contracts and fetch blockchain data. When asked to analyze contracts or get blockchain data, indicate that you would use the appropriate tools.";
+    const systemPrompt = `You are a smart contract analysis assistant. Use the tools provided to answer questions about vulnerabilities and smart contract functions.
+    Be honest and concise in your responses. If you don't know the answer, say "I don't know".`;
+
+    // Build the messages array properly
+    let apiMessages = [
+      { role: "system", content: systemPrompt },
+      ...conversationHistory,
+    ];
+
+    // Add the new user message
+    let userMessage = "";
+    if (messages) {
+      if (typeof messages === "string") {
+        userMessage = messages;
+      } else if (Array.isArray(messages) && messages.length > 0) {
+        // If messages is an array, use the last user message
+        const lastUserMessage = messages.filter((m) => m.role === "user").pop();
+        userMessage = lastUserMessage
+          ? lastUserMessage.content
+          : messages[messages.length - 1].content;
+      } else if (typeof messages === "object" && messages.content) {
+        userMessage = messages.content;
+      }
+    } else if (prompt) {
+      userMessage = prompt;
     }
 
-    // Combine conversation history with new messages
-    const apiMessages = [...conversationHistory, ...messages];
+    if (userMessage) {
+      apiMessages.push({ role: "user", content: userMessage });
+    }
 
-    // Define tools that can be passed to the AI
-    const tools = useTools ? [vectorizeSearchTool] : [];
+    console.log(
+      "Sending messages to API:",
+      JSON.stringify(apiMessages, null, 2)
+    );
 
-    const model = "zai-org/GLM-4.5-FP8";
-
-    // Use the ChutesClient library for the API call
-    const result = await chutesClient.chatCompletion({
+    // OpenAI text generation using Vercel AI SDK
+    const aiResult = await generateText({
+      model: model,
       messages: apiMessages,
-      model,
-      stream: stream,
-      maxTokens,
-      temperature,
-      useTools,
-      toolChoice,
-      tools,
+      tools: {
+        vectorSearch: vectorSearch,
+      },
+      toolChoice: "auto", // Automatically choose the best tool
+      schema: z.object({
+        text: z.string().describe("The AI's response text"),
+      }),
+      mode: 'json'
     });
 
-    console.log('ChutesClient result with tools:', JSON.stringify(result, null, 2));
+    console.log("AI result:", aiResult);
+    const { text, toolCalls, toolResults } = aiResult;
 
-    let content = result.content;
-    let toolCalls = [];
-    let toolResults = [];
-
-    // Check for tool calls in the response and execute them
-    // First, check in streaming chunks for tool calls
-    if (Array.isArray(result.rawResponse)) {
-      for (const chunk of result.rawResponse) {
-        if (chunk.choices?.[0]?.delta?.tool_calls) {
-          toolCalls = chunk.choices[0].delta.tool_calls;
-          console.log('Tool calls detected in streaming chunk:', toolCalls);
-          break;
-        }
-      }
-    }
-    // Also check in the non-streaming format
-    if (result.rawResponse?.choices?.[0]?.message?.tool_calls) {
-      toolCalls = result.rawResponse.choices[0].message.tool_calls;
-      console.log('Tool calls detected in message:', toolCalls);
-    }
-
-    // Execute each tool call if we found any
-    if (toolCalls.length > 0) {
-      for (const toolCall of toolCalls) {
-        try {
-          if (toolCall.function.name === 'vectorizeSearch') {
-            const args = JSON.parse(toolCall.function.arguments);
-            console.log('Executing vectorizeSearch with args:', args);
-            
-            // Execute the tool
-            const toolResult = await vectorizeSearchTool.execute(args);
-            console.log('Tool result:', toolResult);
-            
-            toolResults.push({
-              toolCallId: toolCall.id,
-              result: toolResult
-            });
-
-            // Add tool result to messages and make another API call
-            const updatedMessages = [
-              ...apiMessages,
-              {
-                role: 'assistant',
-                content: null,
-                tool_calls: toolCalls
-              },
-              {
-                role: 'tool',
-                tool_call_id: toolCall.id,
-                name: toolCall.function.name,
-                content: JSON.stringify(toolResult)
-              }
-            ];
-
-            // Make another API call with the tool results
-            const followUpResult = await chutesClient.chatCompletion({
-              messages: updatedMessages,
-              model,
-              stream: false, // Use non-streaming for tool follow-up
-              maxTokens,
-              temperature,
-              useTools: false, // Disable tools for follow-up to avoid recursion
-              toolChoice: 'none',
-              tools: [],
-            });
-
-            console.log('Follow-up result:', followUpResult);
-            
-            // Use the follow-up content as the final response
-            if (followUpResult.content) {
-              content = followUpResult.content;
-            }
-          }
-        } catch (toolError) {
-          console.error('Tool execution error:', toolError);
-          toolResults.push({
-            toolCallId: toolCall.id,
-            error: toolError.message
-          });
-        }
-      }
-    }
-
-    // If content is empty, try to extract it from rawResponse
-    if (!content && result.rawResponse) {
-      if (result.rawResponse.choices?.[0]?.message?.content) {
-        content = result.rawResponse.choices[0].message.content;
-      } else if (Array.isArray(result.rawResponse) && result.rawResponse.length > 0) {
-        // Handle streaming chunks that might contain content
-        content = result.rawResponse
-          .map(chunk => chunk.choices?.[0]?.delta?.content || chunk.choices?.[0]?.message?.content || '')
-          .filter(Boolean)
-          .join('');
-      }
-    }
-
-    console.log('Final content to return:', content);
-
-    // Update conversation history with new messages
-    if (conversationId) {
-      // Add user messages and assistant response to history
-      const newHistory = [...messages];
-      if (content) {
-        newHistory.push({
-          role: 'assistant',
-          content: content,
-          tool_calls: toolCalls.length > 0 ? toolCalls : undefined
-        });
-      }
-      
-      // Store updated history
-      conversationHistories.set(conversationId, [...conversationHistory, ...newHistory]);
+    // Update conversation history
+    if (conversationId && userMessage) {
+      conversationHistory.push({ role: "user", content: userMessage });
+      conversationHistory.push({ role: "assistant", content: text });
+      conversationHistories.set(conversationId, conversationHistory);
     }
 
     return new Response(
       JSON.stringify({
-        content,
-        usage: result.usage,
-        model: model,
-        finishReason: result.finishReason,
+        text,
         toolCalls,
         toolResults,
+        conversationHistory: conversationHistory,
       }),
       {
         status: 200,
@@ -208,11 +130,19 @@ export async function POST(req) {
 // Health check endpoint
 export async function GET() {
   try {
-    const healthStatus = await chutesClient.healthCheck();
-    return new Response(JSON.stringify(healthStatus), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+    // Simple health check - just verify the model is accessible
+    const { text } = await generateText({
+      model: model,
+      messages: [{ role: "user", content: "Hello" }],
     });
+
+    return new Response(
+      JSON.stringify({ status: "healthy", message: "API is working" }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,

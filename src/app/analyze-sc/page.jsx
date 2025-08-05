@@ -118,7 +118,7 @@ export default function SmartContractAnalyzer() {
     if (!input.trim() || isLoading) return;
 
     // Add user message to chat
-    const userMessage = { id: Date.now(), role: 'user', content: input };
+    const userMessage = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -140,10 +140,6 @@ export default function SmartContractAnalyzer() {
         body: JSON.stringify({
           messages: apiMessages,
           conversationId: conversationId,
-          stream: true,
-          useTools: true,
-          maxTokens: 2048,
-          temperature: 0.7,
         }),
       });
 
@@ -151,9 +147,8 @@ export default function SmartContractAnalyzer() {
       
       const data = await response.json();
       const assistantMessage = {
-        id: Date.now() + 1,
         role: 'assistant',
-        content: data.content,
+        content: data.text,
         toolInvocations: data.toolCalls?.length > 0 ? data.toolCalls : undefined
       };
       
@@ -161,7 +156,6 @@ export default function SmartContractAnalyzer() {
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = {
-        id: Date.now() + 1,
         role: 'assistant',
         content: `Error: ${error.message}`
       };
