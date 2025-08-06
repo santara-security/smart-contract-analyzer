@@ -125,6 +125,9 @@ export default function SearchModal({
 
           </button>
         </form>
+        <p className="text-xs text-neutral-500 mt-2 text-center font-mono">
+          Currently supports Ethereum & Base
+        </p>
 
         {/* Search Results Section - shown when searching tokens */}
         {searchInput && searchInput.length >= 2 && (
@@ -141,8 +144,8 @@ export default function SearchModal({
                     className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-32"></div>
-                      <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-80"></div>
+                      <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-3/5 max-w-full"></div>
+                      <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-full max-w-full"></div>
                     </div>
                     <div className="flex items-center gap-2 ml-3">
                       <div className="h-5 w-14 bg-neutral-700/50 rounded-full animate-pulse"></div>
@@ -217,8 +220,8 @@ export default function SearchModal({
                       className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-32"></div>
-                        <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-80"></div>
+                        <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-3/5 max-w-full"></div>
+                        <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-full max-w-full"></div>
                       </div>
                       <div className="flex items-center gap-2 ml-3">
                         <div className="h-5 w-14 bg-neutral-700/50 rounded-full animate-pulse"></div>
