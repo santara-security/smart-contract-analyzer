@@ -62,7 +62,7 @@ export default function NavBar() {
       }
 
       const r = await response.json();
-      const selectedChainIds = [1, 56, 8453];
+      const selectedChainIds = [1, 8453];
 
       if (r.data.systemList.length > 0) {
         const x = r.data.systemList

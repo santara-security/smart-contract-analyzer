@@ -7,7 +7,7 @@ const fetchOnchainData = async (contractAddress, pair) => {
   }
 
   const honeyPot = fetch(
-    `/api/honeypot/is_honey_pot?tokenAddress=${contractAddress}&pair=${pair.address}`
+    `/api/honeypot/is_honey_pot?tokenAddress=${contractAddress}&pair=${pair.address}&chain=${pair.chain}`
   );
   const topHolders = fetch(
     `/api/honeypot/top_holders?tokenAddress=${contractAddress}&chain=${pair.chain}`

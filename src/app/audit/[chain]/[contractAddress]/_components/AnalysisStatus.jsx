@@ -190,6 +190,9 @@ const HoneyPotCard = ({ honeyPot }) => {
     return parseInt(gas).toLocaleString();
   };
 
+  console.log(`contract code vvvv`)
+  console.log(contractCode);
+
   return (
     <div className="mt-4 space-y-4">
       {/* Main Status Header */}
@@ -203,7 +206,7 @@ const HoneyPotCard = ({ honeyPot }) => {
         </div>
 
         <div className="grid grid-cols-2 gap-2 text-xs">
-          {contractCode?.openSource &&(
+          {contractCode.hasOwnProperty("openSource") && (
           <div className="flex items-center space-x-2">
             <div
               className={`w-2 h-2 rounded-full ${
@@ -215,7 +218,8 @@ const HoneyPotCard = ({ honeyPot }) => {
             </span>
           </div>
           )}
-          {contractCode?.isProxy && (
+
+          {contractCode.hasOwnProperty("isProxy") && (
           <div className="flex items-center space-x-2">
             <div
               className={`w-2 h-2 rounded-full ${
@@ -421,9 +425,9 @@ export const AnalysisStatus = ({
             </div>
           )}
 
-        {/* {!honeyPotLoading && honeyPot && !honeyPotError && honeyPot.length > 0 && (
+        {!honeyPotLoading && honeyPot && !honeyPotError && honeyPot.length > 0 && (
           <HoneyPotCard honeyPot={honeyPot[0]} />
-        )} */}
+        )}
       </div>
     </div>
   );
