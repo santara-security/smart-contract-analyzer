@@ -11,7 +11,7 @@ export default function SecurityTrust() {
         </svg>
       ),
       title: "Security Focused",
-      description: "Open source security tools and transparent analysis methodology"
+      description: "Open source tooling with a reproducible, transparent methodology."
     },
     {
       icon: (
@@ -20,7 +20,7 @@ export default function SecurityTrust() {
         </svg>
       ),
       title: "Transparent Analysis",
-      description: "Detailed vulnerability explanations with affected code and remediation steps"
+      description: "Clear findings, affected code, and concise remediation steps."
     },
     {
       icon: (
@@ -28,8 +28,8 @@ export default function SecurityTrust() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
         </svg>
       ),
-      title: "Multi-Chain Verified",
-      description: "Base network primary support with extensible architecture for EVM chains"
+      title: "Multi-Chain Ready",
+      description: "Base first, built to extend across EVM networks cleanly."
     },
     {
       icon: (
@@ -38,7 +38,7 @@ export default function SecurityTrust() {
         </svg>
       ),
       title: "Community Trusted",
-      description: "Security researcher validated with continuous community feedback"
+      description: "Built by practitioners and validated with ongoing feedback."
     }
   ];
 
@@ -76,7 +76,7 @@ export default function SecurityTrust() {
               viewport={{ once: true }}
               className="text-center"
             >
-              <div className="inline-flex p-4 rounded-lg bg-neutral-800/30 text-green-400 mb-4">
+              <div className="inline-flex p-4 rounded-lg bg-neutral-800/30 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-400 mb-4">
                 {item.icon}
               </div>
               <h4 className="text-lg font-semibold text-neutral-200 mb-2">
@@ -97,20 +97,20 @@ export default function SecurityTrust() {
           className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 text-center"
         >
           <div>
-            <div className="text-2xl font-bold text-green-400 mb-1">100%</div>
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-400 mb-1">100%</div>
             <div className="text-xs text-neutral-400">Open Source</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-400 mb-1">24/7</div>
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-400 mb-1">24/7</div>
             <div className="text-xs text-neutral-400">Available</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-400 mb-1">Multi</div>
-            <div className="text-xs text-neutral-400">Chain Support</div>
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-400 mb-1">EVM</div>
+            <div className="text-xs text-neutral-400">Ready</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-orange-400 mb-1">Real-time</div>
-            <div className="text-xs text-neutral-400">Analysis</div>
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-red-400 mb-1">Realtime</div>
+            <div className="text-xs text-neutral-400">Insights</div>
           </div>
         </motion.div>
       </div>

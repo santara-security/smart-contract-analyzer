@@ -184,7 +184,7 @@ const IDE = ({ params }) => {
     <div className="h-screen w-screen flex flex-col" style={{ minHeight: '100vh', minWidth: '100vw' }}>
       {/* IDE Header */}
       <header className="bg-neutral-900/20 backdrop-blur-md px-6 py-4 flex items-center border-b border-neutral-800/30">
-        <h1 className="text-xl font-bold text-neutral-200 tracking-tight">IDE Beta</h1>
+        <h1 className="text-xl font-bold text-neutral-200 tracking-tight">Smart Contract Viewer</h1>
       </header>
       {/* Main IDE Layout */}
       <div className="flex-1 flex flex-col min-h-0">

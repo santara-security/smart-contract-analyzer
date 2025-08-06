@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Custom scrollbar styles for dark, compact, modern look */
 ::-webkit-scrollbar {
   width: 8px;
@@ -18,33 +20,62 @@
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2563eb rgba(38,38,38,0.2);
+  scrollbar-color: #2563eb rgba(38, 38, 38, 0.2);
 }
+
 .animated-connector {
-  background: linear-gradient(90deg, #3b82f6, #22d3ee, #a78bfa, #f59e42, #3b82f6);
+  background: linear-gradient(
+    90deg,
+    #3b82f6,
+    #22d3ee,
+    #a78bfa,
+    #f59e42,
+    #3b82f6
+  );
   background-size: 400% 400%;
   animation: gradientMove 3s ease infinite;
 }
 
 @keyframes gradientMove {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-}
-.animated-connector {
-  background: linear-gradient(90deg, #3b82f6, #22d3ee, #a78bfa, #f59e42, #3b82f6);
-  background-size: 400% 400%;
-  animation: gradientMove 3s ease infinite;
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-@keyframes gradientMove {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+.shiny-text {
+  color: #b5b5b5a4; /* Adjust this color to change intensity/style */
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 5s linear infinite;
 }
-@import "tailwindcss";
 
-@import "tailwindcss";
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

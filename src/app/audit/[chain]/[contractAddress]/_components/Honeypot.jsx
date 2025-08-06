@@ -176,7 +176,7 @@ const PairCard = (props) => {
             </div>
           )}
 
-          {honeypotResult && (
+          {/* {honeypotResult && (
             <div className="space-y-4">
               <div>
                 <h5 className="text-neutral-200 font-medium mb-2">
@@ -287,7 +287,7 @@ const PairCard = (props) => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

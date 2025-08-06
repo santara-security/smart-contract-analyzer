@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: santara_plugin
+Version: 0.1
+Summary: Santara Slither plugin.
+Author: Your Name
+Requires-Dist: slither-analyzer

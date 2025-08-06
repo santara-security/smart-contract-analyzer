@@ -16,7 +16,8 @@ from datetime import datetime
 import json
 
 # Constants - easily configurable
-OUTPUT_FOLDER = "../crawl_result"  # Change this to modify the output directory
+BASE_FOLDER = "../crawl_result"  # Base directory for all crawled content
+OUTPUT_FOLDER = "default"  # Default subfolder name within base folder
 MAX_DEPTH = 3  # Maximum crawling depth
 DELAY_BETWEEN_REQUESTS = 1  # Delay in seconds between requests
 MAX_PAGES = 100  # Maximum number of pages to crawl
@@ -30,15 +31,13 @@ class WebCrawler:
         Args:
             base_url (str): The starting URL to crawl from
             url_filter_pattern (str): Pattern to filter URLs (only URLs starting with this will be crawled)
-            output_folder (str): Directory to save markdown files
+            output_folder (str): Subfolder name within BASE_FOLDER
         """
         self.base_url = base_url
         self.url_filter_pattern = url_filter_pattern
         
-        # Create website-specific folder
-        parsed_url = urlparse(base_url)
-        website_name = parsed_url.netloc.replace('www.', '').replace('.', '_')
-        self.output_folder = os.path.join(output_folder, website_name)
+        # Create folder structure: BASE_FOLDER/output_folder (no website subfolder)
+        self.output_folder = os.path.join(BASE_FOLDER, output_folder)
         
         self.visited_urls = set()
         self.to_visit = []
@@ -86,9 +85,9 @@ class WebCrawler:
         try:
             with open(info_file, 'w', encoding='utf-8') as f:
                 json.dump(website_info, f, indent=2, ensure_ascii=False)
-            print(f"✓ Website info saved: _website_info.json")
+            print(f"- Website info saved: _website_info.json")
         except Exception as e:
-            print(f"✗ Error saving website info: {e}")
+            print(f"- Error saving website info: {e}")
     
     def is_valid_url(self, url):
         """
@@ -259,25 +258,17 @@ class WebCrawler:
         if not filename.endswith('.md'):
             filename += '.md'
         
-        # Ensure unique filename
-        counter = 1
-        original_filename = filename
+        # Use the filename directly (will replace if exists)
         filepath = os.path.join(self.output_folder, filename)
         
-        while os.path.exists(filepath):
-            name, ext = os.path.splitext(original_filename)
-            filename = f"{name}_{counter}{ext}"
-            filepath = os.path.join(self.output_folder, filename)
-            counter += 1
-        
-        # Save file
+        # Save file (will overwrite if exists)
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
-            print(f"✓ Saved: {filename}")
+            print(f" Saved: {filename}")
             return filepath
         except Exception as e:
-            print(f"✗ Error saving {filename}: {e}")
+            print(f" Error saving {filename}: {e}")
             return None
     
     def crawl_page(self, url):
@@ -392,9 +383,9 @@ class WebCrawler:
         try:
             with open(summary_file, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=2, ensure_ascii=False)
-            print(f"✓ Crawl summary saved: _crawl_summary.json")
+            print(f"- Crawl summary saved: _crawl_summary.json")
         except Exception as e:
-            print(f"✗ Error saving crawl summary: {e}")
+            print(f"- Error saving crawl summary: {e}")
 
 
 def parse_arguments():
@@ -423,7 +414,7 @@ Examples:
     parser.add_argument(
         '--output', '-o',
         default=OUTPUT_FOLDER,
-        help=f'Base output folder for markdown files (default: {OUTPUT_FOLDER}). Website-specific folders will be created inside this directory.'
+        help=f'Subfolder name within {BASE_FOLDER} (default: {OUTPUT_FOLDER}). Final structure: {BASE_FOLDER}/[output]/'
     )
     
     parser.add_argument(
@@ -451,23 +442,20 @@ Examples:
 
 
 def main():
-    """
-    Main function to run the crawler with command line arguments.
-    """
-    
-    # Parse command line arguments
+    """Main function to run the crawler."""
     args = parse_arguments()
     
-    # Create website-specific folder name
     parsed_url = urlparse(args.base_url)
-    website_name = parsed_url.netloc.replace('www.', '').replace('.', '_')
-    final_output_folder = os.path.join(args.output, website_name)
+    website_name = parsed_url.netloc.replace('www.', '')
+    final_output_folder = os.path.join(BASE_FOLDER, args.output)
     
     print("Web Crawler Starting...")
     print(f"Base URL: {args.base_url}")
     print(f"Filter pattern: {args.filter_pattern}")
-    print(f"Website: {parsed_url.netloc.replace('www.', '')}")
-    print(f"Output folder: {final_output_folder}")
+    print(f"Website: {website_name}")
+    print(f"Base folder: {BASE_FOLDER}")
+    print(f"Output subfolder: {args.output}")
+    print(f"Final output folder: {final_output_folder}")
     print(f"Max pages: {args.max_pages}")
     print(f"Max depth: {args.max_depth}")
     print(f"Delay between requests: {args.delay}s")

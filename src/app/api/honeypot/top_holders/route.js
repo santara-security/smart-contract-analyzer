@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import chains from "@/lib/chains.json";
+import chains from "@/lib/chains";
 import { setCache, getCache } from "@/lib/cache";
 
-const defaultChain = chains.chains.filter((chain) => chain.name === "base")[0];
+const defaultChain = chains.filter((chain) => chain.name === "base");
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

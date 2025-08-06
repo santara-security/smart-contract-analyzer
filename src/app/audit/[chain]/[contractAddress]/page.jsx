@@ -106,6 +106,7 @@ export default function AuditPage({ params }) {
               analysisScore={analysisScore}
               honeyPot={honeyPot}
               honeyPotLoading={loadingHoneypot}
+              honeyPotError={errorHoneypot}
             />
 
             {/* Tab Navigation */}

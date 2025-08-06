@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import chains from "@/lib/chains.json";
+import chains from "@/lib/chains";
 import fetchContract from "@/lib/utils/downloadContract";
 import { promises as fs } from "fs";
 import path from "path";
@@ -8,7 +8,7 @@ import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
-const defaultChain = chains.chains.filter((chain) => chain.name === "base");
+const defaultChain = chains.filter((chain) => chain.name === "base");
 
 // Helper function to run Slither analysis
 async function runSlitherAnalysis(chain, tokenAddress) {
@@ -18,7 +18,19 @@ async function runSlitherAnalysis(chain, tokenAddress) {
   // Create output directory if it doesn't exist
   await fs.mkdir(outputDir, { recursive: true });
 
-  const slitherCommand = `slither ${chain}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
+  let chainName = '';
+  switch (chain) {
+    case "base":
+      chainName = "base";
+      break;
+    case "ethereum":
+      chainName = "mainnet";
+      break;
+    default:
+      chainName = "base";
+  }
+
+  const slitherCommand = `slither ${chainName}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
 
   try {
     console.log(`Running Slither analysis: ${slitherCommand}`);
@@ -106,7 +118,7 @@ export async function GET(request) {
     );
   }
 
-  const selectedChain = chains.chains.find((c) => c.name === chain);
+  const selectedChain = chains.find((c) => c.name === chain);
 
   if (!selectedChain) {
     return NextResponse.json(

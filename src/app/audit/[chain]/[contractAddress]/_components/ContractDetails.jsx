@@ -42,10 +42,11 @@ const getExplorerUrl = (selectedChain, address) => {
 };
 
 export const ContractDetails = ({ chain, contractAddress }) => {
-  const { tokenData, loading: tokenLoading } = useTokenInfo(
-    chain,
-    contractAddress
-  );
+  const {
+    tokenData,
+    loading: tokenLoading,
+    error: tokenError,
+  } = useTokenInfo(chain, contractAddress);
 
   const selectedChain = getChainData(chain);
 
@@ -64,7 +65,14 @@ export const ContractDetails = ({ chain, contractAddress }) => {
         {/* Network Badge */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-neutral-400">Network</span>
-          <span className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-400 px-2 py-1 rounded-full text-xs font-medium border border-blue-500/30">
+          <span className="flex items-center bg-gradient-to-r text-blue-400 px-2 py-1 rounded-full text-xs font-medium">
+          {selectedChain?.iconUrl && (
+            <img
+              src={selectedChain.iconUrl}
+              alt={chainDisplayName}
+              className="w-4 h-4 mr-1 rounded-full"
+            />
+          )}
             {chainDisplayName}
           </span>
         </div>
@@ -85,7 +93,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
           <div className="flex items-center justify-center py-4">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
           </div>
-        ) : tokenData ? (
+        ) : tokenData && !tokenError ? (
           <div className="space-y-3">
             {/* Token Name & Symbol */}
             <div className="grid grid-cols-2 gap-3">

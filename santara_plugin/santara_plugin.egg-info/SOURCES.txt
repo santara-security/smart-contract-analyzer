@@ -1,0 +1,9 @@
+README.md
+setup.py
+santara_plugin/__init__.py
+santara_plugin.egg-info/PKG-INFO
+santara_plugin.egg-info/SOURCES.txt
+santara_plugin.egg-info/dependency_links.txt
+santara_plugin.egg-info/entry_points.txt
+santara_plugin.egg-info/requires.txt
+santara_plugin.egg-info/top_level.txt
