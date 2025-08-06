@@ -190,7 +190,7 @@ const HoneyPotCard = ({ honeyPot }) => {
     return parseInt(gas).toLocaleString();
   };
 
-  console.log(`contract code vvvv`)
+  console.log(`contract code vvvv`);
   console.log(contractCode);
 
   return (
@@ -207,46 +207,52 @@ const HoneyPotCard = ({ honeyPot }) => {
 
         <div className="grid grid-cols-2 gap-2 text-xs">
           {contractCode.hasOwnProperty("openSource") && (
-          <div className="flex items-center space-x-2">
-            <div
-              className={`w-2 h-2 rounded-full ${
-                contractCode.openSource ? "bg-green-500" : "bg-red-500"
-              }`}
-            />
-            <span className="text-neutral-300">
-              {contractCode.openSource ? "Open Source" : "Closed Source"}
-            </span>
-          </div>
+            <div className="flex items-center space-x-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  contractCode.openSource ? "bg-green-500" : "bg-red-500"
+                }`}
+              />
+              <span className="text-neutral-300">
+                {contractCode.openSource ? "Open Source" : "Closed Source"}
+              </span>
+            </div>
           )}
 
           {contractCode.hasOwnProperty("isProxy") && (
-          <div className="flex items-center space-x-2">
-            <div
-              className={`w-2 h-2 rounded-full ${
-                contractCode.isProxy ? "bg-orange-500" : "bg-green-500"
-              }`}
-            />
-            <span className="text-neutral-300">
-              {contractCode.isProxy ? "Proxy Contract" : "Direct Contract"}
-            </span>
-          </div>
+            <div className="flex items-center space-x-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  contractCode.isProxy ? "bg-orange-500" : "bg-green-500"
+                }`}
+              />
+              <span className="text-neutral-300">
+                {contractCode.isProxy ? "Proxy Contract" : "Direct Contract"}
+              </span>
+            </div>
           )}
         </div>
 
-        {/* <div className="grid grid-cols-2 gap-2 text-xs mt-2">
-          <div>
-            <span className="text-xs text-neutral-400 block mb-1">Buy Tax</span>
-            <p className="text-xs text-neutral-200 font-medium">
-              {formatTax(simulationResult.buyTax)}%
-            </p>
+        {contractCode.hasOwnProperty("hasProxyCalls") && (
+          <div className="grid grid-cols-2 gap-2 text-xs mt-2">
+            <div>
+              <span className="text-xs text-neutral-400 block mb-1">
+                Buy Tax
+              </span>
+              <p className="text-xs text-neutral-200 font-medium">
+                {formatTax(simulationResult.buyTax)}%
+              </p>
+            </div>
+            <div>
+              <span className="text-xs text-neutral-400 block mb-1">
+                Sell Tax
+              </span>
+              <p className="text-xs text-neutral-200 font-medium">
+                {formatTax(simulationResult.sellTax)}%
+              </p>
+            </div>
           </div>
-          <div>
-            <span className="text-xs text-neutral-400 block mb-1">Sell Tax</span>
-            <p className="text-xs text-neutral-200 font-medium">
-              {formatTax(simulationResult.sellTax)}%
-            </p>
-          </div>
-        </div> */}
+        )}
       </div>
     </div>
   );
@@ -259,7 +265,7 @@ export const AnalysisStatus = ({
   analysisScore,
   honeyPot,
   honeyPotLoading,
-  honeyPotError
+  honeyPotError,
 }) => {
   const stats = !analysisData?.result?.results?.detectors ? null : true;
   const [progress, setProgress] = React.useState(0);
@@ -345,12 +351,13 @@ export const AnalysisStatus = ({
           </ProgressBar>
         )}
 
-        {!honeyPotLoading || honeyPotError && (
-          <ProgressBar status="error">
-            <X className="h-4 w-4" />
-            <span className="text-sm">Honeypot Check Failed</span>
-          </ProgressBar>
-        )}
+        {!honeyPotLoading ||
+          (honeyPotError && (
+            <ProgressBar status="error">
+              <X className="h-4 w-4" />
+              <span className="text-sm">Honeypot Check Failed</span>
+            </ProgressBar>
+          ))}
 
         {honeyPotError && (
           <ProgressBar status="error">
@@ -360,7 +367,8 @@ export const AnalysisStatus = ({
         )}
 
         {!auditLoading &&
-          !error && !honeyPotError &&
+          !error &&
+          !honeyPotError &&
           stats &&
           analysisData &&
           analysisScore !== undefined && (
@@ -425,9 +433,10 @@ export const AnalysisStatus = ({
             </div>
           )}
 
-        {!honeyPotLoading && honeyPot && !honeyPotError && honeyPot.length > 0 && (
-          <HoneyPotCard honeyPot={honeyPot[0]} />
-        )}
+        {!honeyPotLoading &&
+          honeyPot &&
+          !honeyPotError &&
+          honeyPot.length > 0 && <HoneyPotCard honeyPot={honeyPot[0]} />}
       </div>
     </div>
   );
