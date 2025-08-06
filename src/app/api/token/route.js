@@ -32,9 +32,6 @@ export const getTokenWithBlockscout = async ({
   const cacheKey = `${tokenAddress}_${chain}`;
   const cached = getCache(cacheDir, cacheKey, 900000);
 
-  console.log(`Cache key: ${cacheKey}`);
-  console.log(cached);
-
   if (cached) {
     return successCallback(cached);
   }

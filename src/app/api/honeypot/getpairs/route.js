@@ -7,7 +7,7 @@ const defaultChain = chains.filter((chain) => chain.name === "base");
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const tokenAddress = searchParams.get("tokenAddress");
-  const chain = searchParams.get("chain") ?? defaultChain?.id;
+  const chain = searchParams.get("chain") ? chains.find(c => c.name === searchParams.get("chain"))?.id : defaultChain[0]?.id;
 
   if (!tokenAddress) {
     return NextResponse.json(
@@ -35,8 +35,9 @@ export async function GET(request) {
     // Use bash.exe compatible command
     const pyPath = path.join(process.cwd(), "python", "get_pairs_api.py");
     const pythonCmd = process.env.PYTHON_COMMAND || "python3";
-    const cmd = `${pythonCmd} "${pyPath}" "${tokenAddress}"`;
+    const cmd = `${pythonCmd} "${pyPath}" "${tokenAddress}" "${chain}"`;
     const output = execSync(cmd, { encoding: "utf8" });
+
     result = JSON.parse(output);
     setCache(cacheDir, cacheKey, result);
   } catch (err) {
