@@ -12,6 +12,7 @@ const getBlockscoutApiUrl = (chain) => {
   const endpoints = {
     base: "https://base.blockscout.com/api/v2",
     ethereum: "https://eth.blockscout.com/api/v2",
+    eth: "https://eth.blockscout.com/api/v2",
     polygon: "https://polygon.blockscout.com/api/v2",
     arbitrum: "https://arbitrum.blockscout.com/api/v2",
     optimism: "https://optimism.blockscout.com/api/v2",
@@ -30,6 +31,9 @@ export const getTokenWithBlockscout = async ({
   const cacheDir = path.join(process.cwd(), "results", "token");
   const cacheKey = `${tokenAddress}_${chain}`;
   const cached = getCache(cacheDir, cacheKey, 900000);
+
+  console.log(`Cache key: ${cacheKey}`);
+  console.log(cached);
 
   if (cached) {
     return successCallback(cached);
@@ -58,8 +62,9 @@ export const getTokenWithBlockscout = async ({
     );
   }
 
-  setCache(cacheDir, cacheKey, response, 900000); // Cache for 15 minutes
+
   const tokenData = await response.json();
+  setCache(cacheDir, cacheKey, tokenData, 900000); // Cache for 15 minutes
   return successCallback(tokenData);
 };
 

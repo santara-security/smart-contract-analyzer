@@ -3,9 +3,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
 
-export default function SearchModal({ open, onClose, data, loading, searchInput, setSearchInput, searchResults, searchLoading }) {
+export default function SearchModal({
+  open,
+  onClose,
+  data,
+  loading,
+  searchInput,
+  setSearchInput,
+  searchResults,
+  searchLoading,
+}) {
   const router = useRouter();
-  
+
   if (!open) return null;
   const isValidAddress = searchInput.length === 42;
   const isInvalidAddress = searchInput.length > 0 && searchInput.length < 42;
@@ -21,6 +30,10 @@ export default function SearchModal({ open, onClose, data, loading, searchInput,
   const handleInputChange = (e) => {
     setSearchInput(e.target.value);
   };
+
+  if (searchResults) {
+    console.log("Search Results:", searchResults);
+  }
 
   return (
     <div
@@ -146,7 +159,7 @@ export default function SearchModal({ open, onClose, data, loading, searchInput,
             <div className="space-y-2">
               {searchLoading ? (
                 // Loading skeleton for search results
-                [...Array(3)].map((_, idx) => (
+                [...Array(5)].map((_, idx) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
@@ -165,17 +178,26 @@ export default function SearchModal({ open, onClose, data, loading, searchInput,
                 searchResults.map((token) => (
                   <Link
                     key={token.tokenContractAddress}
-                    href={`/audit/base/${token.tokenContractAddress}`}
+                    href={`/audit/${token.chainName.toLowerCase()}/${token.tokenContractAddress}`}
                     className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
                     prefetch={false}
                     onClick={onClose}
                   >
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-neutral-200 mb-1">
-                        {token.tokenFullName || token.tokenSymbol}
-                      </div>
-                      <div className="text-xs text-neutral-400 font-mono truncate">
-                        {token.tokenContractAddress}
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      {token.chainLogoUrl && (
+                        <img 
+                          src={token.chainLogoUrl}
+                          alt={token.chainName}
+                          className="w-5 h-5 rounded-full object-contain"
+                        />
+                      )}
+                      <div>
+                        <div className="text-sm font-semibold text-neutral-200 mb-1">
+                          {token.tokenFullName || token.tokenSymbol}
+                        </div>
+                        <div className="text-xs text-neutral-400 font-mono truncate">
+                          {token.tokenContractAddress}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-3">

@@ -18,7 +18,19 @@ async function runSlitherAnalysis(chain, tokenAddress) {
   // Create output directory if it doesn't exist
   await fs.mkdir(outputDir, { recursive: true });
 
-  const slitherCommand = `slither ${chain}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
+  let chainName = '';
+  switch (chain) {
+    case "base":
+      chainName = "base";
+      break;
+    case "ethereum":
+      chainName = "mainnet";
+      break;
+    default:
+      chainName = "base";
+  }
+
+  const slitherCommand = `slither ${chainName}:${tokenAddress} --etherscan-apikey NCUY8QN5NU14K513XD4D6KN6DCU63B6NAR --json ${outputPath}`;
 
   try {
     console.log(`Running Slither analysis: ${slitherCommand}`);
