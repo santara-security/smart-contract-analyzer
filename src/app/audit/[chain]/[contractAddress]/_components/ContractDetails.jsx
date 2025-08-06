@@ -169,7 +169,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
             >
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
-            DexScreener
+            Buy on OKX
             <ExternalLink className="w-2.5 h-2.5 ml-1.5 opacity-60" />
           </a>
         </div>

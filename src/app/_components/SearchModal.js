@@ -90,14 +90,11 @@ export default function SearchModal({
           <input
             type="text"
             placeholder="Type to search..."
-            className={`flex-1 bg-transparent outline-none text-xs text-neutral-200 font-mono placeholder:text-neutral-500 ${
-              isValidAddress ? "cursor-pointer" : ""
-            }`}
+            className={`flex-1 bg-transparent outline-none text-xs text-neutral-200 font-mono placeholder:text-neutral-500`}
             aria-label="Search"
             autoFocus
             value={searchInput}
             onChange={handleInputChange}
-            onClick={isValidAddress ? handleAudit : undefined}
           />
           <button
             type="submit"
@@ -109,23 +106,7 @@ export default function SearchModal({
             title={isValidAddress ? "Go to Audit" : "Search"}
             tabIndex={isValidAddress ? 0 : -1}
           >
-            {isValidAddress ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-4 h-4"
-              >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            ) : (
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -141,17 +122,12 @@ export default function SearchModal({
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-            )}
+
           </button>
         </form>
-        {isInvalidAddress && (
-          <span className="block mt-2 text-xs text-red-400 text-center">
-            Invalid address
-          </span>
-        )}
 
         {/* Search Results Section - shown when searching tokens */}
-        {searchInput && !isValidAddress && searchInput.length >= 2 && (
+        {searchInput && searchInput.length >= 2 && (
           <div className="mt-6">
             <h3 className="text-sm font-semibold text-neutral-200 mb-3">
               Search Results
@@ -227,7 +203,7 @@ export default function SearchModal({
         )}
 
         {/* Recent Security Audits Section - shown when not searching tokens */}
-        {(!searchInput || isValidAddress || searchInput.length < 2) && (
+        {(!searchInput || searchInput.length < 2) && (
           <div className="mt-6">
             <h3 className="text-sm font-semibold text-neutral-200 mb-3">
               Recent Security Audits

@@ -55,12 +55,16 @@ export const useAuditAnalysis = (chain, contractAddress) => {
         ...summary,
       }));
 
-      const score = Object.values(summary).reduce((sum, count, index) => {
-        const weights = { high: 15, medium: 5, low: 2, informational: 0 };
-        const impact = Object.keys(weights)[index];
-        return sum + (count * (weights[impact] || 0));
+      const weights = { high: 15, medium: 5, low: 2, informational: 0 };
+
+      let calculatedScore = Object.entries(summary).reduce((total, [severity, count]) => {
+        return total + (count * (weights[severity] || 0));
       }, 0);
-      const calculatedScore = Math.min(Math.max(100 - score, 0), 100);
+
+      calculatedScore = 100 - calculatedScore; // Invert score to make higher severity lower score
+      calculatedScore = calculatedScore < 0 ? 0 : calculatedScore; // Ensure score is not negative
+      calculatedScore = calculatedScore > 100 ? 100 : calculatedScore; // Cap score at 100
+
       setAnalysisScore(calculatedScore);
 
       setAnalysisData(data);

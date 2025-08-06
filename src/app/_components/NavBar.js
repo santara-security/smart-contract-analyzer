@@ -84,8 +84,7 @@ export default function NavBar() {
 
   // Effect for handling token search with debouncing
   useEffect(() => {
-    const isValidAddress = searchInput.length === 42;
-    if (!searchInput || isValidAddress || searchInput.length < 2) {
+    if (!searchInput || searchInput.length < 2) {
       setSearchResults([]);
       return;
     }

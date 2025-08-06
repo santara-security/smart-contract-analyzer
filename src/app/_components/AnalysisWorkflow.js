@@ -102,22 +102,6 @@ export default function AnalysisWorkflow() {
           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          viewport={{ once: true }}
-          className="mt-12 bg-neutral-800/30 backdrop-blur-md rounded-lg p-6 border border-neutral-700/40"
-        >
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-blue-400">
-              <span className="text-xs">Analysis progress</span>
-            </div>
-            <div className="w-full bg-neutral-700/50 rounded-full h-1.5 overflow-hidden">
-              <div className="h-full transition-all duration-500 ease-out bg-blue-500" style={{width: "75%"}} />
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
