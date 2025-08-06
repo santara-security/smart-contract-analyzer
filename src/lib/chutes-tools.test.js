@@ -10,7 +10,7 @@ async function testVectorizeSearch() {
   console.log("Testing vectorizeSearch tool with ChutesClient...\n");
   try {
     const searchResults = await vectorSearch.execute({
-      query: "reentrancy guard",
+      keyword: "reentrancy",
       top_k: 2,
     });
 
@@ -24,7 +24,8 @@ async function testVectorizeSearch() {
 const res = await testVectorizeSearch();
 
 if (res) {
-  let result_path = res.results?.[0]?.file_path;
+  console.log(res);
+  let result_path = res.results?.[0]?.filePath;
   console.log("Result file path:", result_path);
   let f = vectorReadFile.execute({ file: result_path });
   console.log("File content:", f);

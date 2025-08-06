@@ -12,7 +12,7 @@ const chutesProvider = createOpenAI({
 });
 
 // const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
-const model = chutesProvider("zai-org/GLM-4.5-FP8");
+const model = chutesProvider("deepseek-ai/DeepSeek-V3-0324");
 
 dotenv.config();
 
@@ -41,7 +41,7 @@ export async function POST(req) {
     4. If you need to use a tool, provide a clear explanation of why it's necessary.
     
     Tools Usage:
-    - Use the \`vectorSearch\` tool to search for vulnerabilities or smart contract functions, do not search for general information.
+    - Use the \`vectorSearch\` tool to search for specific vulnerabilities or smart contract functions. ALWAYS use 1 word to search, example: "reentrancy", "overflow", "transfer".
     - Use the \`vectorReadFile\` tool to read specific files from the vector database when necessary.
     - Always return the relevant information to the user after using a tool.
     `;
