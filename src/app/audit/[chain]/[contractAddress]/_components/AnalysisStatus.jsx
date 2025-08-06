@@ -190,9 +190,6 @@ const HoneyPotCard = ({ honeyPot }) => {
     return parseInt(gas).toLocaleString();
   };
 
-  console.log(`contract code vvvv`);
-  console.log(contractCode);
-
   return (
     <div className="mt-4 space-y-4">
       {/* Main Status Header */}

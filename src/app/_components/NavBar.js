@@ -68,7 +68,6 @@ export default function NavBar() {
         const x = r.data.systemList
           .filter((i) => selectedChainIds.includes(i.chainId))
           .slice(0, 5);
-        console.log(x);
         setSearchResults(x);
       } else {
         setSearchResults([]);

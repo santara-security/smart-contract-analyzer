@@ -60,9 +60,7 @@ export const useAuditAnalysis = (chain, contractAddress) => {
         const impact = Object.keys(weights)[index];
         return sum + (count * (weights[impact] || 0));
       }, 0);
-      console.log(`score: ${score}`);
       const calculatedScore = Math.min(Math.max(100 - score, 0), 100);
-      console.log(calculatedScore )
       setAnalysisScore(calculatedScore);
 
       setAnalysisData(data);

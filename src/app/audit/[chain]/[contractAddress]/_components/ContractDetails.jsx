@@ -65,7 +65,14 @@ export const ContractDetails = ({ chain, contractAddress }) => {
         {/* Network Badge */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-neutral-400">Network</span>
-          <span className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-400 px-2 py-1 rounded-full text-xs font-medium border border-blue-500/30">
+          <span className="flex items-center bg-gradient-to-r text-blue-400 px-2 py-1 rounded-full text-xs font-medium">
+          {selectedChain?.iconUrl && (
+            <img
+              src={selectedChain.iconUrl}
+              alt={chainDisplayName}
+              className="w-4 h-4 mr-1 rounded-full"
+            />
+          )}
             {chainDisplayName}
           </span>
         </div>
