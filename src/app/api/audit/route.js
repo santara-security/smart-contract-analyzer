@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import chains from "@/lib/chains.json";
+import chains from "@/lib/chains";
 import fetchContract from "@/lib/utils/downloadContract";
 import { promises as fs } from "fs";
 import path from "path";
@@ -8,7 +8,7 @@ import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
-const defaultChain = chains.chains.filter((chain) => chain.name === "base");
+const defaultChain = chains.filter((chain) => chain.name === "base");
 
 // Helper function to run Slither analysis
 async function runSlitherAnalysis(chain, tokenAddress) {
@@ -106,7 +106,7 @@ export async function GET(request) {
     );
   }
 
-  const selectedChain = chains.chains.find((c) => c.name === chain);
+  const selectedChain = chains.find((c) => c.name === chain);
 
   if (!selectedChain) {
     return NextResponse.json(

@@ -18,8 +18,16 @@ export const useTokenInfo = (chain, contractAddress) => {
       );
       const data = await response.json();
 
+      console.log("Token data fetched:", data);
+
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch token information");
+      }
+
+      if(data.hasOwnProperty('error')) {
+        console.log('has error');
+        setError(data.error);
+        return;
       }
 
       // The API returns the token data directly, not wrapped in a data property

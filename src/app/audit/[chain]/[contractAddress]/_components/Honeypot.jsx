@@ -176,7 +176,7 @@ const PairCard = (props) => {
             </div>
           )}
 
-          {honeypotResult && (
+          {/* {honeypotResult && (
             <div className="space-y-4">
               <div>
                 <h5 className="text-neutral-200 font-medium mb-2">
@@ -287,7 +287,7 @@ const PairCard = (props) => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>
@@ -327,7 +327,7 @@ const HoneypotSummary = ({ honeyPot, totalPairs }) => {
       </div>
 
       {/* Key metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className="text-center">
           <div className="text-xl font-bold text-neutral-200">
             {formatTax(simulationResult.buyTax)}%
@@ -350,7 +350,7 @@ const HoneypotSummary = ({ honeyPot, totalPairs }) => {
           <div className="text-xl font-bold text-neutral-200">{totalPairs}</div>
           <div className="text-xs text-neutral-400">Trading Pairs</div>
         </div>
-      </div>
+      </div> */}
 
       <div className="text-xs text-neutral-500 border-t border-neutral-700 pt-3">
         <p>

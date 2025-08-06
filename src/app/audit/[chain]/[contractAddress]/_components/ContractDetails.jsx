@@ -42,10 +42,11 @@ const getExplorerUrl = (selectedChain, address) => {
 };
 
 export const ContractDetails = ({ chain, contractAddress }) => {
-  const { tokenData, loading: tokenLoading } = useTokenInfo(
-    chain,
-    contractAddress
-  );
+  const {
+    tokenData,
+    loading: tokenLoading,
+    error: tokenError,
+  } = useTokenInfo(chain, contractAddress);
 
   const selectedChain = getChainData(chain);
 
@@ -85,7 +86,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
           <div className="flex items-center justify-center py-4">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
           </div>
-        ) : tokenData ? (
+        ) : tokenData && !tokenError ? (
           <div className="space-y-3">
             {/* Token Name & Symbol */}
             <div className="grid grid-cols-2 gap-3">

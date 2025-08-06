@@ -35,10 +35,10 @@ export const useIsHoneyPot = (chain, contractAddress) => {
   const [honeyPot, setHoneypot] = useState([]);
   const [loadingHoneypot, setLoadingHoneypot] = useState(false);
   const [errorHoneypot, setErrorHoneypot] = useState(null);
-  const [honeypotCard, setHoneypotCard] = useState(null);
 
   const fetchTokenInfo = useCallback(async () => {
     if (!chain || !contractAddress) return;
+    console.log("Fetching honeypot pairs for:", contractAddress, "on chain:", chain);
 
     setLoadingHoneypot(true);
     setErrorHoneypot(null);
@@ -50,8 +50,16 @@ export const useIsHoneyPot = (chain, contractAddress) => {
       const resp = await response.json();
 
       if (!response.ok) {
+        setErrorHoneypot("No pairs found for this token.");
         throw new Error(resp.error || "Failed to fetch token information");
       }
+
+      if(resp && resp.hasOwnProperty('error')) {
+        console.log('has error');
+        setErrorHoneypot(resp.error);
+        return;
+      }
+
       setHoneypotPairs(resp);
       const firstPairAddress =
         resp && resp[0] && resp[0].Pair ? resp[0].Pair.Address : undefined;

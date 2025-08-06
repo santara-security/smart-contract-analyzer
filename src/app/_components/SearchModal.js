@@ -1,21 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
 
-export default function SearchModal({ open, onClose, data, loading }) {
-  const [input, setInput] = useState("");
+export default function SearchModal({ open, onClose, data, loading, searchInput, setSearchInput, searchResults, searchLoading }) {
   const router = useRouter();
+  
   if (!open) return null;
-  const isValidAddress = input.length === 42;
-  const isInvalidAddress = input.length > 0 && input.length < 42;
+  const isValidAddress = searchInput.length === 42;
+  const isInvalidAddress = searchInput.length > 0 && searchInput.length < 42;
 
   // Handler for click on input or icon when valid
   const handleAudit = () => {
     if (isValidAddress) {
-      router.push(`/audit/base/${input}`);
+      router.push(`/audit/base/${searchInput}`);
       onClose();
     }
+  };
+
+  const handleInputChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
   return (
@@ -78,8 +82,8 @@ export default function SearchModal({ open, onClose, data, loading }) {
             }`}
             aria-label="Search"
             autoFocus
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={searchInput}
+            onChange={handleInputChange}
             onClick={isValidAddress ? handleAudit : undefined}
           />
           <button
@@ -133,14 +137,15 @@ export default function SearchModal({ open, onClose, data, loading }) {
           </span>
         )}
 
-        {/* Recent Security Audits Section */}
-        <div className="mt-6">
-          <h3 className="text-sm font-semibold text-neutral-200 mb-3">
-            Recent Security Audits
-          </h3>
-          <div className="space-y-2">
-            {loading
-              ? // Loading skeleton per design reference
+        {/* Search Results Section - shown when searching tokens */}
+        {searchInput && !isValidAddress && searchInput.length >= 2 && (
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-neutral-200 mb-3">
+              Search Results
+            </h3>
+            <div className="space-y-2">
+              {searchLoading ? (
+                // Loading skeleton for search results
                 [...Array(3)].map((_, idx) => (
                   <div
                     key={idx}
@@ -156,20 +161,21 @@ export default function SearchModal({ open, onClose, data, loading }) {
                     </div>
                   </div>
                 ))
-              : (data || []).map((token) => (
+              ) : searchResults.length > 0 ? (
+                searchResults.map((token) => (
                   <Link
-                    key={token.id}
-                    href={`/audit/${token.chain}/${token.address}`}
+                    key={token.tokenContractAddress}
+                    href={`/audit/base/${token.tokenContractAddress}`}
                     className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
                     prefetch={false}
                     onClick={onClose}
                   >
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-neutral-200 mb-1">
-                        {token.name}
+                        {token.tokenFullName || token.tokenSymbol}
                       </div>
                       <div className="text-xs text-neutral-400 font-mono truncate">
-                        {token.address}
+                        {token.tokenContractAddress}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-3">
@@ -188,9 +194,76 @@ export default function SearchModal({ open, onClose, data, loading }) {
                       </svg>
                     </div>
                   </Link>
-                ))}
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-neutral-400">No tokens found</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Recent Security Audits Section - shown when not searching tokens */}
+        {(!searchInput || isValidAddress || searchInput.length < 2) && (
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-neutral-200 mb-3">
+              Recent Security Audits
+            </h3>
+            <div className="space-y-2">
+              {loading
+                ? // Loading skeleton per design reference
+                  [...Array(3)].map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-3 bg-neutral-800/30 rounded-lg border border-neutral-700/50"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="h-4 bg-neutral-700/50 rounded animate-pulse mb-1 w-32"></div>
+                        <div className="h-3 bg-neutral-700/50 rounded animate-pulse w-80"></div>
+                      </div>
+                      <div className="flex items-center gap-2 ml-3">
+                        <div className="h-5 w-14 bg-neutral-700/50 rounded-full animate-pulse"></div>
+                        <div className="w-3 h-3 bg-neutral-700/50 rounded animate-pulse"></div>
+                      </div>
+                    </div>
+                  ))
+                : (data || []).map((token) => (
+                    <Link
+                      key={token.id}
+                      href={`/audit/${token.chain}/${token.address}`}
+                      className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
+                      prefetch={false}
+                      onClick={onClose}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-neutral-200 mb-1">
+                          {token.name}
+                        </div>
+                        <div className="text-xs text-neutral-400 font-mono truncate">
+                          {token.address}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 ml-3">
+                        <svg
+                          className="w-3 h-3 text-neutral-500 group-hover:text-neutral-400 transition-colors"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </div>
+                    </Link>
+                  ))}
+            </div>
+          </div>
+        )}
         <BorderBeam
           duration={6}
           size={400}
