@@ -12,7 +12,7 @@ const chutesProvider = createOpenAI({
 });
 
 // const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
-const model = chutesProvider("deepseek-ai/DeepSeek-V3-0324");
+const model = chutesProvider("moonshotai/Kimi-K2-Instruct-75k");
 
 dotenv.config();
 
@@ -62,17 +62,28 @@ export async function POST(req) {
         apiMessages.push(userMsg);
         newUserMessages.push(userMsg);
       } else if (Array.isArray(messages) && messages.length > 0) {
-        // If messages is an array, add all messages to maintain context
-        messages.forEach(message => {
-          if (message.role && message.content) {
-            const msg = { role: message.role, content: message.content };
-            apiMessages.push(msg);
-            // Track user messages for conversation history
-            if (message.role === "user") {
-              newUserMessages.push(msg);
+        // If conversation history is empty, add all messages from the array
+        // If conversation history exists, only add new user messages that aren't already in history
+        if (conversationHistory.length === 0) {
+          // Fresh conversation - add all messages
+          messages.forEach(message => {
+            if (message.role && message.content) {
+              const msg = { role: message.role, content: message.content };
+              apiMessages.push(msg);
+              if (message.role === "user") {
+                newUserMessages.push(msg);
+              }
             }
+          });
+        } else {
+          // Existing conversation - only add the last user message to avoid duplication
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage && lastMessage.role === "user" && lastMessage.content) {
+            const userMsg = { role: "user", content: lastMessage.content };
+            apiMessages.push(userMsg);
+            newUserMessages.push(userMsg);
           }
-        });
+        }
       } else if (typeof messages === "object" && messages.content) {
         const role = messages.role || "user";
         const userMsg = { role: role, content: messages.content };
@@ -87,6 +98,10 @@ export async function POST(req) {
       newUserMessages.push(userMsg);
     }
 
+    console.log("Conversation ID:", conversationId);
+    console.log("Conversation history length:", conversationHistory.length);
+    console.log("Input messages array length:", Array.isArray(messages) ? messages.length : 0);
+    console.log("New user messages to add:", newUserMessages.length);
     console.log(
       "Sending messages to API:",
       JSON.stringify(apiMessages, null, 2)
@@ -112,11 +127,18 @@ export async function POST(req) {
     const { text, toolCalls, toolResults } = aiResult;
 
     // Update conversation history
-    if (conversationId && newUserMessages.length > 0) {
+    if (conversationId) {
+      // Add new user messages to conversation history
       newUserMessages.forEach(msg => {
         conversationHistory.push(msg);
       });
-      conversationHistory.push({ role: "assistant", content: text });
+      
+      // Add the assistant response
+      if (text) {
+        conversationHistory.push({ role: "assistant", content: text });
+      }
+      
+      // Store updated conversation history
       conversationHistories.set(conversationId, conversationHistory);
     }
 

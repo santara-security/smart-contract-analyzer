@@ -21,7 +21,7 @@ export async function POST(req) {
       body: JSON.stringify({
         model: "zai-org/GLM-4.5-Air",
         messages,
-        stream: false,
+        stream: true,
         max_tokens: maxTokens,
         temperature,
       }),
