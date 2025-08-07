@@ -1,3 +1,4 @@
+'use client';
 const ShinyText = ({ text, disabled = false, speed = 5, className = '' }) => {
   // Use named animation class for compatibility
   const animationClass = disabled ? 'shiny-text disabled' : 'shiny-text';

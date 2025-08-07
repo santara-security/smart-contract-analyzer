@@ -1,12 +1,11 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import SearchModal from "./SearchModal";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import SearchModal from "./SearchModal";
 import ShinyText from "./ShinyText";
 import { usePathname } from "next/navigation";
+import { useSearchModal } from "../contexts/SearchModalContext";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -14,104 +13,9 @@ export default function NavBar() {
   if (ideRegex.test(pathname)) {
     return null;
   }
-  // Modal state
-  const [showModal, setShowModal] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const abortControllerRef = useRef(null);
 
-  const {
-    data: latestTokens,
-    isLoading: loadingLatestTokens,
-    refetch,
-  } = useQuery({
-    queryKey: ["latestTokens"],
-    queryFn: async () => {
-      const response = await fetch("/api/tokens/latest?limit=5");
-      if (!response.ok) {
-        throw new Error("Failed to fetch latest tokens");
-      }
-      return response.json();
-    },
-  });
-
-  // Function to search tokens from OKX API
-  const searchTokens = async (query) => {
-    // Cancel previous request if exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    // Create new abort controller for this request
-    abortControllerRef.current = new AbortController();
-
-    try {
-      setSearchLoading(true);
-      const response = await fetch(
-        `https://web3.okx.com/priapi/v1/dx/trade/multi/tokens/single/search?inputContent=${encodeURIComponent(
-          query
-        )}`,
-        {
-          signal: abortControllerRef.current.signal,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch tokens");
-      }
-
-      const r = await response.json();
-      const selectedChainIds = [1, 8453];
-
-      if (r.data.systemList.length > 0) {
-        const x = r.data.systemList
-          .filter((i) => selectedChainIds.includes(i.chainId))
-          .slice(0, 5);
-        setSearchResults(x);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Error searching tokens:", error);
-        setSearchResults([]);
-      }
-    } finally {
-      setSearchLoading(false);
-    }
-  };
-
-  // Effect for handling token search with debouncing
-  useEffect(() => {
-    if (!searchInput || searchInput.length < 2) {
-      setSearchResults([]);
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      searchTokens(searchInput);
-    }, 300);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, [searchInput]);
-
-  // Keyboard shortcut: Ctrl+K to open modal
-  React.useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setShowModal(true);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  const { openModal, showModal } = useSearchModal();
+  console.log(`show modal on navbar`, showModal);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-800/50 animate-fadeSlideDown">
@@ -139,10 +43,7 @@ export default function NavBar() {
             <button
               className="hidden md:flex items-center justify-between w-full max-w-xs bg-neutral-700/40 rounded p-2 border border-neutral-600/30 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-600/20 transition-colors cursor-pointer"
               title="Open Search (Ctrl+K)"
-              onClick={() => {
-                refetch();
-                setShowModal(true);
-              }}
+              onClick={openModal}
             >
               <span className="flex items-center">
                 <svg
@@ -215,17 +116,8 @@ export default function NavBar() {
           </button>
         </div>
       </div>
-      {/* Modal */}
-      <SearchModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        data={latestTokens}
-        loading={loadingLatestTokens}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-        searchResults={searchResults}
-        searchLoading={searchLoading}
-      />
+
+      {showModal && <SearchModal />}
     </nav>
   );
 }

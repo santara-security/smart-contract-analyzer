@@ -1,6 +1,10 @@
+'use client';
 import Link from 'next/link';
+import { useSearchModal } from '../contexts/SearchModalContext';
 
 export default function CtaSection() {
+  const { openModal } = useSearchModal();
+
   return (
     <section className="py-20 bg-neutral-900/30 border-y border-neutral-800/50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -11,15 +15,15 @@ export default function CtaSection() {
           Analyze a public contract online, or upload your own source for AI‑guided security insights.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link 
-            href="/audit"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+          <button
+            onClick={openModal}
+            className="cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Analyze a Contract
-          </Link>
+          </button>
           
           <Link 
             href="/analyze-sc"

@@ -2,20 +2,25 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
+import { useSearchModal } from "../contexts/SearchModalContext";
 
-export default function SearchModal({
-  open,
-  onClose,
-  data,
-  loading,
-  searchInput,
-  setSearchInput,
-  searchResults,
-  searchLoading,
-}) {
+export default function SearchModal() {
   const router = useRouter();
+  const {
+    showModal,
+    closeModal,
+    searchInput,
+    setSearchInput,
+    searchResults,
+    isSearching,
+    latestTokens,
+    isLoadingLatest,
+  } = useSearchModal();
 
-  if (!open) return null;
+  console.log('SearchModal rendered, showModal:', showModal);
+
+  if (!showModal) return null;
+
   const isValidAddress = searchInput.length === 42;
   const isInvalidAddress = searchInput.length > 0 && searchInput.length < 42;
 
@@ -23,7 +28,7 @@ export default function SearchModal({
   const handleAudit = () => {
     if (isValidAddress) {
       router.push(`/audit/base/${searchInput}`);
-      onClose();
+      closeModal();
     }
   };
 
@@ -35,6 +40,8 @@ export default function SearchModal({
     console.log("Search Results:", searchResults);
   }
 
+  console.log(`on search modal page. searchInput:`, searchInput);
+
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center w-screen h-screen bg-black/80 backdrop-blur-lg"
@@ -44,10 +51,12 @@ export default function SearchModal({
         top: 0,
         width: "100vw",
         height: "100vh",
+        zIndex: 9999,
       }}
-      onClick={onClose}
+      onClick={closeModal}
       aria-modal="true"
       role="dialog"
+      id="modal-search-dialog"
     >
       <div
         className="bg-black backdrop-blur-md rounded-lg shadow-lg p-6 w-full max-w-md mx-4 relative"
@@ -57,7 +66,7 @@ export default function SearchModal({
         <button
           className="absolute top-3 right-3 p-1 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 rounded transition-colors"
           title="Close"
-          onClick={onClose}
+          onClick={closeModal}
           aria-label="Close search modal"
         >
           <svg
@@ -136,7 +145,7 @@ export default function SearchModal({
               Search Results
             </h3>
             <div className="space-y-2">
-              {searchLoading ? (
+              {isSearching ? (
                 // Loading skeleton for search results
                 [...Array(5)].map((_, idx) => (
                   <div
@@ -160,7 +169,7 @@ export default function SearchModal({
                     href={`/audit/${token.chainName.toLowerCase()}/${token.tokenContractAddress}`}
                     className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
                     prefetch={false}
-                    onClick={onClose}
+                    onClick={closeModal}
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       {token.chainLogoUrl && (
@@ -212,7 +221,7 @@ export default function SearchModal({
               Recent Security Audits
             </h3>
             <div className="space-y-2">
-              {loading
+              {isLoadingLatest
                 ? // Loading skeleton per design reference
                   [...Array(3)].map((_, idx) => (
                     <div
@@ -229,13 +238,13 @@ export default function SearchModal({
                       </div>
                     </div>
                   ))
-                : (data || []).map((token) => (
+                : (latestTokens || []).map((token) => (
                     <Link
                       key={token.id}
                       href={`/audit/${token.chain}/${token.address}`}
                       className="group flex items-center justify-between p-3 bg-neutral-800/30 hover:bg-neutral-800/50 rounded-lg cursor-pointer transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600/50"
                       prefetch={false}
-                      onClick={onClose}
+                      onClick={closeModal}
                     >
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-semibold text-neutral-200 mb-1">

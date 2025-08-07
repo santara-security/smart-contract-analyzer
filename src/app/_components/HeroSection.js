@@ -1,7 +1,10 @@
 'use client';
 import Link from 'next/link';
+import { useSearchModal } from '../contexts/SearchModalContext';
 
 export default function HeroSection() {
+  const { openModal } = useSearchModal();
+
   return (
     <section className="relative overflow-hidden pt-20 mt-16 pb-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,15 +28,15 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <Link
-              href="/audit"
+            <button
+              onClick={openModal}
               className="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Analyze a Contract
-            </Link>
+            </button>
 
             <Link
               href="/analyze-sc"

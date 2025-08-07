@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBarWrapper from "./NavBarWrapper";
 import BackgroundAnimation from "./_components/BackgroundAnimation";
 import Providers from "./providers";
 import NavBar from "./_components/NavBar";
+import { SearchModalProvider } from "./contexts/SearchModalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +30,16 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-800 min-h-screen`}
       >
         <Providers>
-          {/* <NavBarWrapper /> */}
-          <NavBar />
+          <SearchModalProvider>
+            <NavBar />
 
-          <div className="relative min-h-screen">
-            <BackgroundAnimation />
-            <main className="bg-transparent antialiased overflow-hidden font-geist relative z-10">
-              {children}
-            </main>
-          </div>
+            <div className="relative min-h-screen">
+              <BackgroundAnimation />
+              <main className="bg-transparent antialiased overflow-hidden font-geist relative z-10">
+                {children}
+              </main>
+            </div>
+          </SearchModalProvider>
         </Providers>
       </body>
     </html>

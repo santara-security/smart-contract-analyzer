@@ -1,3 +1,4 @@
+'use client';
 export default function Header() {
   return (
     <header className="relative overflow-hidden pt-20 mt-16">
