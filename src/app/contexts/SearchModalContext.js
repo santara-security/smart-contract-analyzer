@@ -132,8 +132,6 @@ export function SearchModalProvider({ children }) {
     loadingLatestTokens,
   };
 
-  console.log('SearchModalProvider rendered, showModal:', showModal);
-
   return (
     <SearchModalContext.Provider value={value}>
       {children}

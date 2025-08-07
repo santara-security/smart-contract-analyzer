@@ -61,11 +61,12 @@ const IDE = ({ params }) => {
           `/api/find-contract-folders?contractAddress=${resolved.contractAddress}`
         );
         const folderData = await folderRes.json();
+        console.log("Folder data:", folderData);
         if (folderData.matches && folderData.matches.length > 0) {
           const contractFolder = folderData.matches[0];
           // Fetch file contents from the new API
           const filesRes = await fetch(
-            `/api/find-contract-files?contractFolder=${contractFolder}`
+            `/api/find-contract-files?contractFolder=${contractFolder?.name}&isDirectory=${contractFolder?.isDirectory}`
           );
           const filesData = await filesRes.json();
           setFileContents(filesData.fileContents || {});
