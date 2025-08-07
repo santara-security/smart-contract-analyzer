@@ -19,17 +19,17 @@ export async function GET(request) {
     "etherscan-contracts"
   );
   let matches = [];
-  console.log(`baseDir: ${baseDir}, contractAddress: ${contractAddress}`);
   try {
     const folders = fs
       .readdirSync(baseDir, { withFileTypes: true })
       .map((dirent) => ({
-        name: dirent.name?.toLocaleLowerCase(),
+        name: dirent.name,
+        lc: dirent.name?.toLocaleLowerCase(),
         isDirectory: dirent.isDirectory(),
       }));
     console.log(folders);
     matches = folders.filter((folder) =>
-      folder.name.includes(contractAddress)
+      folder.lc.includes(contractAddress)
     );
     console.log(`Found matches: ${matches.length}`);
     console.log(matches);
