@@ -4,7 +4,6 @@ import { z } from "zod";
 import { createOpenAI } from "@ai-sdk/openai";
 import { vectorReadFile, vectorSearch } from "@/lib/chutes-tools";
 
-
 const chutesProvider = createOpenAI({
   name: "chutes",
   apiKey: process.env.CHUTES_API_TOKEN,
@@ -12,7 +11,7 @@ const chutesProvider = createOpenAI({
 });
 
 // const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
-const model = chutesProvider("moonshotai/Kimi-K2-Instruct-75k");
+const model = chutesProvider("deepseek-ai/DeepSeek-V3-0324");
 
 dotenv.config();
 
@@ -66,7 +65,7 @@ export async function POST(req) {
         // If conversation history exists, only add new user messages that aren't already in history
         if (conversationHistory.length === 0) {
           // Fresh conversation - add all messages
-          messages.forEach(message => {
+          messages.forEach((message) => {
             if (message.role && message.content) {
               const msg = { role: message.role, content: message.content };
               apiMessages.push(msg);
@@ -78,7 +77,11 @@ export async function POST(req) {
         } else {
           // Existing conversation - only add the last user message to avoid duplication
           const lastMessage = messages[messages.length - 1];
-          if (lastMessage && lastMessage.role === "user" && lastMessage.content) {
+          if (
+            lastMessage &&
+            lastMessage.role === "user" &&
+            lastMessage.content
+          ) {
             const userMsg = { role: "user", content: lastMessage.content };
             apiMessages.push(userMsg);
             newUserMessages.push(userMsg);
@@ -100,7 +103,10 @@ export async function POST(req) {
 
     console.log("Conversation ID:", conversationId);
     console.log("Conversation history length:", conversationHistory.length);
-    console.log("Input messages array length:", Array.isArray(messages) ? messages.length : 0);
+    console.log(
+      "Input messages array length:",
+      Array.isArray(messages) ? messages.length : 0
+    );
     console.log("New user messages to add:", newUserMessages.length);
     console.log(
       "Sending messages to API:",
@@ -113,13 +119,14 @@ export async function POST(req) {
       messages: apiMessages,
       tools: {
         vectorSearch: vectorSearch,
-        vectorReadFile: vectorReadFile
+        vectorReadFile: vectorReadFile,
       },
       toolChoice: "auto", // Automatically choose the best tool
       schema: z.object({
         text: z.string().describe("The AI's response text"),
       }),
-      mode: 'json',
+      mode: "json",
+      stream: true,
       maxSteps: 15,
     });
 
@@ -129,15 +136,15 @@ export async function POST(req) {
     // Update conversation history
     if (conversationId) {
       // Add new user messages to conversation history
-      newUserMessages.forEach(msg => {
+      newUserMessages.forEach((msg) => {
         conversationHistory.push(msg);
       });
-      
+
       // Add the assistant response
       if (text) {
         conversationHistory.push({ role: "assistant", content: text });
       }
-      
+
       // Store updated conversation history
       conversationHistories.set(conversationId, conversationHistory);
     }

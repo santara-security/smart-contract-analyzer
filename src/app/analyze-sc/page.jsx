@@ -148,6 +148,7 @@ export default function SmartContractAnalyzer() {
         body: JSON.stringify({
           messages: apiMessages,
           conversationId: conversationId,
+          stream: true,
         }),
       });
 

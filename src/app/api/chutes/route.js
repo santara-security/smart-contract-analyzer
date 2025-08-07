@@ -50,7 +50,8 @@ export async function POST(req) {
         content: responseContent,
         usage: data.usage,
         model: "zai-org/GLM-4.5-Air",
-        finishReason: data.choices[0].finish_reason
+        finishReason: data.choices[0].finish_reason,
+        stream: true,
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
