@@ -44,7 +44,7 @@ export default function AuditPage({ params }) {
     error: auditError,
     retry: retryAudit,
     analysisSummary,
-    analysisScore
+    analysisScore,
   } = useAuditAnalysis(resolvedParams?.chain, resolvedParams?.contractAddress);
 
   const {
@@ -135,18 +135,27 @@ export default function AuditPage({ params }) {
               <TabButton
                 active={activeTab === "other"}
                 onClick={() => {
-                  window.open(`/audit/${resolvedParams.chain}/${resolvedParams.contractAddress}/ide`, "_blank");
+                  window.open(
+                    `/audit/${resolvedParams.chain}/${resolvedParams.contractAddress}/ide`,
+                    "_blank"
+                  );
                 }}
               >
                 View Source Code
-                <ExternalLink size={16} className="inline ml-1 align-text-bottom" />
+                <ExternalLink
+                  size={16}
+                  className="inline ml-1 align-text-bottom"
+                />
               </TabButton>
             </div>
 
             {/* Prevent Re-rendering */}
             <>
               <div className={activeTab === "chart" ? "block" : "hidden"}>
-                <Chart contractAddress={resolvedParams.contractAddress} />
+                <Chart contractAddress={resolvedParams.contractAddress} 
+                chain={resolvedParams.chain}
+
+                />
               </div>
 
               <div className={activeTab === "honeypot" ? "block" : "hidden"}>

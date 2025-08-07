@@ -126,16 +126,17 @@ const ChartControls = ({
   </div>
 );
 
-const iframeUrl = (contractAddress = "") => {
-  return `https://dexscreener.com/base/${contractAddress}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartDefaultOnMobile=1&chartTheme=dark&theme=dark&chartStyle=0&chartType=usd&interval=15`;
+const iframeUrl = ({contractAddress = "", chain = "base"}) => {
+  return `https://dexscreener.com/${chain}/${contractAddress}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartDefaultOnMobile=1&chartTheme=dark&theme=dark&chartStyle=0&chartType=usd&interval=15`;
 };
 
-export const Chart = ({ contractAddress }) => {
+export const Chart = ({ contractAddress, chain }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [popupWindow, setPopupWindow] = useState(null);
   const iframeRef = useRef(null);
+  console.log(`chain`, chain);
 
   useEffect(() => {
     setIsLoading(true);
@@ -165,7 +166,7 @@ export const Chart = ({ contractAddress }) => {
     setIsLoading(true);
     setHasError(false);
     if (iframeRef.current) {
-      iframeRef.current.src = iframeUrl(contractAddress);
+      iframeRef.current.src = iframeUrl({ contractAddress, chain: chain }); // Reset iframe src to trigger reload
     }
   };
 
@@ -176,7 +177,7 @@ export const Chart = ({ contractAddress }) => {
   };
 
   const handleOpenExternal = () => {
-    window.open(iframeUrl(contractAddress), "_blank", "noopener,noreferrer");
+    window.open(iframeUrl({ contractAddress, chain: chain }), "_blank", "noopener,noreferrer");
   };
 
   const toggleFullscreen = () => {
@@ -186,7 +187,7 @@ export const Chart = ({ contractAddress }) => {
       setIsFullscreen(false);
     } else {
       const popup = window.open(
-        iframeUrl(contractAddress),
+        iframeUrl({ contractAddress, chain: chain }),
         "chart-fullscreen",
         "width=1200,height=800,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no"
       );
@@ -227,7 +228,7 @@ export const Chart = ({ contractAddress }) => {
         ) : (
           <iframe
             ref={iframeRef}
-            src={iframeUrl(contractAddress)}
+            src={iframeUrl({ contractAddress, chain: chain })}
             className="w-full h-full border-0"
             onLoad={handleIframeLoad}
             onError={handleIframeError}

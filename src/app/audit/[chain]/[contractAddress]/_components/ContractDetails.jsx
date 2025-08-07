@@ -38,7 +38,7 @@ const getChainData = (chainName = "base") => {
 };
 
 const getExplorerUrl = (selectedChain, address) => {
-  return `${selectedChain?.explorerUrl}/token/${address}`;
+  return `https://web3.okx.com/token/${selectedChain?.name}/${address}`;
 };
 
 export const ContractDetails = ({ chain, contractAddress }) => {
@@ -157,7 +157,7 @@ export const ContractDetails = ({ chain, contractAddress }) => {
           </a>
 
           <a
-            href={`https://dexscreener.com/base/${contractAddress}`}
+            href={`https://web3.okx.com/token/${chain}/${contractAddress}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-full px-3 py-2 bg-gradient-to-r from-green-600/20 to-green-700/20 text-green-400 border border-green-500/30 rounded hover:from-green-600/30 hover:to-green-700/30 transition-all duration-200 text-xs font-medium group"
