@@ -1,3 +1,4 @@
+import { vectorize } from "@/lib/rag/vectorize_all";
 import { exec } from "child_process";
 import { promisify } from "util";
 const execAsync = promisify(exec);
@@ -20,8 +21,14 @@ const runPython = async () => {
 };
 
 export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const mode = searchParams.get("mode") ?? 'default';
+
   try {
-    const res = await runPython();
+    if( mode !== 'vectorize' ) {
+      const res = await runPython();
+    }
+    const v = await vectorize();
   } catch (error) {
     console.error("Error executing Python script:", error);
     return new Response("Error executing Python script", {

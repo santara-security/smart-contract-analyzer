@@ -75,10 +75,8 @@ async function processDir(DIR) {
   }
 }
 
-async function main() {
+export async function vectorize() {
   await processDir(SWC_DIR);
   await processDir(SWCE_DIR);
   await prisma.$disconnect();
 }
-
-main().catch(e => { console.error(e); process.exit(1); });

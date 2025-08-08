@@ -11,7 +11,7 @@ const chutesProvider = createOpenAI({
 });
 
 // const model = chutesProvider("moonshotai/Kimi-K2-Instruct");
-const model = chutesProvider("deepseek-ai/DeepSeek-V3-0324");
+const model = chutesProvider("deepseek-ai/DeepSeek-R1-0528");
 
 dotenv.config();
 
