@@ -209,7 +209,7 @@ export default function SmartContractAnalyzer() {
   ];
 
   return (
-    <div className="bg-transparent z-10 flex flex-col px-8 py-10 gap-10 mt-20 max-w-8xl mx-auto">
+    <div className="bg-transparent z-10 flex flex-col px-8 py-10 gap-10 mt-20 max-w-7xl mx-auto">
       <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-xl shadow-xl p-8 md:p-10">
 
         {/* Toggle Button for Contract Input */}
