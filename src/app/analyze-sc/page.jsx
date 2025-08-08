@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FiUpload,
   FiFile,
@@ -210,21 +211,6 @@ export default function SmartContractAnalyzer() {
   return (
     <div className="bg-transparent z-10 flex flex-col px-8 py-10 gap-10 mt-20 max-w-8xl mx-auto">
       <div className="bg-neutral-900/20 bg-opacity-50 backdrop-blur-md rounded-xl shadow-xl p-8 md:p-10">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-xl font-bold text-neutral-200">
-              Smart Contract Analyzer
-            </h1>
-            <p className="text-xs text-neutral-300 mt-1">
-              Analyze smart contracts for security vulnerabilities and best
-              practices
-            </p>
-          </div>
-          <div className="bg-blue-600/20 text-blue-400 px-2 py-1 rounded-full text-xs border border-blue-500/30 flex items-center">
-            <FiShield className="w-3 h-3 mr-1" />
-            AI-Powered
-          </div>
-        </div>
 
         {/* Toggle Button for Contract Input */}
         <div className="flex justify-end mb-4">
@@ -238,125 +224,127 @@ export default function SmartContractAnalyzer() {
           </button>
         </div>
 
-        <div
-          className={
-            `grid grid-cols-1 gap-6` +
-            (isContractInputVisible ? " lg:grid-cols-2" : "")
-          }
-        >
-          {isContractInputVisible && (
-            <div className="bg-neutral-800/30 rounded-lg p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-neutral-200 flex items-center">
-                  <FiCode className="w-4 h-4 mr-2 text-blue-400" />
-                  Contract Input
-                </h2>
-                <button
-                  onClick={copyToClipboard}
-                  className={`text-xs text-blue-400 hover:text-blue-300 flex items-center bg-blue-600/20 hover:bg-blue-600/30 px-2 py-1 rounded border border-blue-500/30 transition-colors ${
-                    contractCode ? "" : "invisible"
-                  }`}
-                  aria-hidden={!contractCode}
-                  tabIndex={contractCode ? 0 : -1}
-                  title={
-                    contractCode
-                      ? "Copy contract code"
-                      : "Copy disabled (no contract)"
-                  }
-                >
-                  {copied ? (
-                    <>
-                      <FiCheck className="mr-1 w-3 h-3" /> Copied
-                    </>
-                  ) : (
-                    <>
-                      <FiCopy className="mr-1 w-3 h-3" /> Copy
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* File Upload Area */}
-              <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ${
-                  isDragging
-                    ? "border-blue-500 bg-blue-900/20"
-                    : "border-neutral-600 hover:border-neutral-500 hover:bg-neutral-700/20"
-                }`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
+        <div className={`grid grid-cols-1 gap-6 ${isContractInputVisible ? 'lg:grid-cols-2' : ''}`}>
+          <AnimatePresence>
+            {isContractInputVisible && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
+                className="bg-neutral-800/30 rounded-lg p-4 space-y-4"
               >
-                <FiUpload className="mx-auto h-10 w-10 text-neutral-400 mb-3" />
-                <p className="text-sm text-neutral-300 mb-2">
-                  <span className="text-blue-400 font-medium">
-                    Click to upload
-                  </span>{" "}
-                  or drag and drop
-                </p>
-                <p className="text-sm text-neutral-400">
-                  Solidity (.sol) files only
-                </p>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept=".sol"
-                  onChange={handleFileInputChange}
-                />
-              </div>
-
-              {/* File Info */}
-              {file && (
-                <div className="bg-neutral-700/40 rounded p-3 flex items-center justify-between border border-neutral-600/30">
-                  <div className="flex items-center space-x-2">
-                    <FiFile className="text-neutral-400 w-4 h-4" />
-                    <div>
-                      <p className="text-xs text-neutral-200 font-medium truncate max-w-[180px]">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-neutral-400">
-                        {(file.size / 1024).toFixed(2)} KB
-                      </p>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-semibold text-neutral-200 flex items-center">
+                    <FiCode className="w-4 h-4 mr-2 text-blue-400" />
+                    Contract Input
+                  </h2>
                   <button
-                    onClick={clearContract}
-                    className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
+                    onClick={copyToClipboard}
+                    className={`text-xs text-blue-400 hover:text-blue-300 flex items-center bg-blue-600/20 hover:bg-blue-600/30 px-2 py-1 rounded border border-blue-500/30 transition-colors ${
+                      contractCode ? "" : "invisible"
+                    }`}
+                    aria-hidden={!contractCode}
+                    tabIndex={contractCode ? 0 : -1}
+                    title={
+                      contractCode
+                        ? "Copy contract code"
+                        : "Copy disabled (no contract)"
+                    }
                   >
-                    Remove
+                    {copied ? (
+                      <>
+                        <FiCheck className="mr-1 w-3 h-3" /> Copied
+                      </>
+                    ) : (
+                      <>
+                        <FiCopy className="mr-1 w-3 h-3" /> Copy
+                      </>
+                    )}
                   </button>
                 </div>
-              )}
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center py-2">
-                <div className="flex-grow border-t border-neutral-700"></div>
-                <span className="flex-shrink mx-4 text-xs text-neutral-500 bg-neutral-800/30 px-2 rounded">
-                  OR
-                </span>
-                <div className="flex-grow border-t border-neutral-700"></div>
-              </div>
-
-              {/* Text Area for Pasting Code */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-neutral-400 flex items-center">
-                    <FiCode className="w-3 h-3 mr-1" />
-                    Paste Contract Code
-                  </label>
+                {/* File Upload Area */}
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ${
+                    isDragging
+                      ? "border-blue-500 bg-blue-900/20"
+                      : "border-neutral-600 hover:border-neutral-500 hover:bg-neutral-700/20"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <FiUpload className="mx-auto h-10 w-10 text-neutral-400 mb-3" />
+                  <p className="text-sm text-neutral-300 mb-2">
+                    <span className="text-blue-400 font-medium">
+                      Click to upload
+                    </span>{" "}
+                    or drag and drop
+                  </p>
+                  <p className="text-sm text-neutral-400">
+                    Solidity (.sol) files only
+                  </p>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept=".sol"
+                    onChange={handleFileInputChange}
+                  />
                 </div>
-                <textarea
-                  ref={textareaRef}
-                  value={contractCode}
-                  onChange={(e) => setContractCode(e.target.value)}
-                  placeholder="// Paste your Solidity smart contract code here..."
-                  className="w-full h-48 font-mono text-xs bg-neutral-700/50 text-neutral-200 rounded-lg p-4 border border-neutral-600/30 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 outline-none transition-all resize-none"
-                />
-              </div>
-            </div>
-          )}
+
+                {/* File Info */}
+                {file && (
+                  <div className="bg-neutral-700/40 rounded p-3 flex items-center justify-between border border-neutral-600/30">
+                    <div className="flex items-center space-x-2">
+                      <FiFile className="text-neutral-400 w-4 h-4" />
+                      <div>
+                        <p className="text-xs text-neutral-200 font-medium truncate max-w-[180px]">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-neutral-400">
+                          {(file.size / 1024).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={clearContract}
+                      className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+
+                {/* Divider */}
+                <div className="relative flex items-center justify-center py-2">
+                  <div className="flex-grow border-t border-neutral-700"></div>
+                  <span className="flex-shrink mx-4 text-xs text-neutral-500 bg-neutral-800/30 px-2 rounded">
+                    OR
+                  </span>
+                  <div className="flex-grow border-t border-neutral-700"></div>
+                </div>
+
+                {/* Text Area for Pasting Code */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-medium text-neutral-400 flex items-center">
+                      <FiCode className="w-3 h-3 mr-1" />
+                      Paste Contract Code
+                    </label>
+                  </div>
+                  <textarea
+                    ref={textareaRef}
+                    value={contractCode}
+                    onChange={(e) => setContractCode(e.target.value)}
+                    placeholder="// Paste your Solidity smart contract code here..."
+                    className="w-full h-48 font-mono text-xs bg-neutral-700/50 text-neutral-200 rounded-lg p-4 border border-neutral-600/30 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 outline-none transition-all resize-none"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Chat Interface */}
           <div className="bg-neutral-800/30 rounded-lg p-4 space-y-4 flex flex-col h-full">
