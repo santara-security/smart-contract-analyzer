@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Smart Contract Analyzer
 
-## Getting Started
+A Next.js and Python application for analyzing smart contracts with Slither and other security tools.
 
-First, run the development server:
+## Features
 
+- Smart contract security analysis using Slither
+- Contract crawling and vectorization
+- Honey pot detection
+- Token information retrieval
+- Interactive contract IDE
+- API integrations with Etherscan, OKX, and Chutes
+
+## Prerequisites
+
+- Node.js (v18+ recommended)
+- Python 3.10+
+- Yarn package manager
+- Slither analyzer
+
+## Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:santara-security/smart-contract-analyzer.git
+cd smart-contract-analyzer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install Python dependencies:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+pip install -r python/requirements.txt
+python3 -m pip install slither-analyzer
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+3. Install Node.js dependencies:
+```bash
+yarn install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Configure environment:
+```bash
+cp env.example .env
+```
+Edit the `.env` file with your API keys and configuration.
 
-## Learn More
+5. Set up database:
+```bash
+npx prisma migrate dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Running the development server
+```bash
+yarn dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Analyzing a contract with Slither
+```bash
+slither base:0xB600CE2781e5018B922CA471C19562799cb96EAD --etherscan-apikey YOUR_API_KEY --json ./uploads/file.json
+```
 
-## Deploy on Vercel
+### Running Python crawlers
+```bash
+python python/crawler.py
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/` - Next.js application
+- `python/` - Python scripts and tools
+- `prisma/` - Database schema and migrations
+- `public/` - Static assets
+- `santara_plugin/` - Custom Slither detectors
+
+## API Endpoints
+
+Key API routes include:
+- `/api/audit` - Contract analysis
+- `/api/chutes` - Chutes API integration
+- `/api/honeypot` - Honey pot detection
+- `/api/okx` - OKX exchange integration
+
+## License
+
+CC0 1.0 Universal - See [LICENSE](LICENSE) file for details.
